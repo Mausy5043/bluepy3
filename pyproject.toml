@@ -29,5 +29,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/Mausy5043/pylywsdxx"
-"Bug Tracker" = "https://github.com/Mausy5043/pylywsdxx/issues"
+"Homepage" = "https://github.com/Mausy5043/bluepy3"
+"Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
