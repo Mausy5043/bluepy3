@@ -34,6 +34,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!src/bluez*/lib
 lib64/
 parts/
 sdist/
