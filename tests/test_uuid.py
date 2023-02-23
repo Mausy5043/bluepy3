@@ -14,6 +14,10 @@ import warnings
 from bluepy3.btle import UUID
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
+
+
 class TestUUID(unittest.TestCase):
     def test_init_with_good_uuids(self):
         self.assertIsInstance(UUID(10880), UUID)
