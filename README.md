@@ -44,8 +44,6 @@ Documentation can be built from the sources in the docs/ directory using Sphinx.
 
 See [LICENSE](LICENSE)
 
-
-
 ## Acknowledgements
 
 This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy3) and uses code 
