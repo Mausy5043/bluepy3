@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Test the UUID class in `btle.py`
 

@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+
 from __future__ import absolute_import
+
 from . import btle
 from . import sensortag
 from . import thingy52
