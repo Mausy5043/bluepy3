@@ -10,8 +10,8 @@ name = "bluepy3"
 description = "A Python3 interface to Bluetooth LE on Linux."
 version = "0.0.3"
 dependencies = []
-license = "GPL-2.0 OR GPL-2.1 OR MIT"
-license-files = { paths = [ "LICENSE.txt", "./bluez-5.47/COPYING", "./bluez-5.47/COPYING.LIB" ] }
+license = "GPL-2.0-or-later OR MIT"
+license-files = { paths = [ "LICENSE", "./src/bluez-5.47/COPYING", "./src/bluez-5.47/COPYING.LIB" ] }
 authors = [
   { name="Mausy5043" },
 ]
