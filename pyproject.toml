@@ -9,7 +9,9 @@ build-backend = "hatchling.build"
 name = "bluepy3"
 description = "A Python3 interface to Bluetooth LE on Linux."
 version = "0.0.4"
-dependencies = []
+dependencies = [
+    "bs4"
+]
 license = "GPL-2.0-or-later OR MIT"
 license-files = { paths = [ "LICENSE", "./src/bluez-5.47/COPYING", "./src/bluez-5.47/COPYING.LIB" ] }
 authors = [

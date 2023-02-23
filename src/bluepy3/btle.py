@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
+"""Bluetooth Low Energy Python3 interface"""
 
-"""Bluetooth Low Energy Python interface"""
 import sys
 import os
 import time

@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
-
 import os
 import random
 import struct
 
-import btle
+from . import btle
 
 
 def rand_db(adtype, datalen):
