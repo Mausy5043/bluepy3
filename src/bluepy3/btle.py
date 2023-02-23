@@ -22,7 +22,7 @@ def preexec_function():
 
 Debugging = False
 script_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-helperExe = os.path.join(script_path, "bluepy-helper")
+helperExe = os.path.join(script_path, "bluepy3-helper")
 
 SEC_LEVEL_LOW = "low"
 SEC_LEVEL_MEDIUM = "medium"
@@ -44,7 +44,7 @@ class BTLEException(Exception):
     def __init__(self, message, resp_dict=None):
         self.message = message
 
-        # optional messages from bluepy-helper
+        # optional messages from bluepy3-helper
         self.estat = None
         self.emsg = None
         if resp_dict:
@@ -412,7 +412,7 @@ class BluepyHelper:
                 elif errcode == "atterr":
                     raise BTLEGattError("Bluetooth command failed", resp)
                 else:
-                    raise BTLEException("Error from bluepy-helper (%s)" % errcode, resp)
+                    raise BTLEException("Error from bluepy3-helper (%s)" % errcode, resp)
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue

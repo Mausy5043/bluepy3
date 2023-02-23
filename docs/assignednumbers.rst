@@ -9,7 +9,7 @@ is a ``UUID`` object for the `Firmware Revision String` characteristic identifie
 
 The complete list of Bluetooth assigned numbers is given at https://www.bluetooth.com/specifications/assigned-numbers/
 
-The current version of `bluepy` includes the following defined values::
+The current version of `bluepy3` includes the following defined values::
 
  alertNotificationService
  batteryLevel
@@ -43,4 +43,3 @@ The current version of `bluepy` includes the following defined values::
  txPower
  txPowerLevel
  userData
-

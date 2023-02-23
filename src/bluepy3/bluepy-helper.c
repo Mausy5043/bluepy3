@@ -57,7 +57,7 @@ static FILE * fp = NULL;
 
 static void try_open(void) {
     if (!fp) {
-        fp = fopen ("bluepy-helper.log", "w");
+        fp = fopen ("bluepy3-helper.log", "w");
     }
 }
 #define DBG(fmt, ...) do {try_open();if (fp) {fprintf(fp, "%s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(fp);} \
@@ -1180,7 +1180,7 @@ static void cmd_sec_level(int argcp, char **argvp)
         g_error_free(gerr);
     }
     else {
-        /* Tell bluepy the security level
+        /* Tell bluepy3 the security level
          * has been changed successfuly */
         cmd_status(0, NULL);
     }
@@ -1449,7 +1449,7 @@ static void read_local_oob_data_complete(uint8_t status, uint16_t len,
     DBG("received local OOB ext with eir_len = %d",eir_len);
     for (i = 0; i<eir_len; i++)
         DBG("0x%02x ", rp->eir[i]);
-    
+
     resp_begin(rsp_OOB);
     send_data(rp->eir, eir_len);
     resp_end();
@@ -2155,5 +2155,3 @@ int main(int argc, char *argv[])
 
     return EXIT_SUCCESS;
 }
-
-

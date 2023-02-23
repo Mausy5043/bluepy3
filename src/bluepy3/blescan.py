@@ -7,7 +7,7 @@ import binascii
 import os
 import sys
 
-from bluepy import btle
+from bluepy3 import btle
 
 if os.getenv("C", "1") == "0":
     ANSI_RED = ""

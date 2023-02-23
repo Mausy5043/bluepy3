@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# bluepy documentation build configuration file, created by
+# bluepy3 documentation build configuration file, created by
 # sphinx-quickstart on Fri Sep  5 10:07:35 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -46,7 +46,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "bluepy"
+project = "bluepy3"
 copyright = "2014, Ian Harvey"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -179,7 +179,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "bluepydoc"
+htmlhelp_basename = "bluepy3doc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -197,7 +197,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ("index", "bluepy.tex", "bluepy Documentation", "Ian Harvey", "manual"),
+    ("index", "bluepy3.tex", "bluepy3 Documentation", "Ian Harvey", "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -225,7 +225,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "bluepy", "bluepy Documentation", ["Ian Harvey"], 1)]
+man_pages = [("index", "bluepy3", "bluepy3 Documentation", ["Ian Harvey"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -239,10 +239,10 @@ man_pages = [("index", "bluepy", "bluepy Documentation", ["Ian Harvey"], 1)]
 texinfo_documents = [
     (
         "index",
-        "bluepy",
-        "bluepy Documentation",
+        "bluepy3",
+        "bluepy3 Documentation",
         "Ian Harvey",
-        "bluepy",
+        "bluepy3",
         "A Bluetooth Low Energy library for Python.",
         "Miscellaneous",
     ),

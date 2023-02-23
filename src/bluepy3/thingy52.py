@@ -4,7 +4,7 @@ import argparse
 import binascii
 import time
 
-from bluepy.btle import UUID, Peripheral, ADDR_TYPE_RANDOM, DefaultDelegate
+from bluepy3.btle import UUID, Peripheral, ADDR_TYPE_RANDOM, DefaultDelegate
 
 
 def write_uint16(data, value, index):

@@ -1,11 +1,11 @@
-.. bluepy documentation master file, created by
+.. bluepy3 documentation master file, created by
    sphinx-quickstart on Fri Sep  5 10:07:35 2014.
-   
 
-``bluepy`` - a Bluetooth LE interface for Python
+
+``bluepy3`` - a Bluetooth LE interface for Python
 ================================================
 
-``bluepy`` is a Python module which allows communication with Bluetooth Low
+``bluepy3`` is a Python module which allows communication with Bluetooth Low
 Energy devices. The current implementation runs on Linux
 (internally it uses code from the `BlueZ project <http://www.bluez.org/>`_), although it can be ported to other
 platforms.
@@ -34,4 +34,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

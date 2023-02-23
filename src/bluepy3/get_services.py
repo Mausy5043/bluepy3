@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 def get_html(url, local_filename):
 
-    cachedir = os.path.join(tempfile.gettempdir(), "bluepy")
+    cachedir = os.path.join(tempfile.gettempdir(), "bluepy3")
     try:
         os.mkdir(cachedir)
     except OSError as error:

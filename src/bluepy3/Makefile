@@ -7,7 +7,7 @@ BLUEZ_SRCS += src/shared/crypto.c src/shared/att.c src/shared/queue.c src/shared
 BLUEZ_SRCS += src/shared/io-glib.c src/shared/timeout-glib.c
 
 IMPORT_SRCS = $(addprefix $(BLUEZ_PATH)/, $(BLUEZ_SRCS))
-LOCAL_SRCS  = bluepy-helper.c
+LOCAL_SRCS  = bluepy3-helper.c
 
 CC ?= gcc
 CFLAGS += -g -Wall # -Werror
@@ -24,9 +24,9 @@ CPPFLAGS += -I$(BLUEZ_PATH)/attrib -I$(BLUEZ_PATH) -I$(BLUEZ_PATH)/lib -I$(BLUEZ
 CPPFLAGS += $(shell pkg-config glib-2.0 --cflags)
 LDLIBS += $(shell pkg-config glib-2.0 --libs)
 
-all: bluepy-helper
+all: bluepy3-helper
 
-bluepy-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
+bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 	$(CC) -L. $(CFLAGS) $(CPPFLAGS) -o $@ $(LOCAL_SRCS) $(IMPORT_SRCS) $(LDLIBS)
 
 $(IMPORT_SRCS): bluez-src.tgz
@@ -36,7 +36,7 @@ $(IMPORT_SRCS): bluez-src.tgz
 .PHONY: bluez-tarfile
 
 bluez-tarfile:
-	(cd ..; tar czf bluepy/bluez-src.tgz $(BLUEZ_PATH) --no-same-owner)
+	(cd ..; tar czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) --no-same-owner)
 
 GET_SERVICES=get_services.py
 
@@ -47,7 +47,4 @@ TAGS: *.c $(BLUEZ_PATH)/attrib/*.[ch] $(BLUEZ_PATH)/btio/*.[ch]
 	etags $^
 
 clean:
-	rm -rf *.o bluepy-helper TAGS $(BLUEZ_PATH)
-
-
-
+	rm -rf *.o bluepy3-helper TAGS $(BLUEZ_PATH)

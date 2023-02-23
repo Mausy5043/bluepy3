@@ -1,4 +1,4 @@
-"""Python setup script for bluepy"""
+"""Python setup script for bluepy3"""
 
 import os
 import shlex
@@ -12,20 +12,20 @@ VERSION = "1.3.0"  # -kimnaty
 # versionnumber kept to fix error during installation:
 #   ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
 #   This behaviour is the source of the following dependency conflicts.
-#   lywsd02 0.0.9 requires bluepy==1.3.0, but you have bluepy 1.3.0-kimnaty which is incompatible.
+#   lywsd02 0.0.9 requires bluepy3==1.3.0, but you have bluepy3 1.3.0-kimnaty which is incompatible.
 
 
 def pre_install():
-    """Do the custom compiling of the bluepy-helper executable from the makefile"""
+    """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     try:
         print("Working dir is " + os.getcwd())
-        with open("bluepy/version.h", "w") as verfile:
+        with open("bluepy3/version.h", "w") as verfile:
             verfile.write('#define VERSION_STRING "%s"\n' % VERSION)
-        for cmd in ["make -C ./bluepy clean", "make -C bluepy -j1"]:
+        for cmd in ["make -C ./bluepy3 clean", "make -C bluepy3 -j1"]:
             print("execute " + cmd)
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        print("Failed to compile bluepy-helper. Exiting install.")
+        print("Failed to compile bluepy3-helper. Exiting install.")
         print("Command was " + repr(cmd) + " in " + os.getcwd())
         print("Return code was %d" % e.returncode)
         print("Output was:\n%s" % e.output)
@@ -58,13 +58,13 @@ except ImportError:
     pass
 
 setup(
-    name="bluepy",
+    name="bluepy3",
     version=VERSION,
     description="Python module for interfacing with BLE devices through Bluez",
     author="Ian Harvey",
     author_email="website-contact@fenditton.org",
-    url="https://github.com/IanHarvey/bluepy",
-    download_url="https://github.com/IanHarvey/bluepy/tarball/v/%s" % VERSION,
+    url="https://github.com/IanHarvey/bluepy3",
+    download_url="https://github.com/IanHarvey/bluepy3/tarball/v/%s" % VERSION,
     keywords=["Bluetooth", "Bluetooth Smart", "BLE", "Bluetooth Low Energy"],
     classifiers=[
         "Programming Language :: Python :: 2.7",
@@ -72,13 +72,13 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.9",
     ],
-    packages=["bluepy"],
+    packages=["bluepy3"],
     package_data={
-        "bluepy": [
-            "bluepy-helper",
+        "bluepy3": [
+            "bluepy3-helper",
             "*.json",
             "bluez-src.tgz",
-            "bluepy-helper.c",
+            "bluepy3-helper.c",
             "version.h",
             "Makefile",
         ]
@@ -86,9 +86,9 @@ setup(
     cmdclass=setup_cmdclass,
     entry_points={
         "console_scripts": [
-            "thingy52=bluepy.thingy52:main",
-            "sensortag=bluepy.sensortag:main",
-            "blescan=bluepy.blescan:main",
+            "thingy52=bluepy3.thingy52:main",
+            "sensortag=bluepy3.sensortag:main",
+            "blescan=bluepy3.blescan:main",
         ]
     },
 )

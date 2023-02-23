@@ -11,7 +11,7 @@ import sys
 import unittest
 import warnings
 
-from bluepy.btle import UUID
+from bluepy3.btle import UUID
 
 
 class TestUUID(unittest.TestCase):

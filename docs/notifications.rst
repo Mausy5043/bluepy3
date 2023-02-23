@@ -3,7 +3,7 @@
 Working with notifications
 ==========================
 
-In ``bluepy``, notifications are processed by creating a "delegate" object and 
+In ``bluepy3``, notifications are processed by creating a "delegate" object and
 registering it with the ``Peripheral``. A method in the delegate is called whenever
 a notification is received from the peripheral, as shown below:
 
@@ -15,7 +15,7 @@ a notification is received from the peripheral, as shown below:
     means that *handleNotification()* can potentially be called when any BluePy call
     is in progress.
 
-    The *cHandle* parameter is the GATT 'handle' for the characteristic which is 
+    The *cHandle* parameter is the GATT 'handle' for the characteristic which is
     sending the notification. If a peripheral sends notifications for more than one
     characteristic, this may be used to distinguish them. The 'handle' value can be
     found by calling the ``getHandle()`` method of a ``Characteristic`` object.
@@ -25,7 +25,7 @@ a notification is received from the peripheral, as shown below:
     module to unpack this, to allow portability between language versions.
 
 It is recommended that the class used for the delegate object is derived from
-``btle.DefaultDelegate``. This will ensure that an appropriate default method  
+``btle.DefaultDelegate``. This will ensure that an appropriate default method
 exists for any future calls which may be added to the delegate interface.
 
 Example code
@@ -44,7 +44,7 @@ Code to receive notifications from a peripheral can follow the outline below::
             # ... perhaps check cHandle
             # ... process 'data'
 
-    
+
     # Initialisation  -------
 
     p = btle.Peripheral( address )
@@ -64,5 +64,3 @@ Code to receive notifications from a peripheral can follow the outline below::
 
         print "Waiting..."
         # Perhaps do something else here
-
-

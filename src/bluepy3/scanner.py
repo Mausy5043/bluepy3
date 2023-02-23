@@ -5,7 +5,7 @@ from __future__ import print_function
 import sys
 from time import gmtime, strftime
 
-from bluepy.btle import Scanner, DefaultDelegate
+from bluepy3.btle import Scanner, DefaultDelegate
 
 
 class ScanDelegate(DefaultDelegate):
