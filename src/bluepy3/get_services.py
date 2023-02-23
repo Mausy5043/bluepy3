@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-import requests
+import errno
 import os
 import tempfile
-import errno
+
+import requests
 from bs4 import BeautifulSoup
 
 
 def get_html(url, local_filename):
-
     cachedir = os.path.join(tempfile.gettempdir(), "bluepy3")
     try:
         os.mkdir(cachedir)
