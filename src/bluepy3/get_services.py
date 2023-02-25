@@ -19,12 +19,10 @@ def get_html(url, local_filename):
     cachefilename = os.path.join(cachedir, local_filename)
 
     try:
-        # html = file(cachefilename).read()
         html = open(cachefilename, 'r').read()
     except:
         html = requests.get(url).content
-        # file(cachefilename, "w").write(html)
-        open(cachefilename, "w").write(html)
+        open(cachefilename, "wb").write(html)
     return html
 
 
@@ -78,7 +76,7 @@ def get_table(url, local_filename, table_defs):
 
 def get_service_names():
     for row in get_table(
-        "https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx",
+        "https://web.archive.org/web/20160318231314/https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx",
         "services.html",
         (
             ("Name", None),
@@ -93,7 +91,7 @@ def get_service_names():
 
 def get_descriptors():
     for row in get_table(
-        "https://developer.bluetooth.org/gatt/descriptors/Pages/DescriptorsHomePage.aspx",
+        "https://web.archive.org/web/20160318161646/https://developer.bluetooth.org/gatt/descriptors/Pages/DescriptorsHomePage.aspx",
         "descriptors.html",
         (
             ("Name", None),
@@ -108,7 +106,7 @@ def get_descriptors():
 
 def get_characteristics():
     for row in get_table(
-        "https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicsHome.aspx",
+        "https://web.archive.org/web/20160318225546/https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicsHome.aspx",
         "characteristics.html",
         (
             ("Name", None),
@@ -123,7 +121,7 @@ def get_characteristics():
 
 def get_units():
     for row in get_table(
-        "https://developer.bluetooth.org/gatt/units/Pages/default.aspx",
+        "https://web.archive.org/web/20160305020847/https://developer.bluetooth.org/gatt/units/Pages/default.aspx",
         "units.html",
         (("Number", lambda x: int(x, 16)), ("Name", None), ("Type", None)),
     ):
@@ -133,7 +131,7 @@ def get_units():
 
 def get_formats():
     for row in get_table(
-        "https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx",
+        "https://web.archive.org/web/20160410055350/https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx",
         "formats.html",
         (("Name", None), ("Description", None)),
     ):
