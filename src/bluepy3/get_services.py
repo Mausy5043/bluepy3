@@ -196,6 +196,4 @@ if __name__ == "__main__":
 
     import json
 
-    s = json.dumps(d.data(), indent=4, encoding="utf-8", ensure_ascii=False, sort_keys=True)
-
-    print(s.encode("utf-8"))
+    print(json.dumps(d.data(), indent=4, sort_keys=True))
