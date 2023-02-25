@@ -172,35 +172,35 @@ class EnvironmentService:
 
     def set_temperature_notification(self, state):
         if self.temperature_cccd is not None:
-            if state == True:
+            if state is True:
                 self.temperature_cccd.write(b"\x01\x00", True)
             else:
                 self.temperature_cccd.write(b"\x00\x00", True)
 
     def set_pressure_notification(self, state):
         if self.pressure_cccd is not None:
-            if state == True:
+            if state is True:
                 self.pressure_cccd.write(b"\x01\x00", True)
             else:
                 self.pressure_cccd.write(b"\x00\x00", True)
 
     def set_humidity_notification(self, state):
         if self.humidity_cccd is not None:
-            if state == True:
+            if state is True:
                 self.humidity_cccd.write(b"\x01\x00", True)
             else:
                 self.humidity_cccd.write(b"\x00\x00", True)
 
     def set_gas_notification(self, state):
         if self.gas_cccd is not None:
-            if state == True:
+            if state is True:
                 self.gas_cccd.write(b"\x01\x00", True)
             else:
                 self.gas_cccd.write(b"\x00\x00", True)
 
     def set_color_notification(self, state):
         if self.color_cccd is not None:
-            if state == True:
+            if state is True:
                 self.color_cccd.write(b"\x01\x00", True)
             else:
                 self.color_cccd.write(b"\x00\x00", True)
@@ -308,7 +308,7 @@ class UserInterfaceService:
 
     def set_btn_notification(self, state):
         if self.btn_char_cccd is not None:
-            if state == True:
+            if state is True:
                 self.btn_char_cccd.write(b"\x01\x00", True)
             else:
                 self.btn_char_cccd.write(b"\x00\x00", True)
@@ -412,63 +412,63 @@ class MotionService:
 
     def set_tap_notification(self, state):
         if self.tap_char_cccd is not None:
-            if state == True:
+            if state is True:
                 self.tap_char_cccd.write(b"\x01\x00", True)
             else:
                 self.tap_char_cccd.write(b"\x00\x00", True)
 
     def set_orient_notification(self, state):
         if self.orient_cccd is not None:
-            if state == True:
+            if state is True:
                 self.orient_cccd.write(b"\x01\x00", True)
             else:
                 self.orient_cccd.write(b"\x00\x00", True)
 
     def set_quaternion_notification(self, state):
         if self.quaternion_cccd is not None:
-            if state == True:
+            if state is True:
                 self.quaternion_cccd.write(b"\x01\x00", True)
             else:
                 self.quaternion_cccd.write(b"\x00\x00", True)
 
     def set_stepcnt_notification(self, state):
         if self.stepcnt_cccd is not None:
-            if state == True:
+            if state is True:
                 self.stepcnt_cccd.write(b"\x01\x00", True)
             else:
                 self.stepcnt_cccd.write(b"\x00\x00", True)
 
     def set_rawdata_notification(self, state):
         if self.rawdata_cccd is not None:
-            if state == True:
+            if state is True:
                 self.rawdata_cccd.write(b"\x01\x00", True)
             else:
                 self.rawdata_cccd.write(b"\x00\x00", True)
 
     def set_euler_notification(self, state):
         if self.euler_cccd is not None:
-            if state == True:
+            if state is True:
                 self.euler_cccd.write(b"\x01\x00", True)
             else:
                 self.euler_cccd.write(b"\x00\x00", True)
 
     def set_rotation_notification(self, state):
         if self.rotation_cccd is not None:
-            if state == True:
+            if state is True:
                 self.rotation_cccd.write(b"\x01\x00", True)
             else:
                 self.rotation_cccd.write(b"\x00\x00", True)
 
     def set_heading_notification(self, state):
         if self.heading_cccd is not None:
-            if state == True:
+            if state is True:
                 self.heading_cccd.write(b"\x01\x00", True)
             else:
                 self.heading_cccd.write(b"\x00\x00", True)
 
     def set_gravity_notification(self, state):
         if self.gravity_cccd is not None:
-            if state == True:
+            if state is True:
                 self.gravity_cccd.write(b"\x01\x00", True)
             else:
                 self.gravity_cccd.write(b"\x00\x00", True)
@@ -562,14 +562,14 @@ class SoundService:
 
     def set_speaker_status_notification(self, state):
         if self.speaker_status_char_cccd is not None:
-            if state == True:
+            if state is True:
                 self.speaker_status_char_cccd.write(b"\x01\x00", True)
             else:
                 self.speaker_status_char_cccd.write(b"\x00\x00", True)
 
     def set_microphone_notification(self, state):
         if self.microphone_char_cccd is not None:
-            if state == True:
+            if state is True:
                 self.microphone_char_cccd.write(b"\x01\x00", True)
             else:
                 self.microphone_char_cccd.write(b"\x00\x00", True)
