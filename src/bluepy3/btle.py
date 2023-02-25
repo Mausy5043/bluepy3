@@ -777,11 +777,11 @@ class ScanEntry:
         isNewData = False
         while len(data) >= 2:
             sdlen, sdid = struct.unpack_from("<BB", data)
-            val = data[2: sdlen + 1]
+            val = data[2 : sdlen + 1]
             if (sdid not in self.scanData) or (val != self.scanData[sdid]):
                 isNewData = True
             self.scanData[sdid] = val
-            data = data[sdlen + 1:]
+            data = data[sdlen + 1 :]
 
         self.updateCount += 1
         return isNewData
@@ -800,7 +800,7 @@ class ScanEntry:
         result = []
         for i in range(0, len(val), nbytes):
             if len(val) >= (i + nbytes):
-                result.append(self._decodeUUID(val[i: i + nbytes], nbytes))
+                result.append(self._decodeUUID(val[i : i + nbytes], nbytes))
         return result
 
     def getDescription(self, sdid):
@@ -909,7 +909,7 @@ class Scanner(BluepyHelper):
             elif respType == "scan":
                 # device found
                 addr = binascii.b2a_hex(resp["addr"][0]).decode("utf-8")
-                addr = ":".join([addr[i: i + 2] for i in range(0, 12, 2)])
+                addr = ":".join([addr[i : i + 2] for i in range(0, 12, 2)])
                 if addr in self.scanned:
                     dev = self.scanned[addr]
                 else:
