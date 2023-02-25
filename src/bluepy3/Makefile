@@ -30,13 +30,13 @@ bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 	$(CC) -L. $(CFLAGS) $(CPPFLAGS) -o $@ $(LOCAL_SRCS) $(IMPORT_SRCS) $(LDLIBS)
 
 $(IMPORT_SRCS): bluez-src.tgz
-	tar xzf $< --no-same-owner
+	tar -xzf $< --no-same-owner
 	touch $(IMPORT_SRCS)
 
 .PHONY: bluez-tarfile
 
 bluez-tarfile:
-	(cd ..; tar czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) --no-same-owner)
+	(cd ..; tar --no-same-owner -czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) )
 
 GET_SERVICES=get_services.py
 
