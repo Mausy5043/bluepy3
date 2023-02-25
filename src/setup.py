@@ -8,11 +8,11 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "1.3.0"  # -kimnaty
+VERSION = "1.3.1"  # -kimnaty
 # versionnumber kept to fix error during installation:
 #   ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
 #   This behaviour is the source of the following dependency conflicts.
-#   lywsd02 0.0.9 requires bluepy3==1.3.0, but you have bluepy3 1.3.0-kimnaty which is incompatible.
+#   lywsd02 0.0.9 requires bluepy==1.3.0, but you have bluepy 1.3.0-kimnaty which is incompatible.
 
 
 def pre_install():
@@ -63,8 +63,8 @@ setup(
     description="Python module for interfacing with BLE devices through Bluez",
     author="Ian Harvey",
     author_email="website-contact@fenditton.org",
-    url="https://github.com/IanHarvey/bluepy3",
-    download_url="https://github.com/IanHarvey/bluepy3/tarball/v/%s" % VERSION,
+    url="https://example.com/bluepy3",
+    download_url="https://example.com/f{VERSION}",
     keywords=["Bluetooth", "Bluetooth Smart", "BLE", "Bluetooth Low Energy"],
     classifiers=[
         "Programming Language :: Python :: 2.7",
