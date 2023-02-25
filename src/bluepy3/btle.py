@@ -541,7 +541,7 @@ class Peripheral(BluepyHelper):
     def services(self):
         if self._serviceMap is None:
             self._serviceMap = self.discoverServices()
-        return self._serviceMap.values()
+        return list(self._serviceMap.values())
 
     def getServices(self):
         return self.services
@@ -923,7 +923,7 @@ class Scanner(BluepyHelper):
                 raise BTLEInternalError("Unexpected response: " + respType, resp)
 
     def getDevices(self):
-        return self.scanned.values()
+        return list(self.scanned.values())
 
     def scan(self, timeout=10, passive=False):
         self.clear()
