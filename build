@@ -21,7 +21,7 @@ build_app(){
     ### build package
     echo
     echo "Building..."
-    rm dist/*
+    rm -r dist/*
     python3 -m build
 }
 
