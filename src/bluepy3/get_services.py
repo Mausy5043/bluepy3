@@ -7,6 +7,17 @@ import tempfile
 import requests
 from bs4 import BeautifulSoup
 
+URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/https://www.bluetooth.com/specifications/gatt/characteristics"
+URL_DESCRIPTORS = "https://web.archive.org/web/20170201043201/https://www.bluetooth.com/specifications/gatt/descriptors"
+URL_FORMATS = "https://web.archive.org/web/20160410055350/https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx"
+URL_SERVICES = "https://web.archive.org/web/20170711074819/https://www.bluetooth.com/specifications/gatt/services"
+URL_UNITS = "https://web.archive.org/web/20160305020847/https://developer.bluetooth.org/gatt/units/Pages/default.aspx"
+
+DEBUG = True
+
+
+def get_html(url: str, local_filename: str) -> object:
+    """Fetch a URL and store it in a local tempfile
 
 def get_html(url, local_filename):
     cachedir = os.path.join(tempfile.gettempdir(), "bluepy3")
