@@ -72,7 +72,7 @@ def get_table_rows(html=None):
     try:
         assert biggest_table
 
-        for row in biggest_table.find_all("tr"): # noqa : "Cannot find reference 'find_all' in 'Sized | int'"
+        for row in biggest_table.find_all("tr"):  # noqa : "Cannot find reference 'find_all' in 'Sized | int'"
             cols = row.find_all("td")
             cols = [ele.text.strip() for ele in cols]
             outrow = [ele for ele in cols if ele]  # Get rid of empty values
@@ -290,9 +290,8 @@ class Definitions(object):
             "unit_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
 
-
     def data_debug(self):
-        """ FOR DEVBUGGING ONLY
+        """FOR DEVBUGGING ONLY
         Makes tables like this:
         number, name, common name.
         """
@@ -313,6 +312,7 @@ if __name__ == "__main__":
     d = Definitions()
 
     import json
+
     if DEBUG:
         s = d.data_debug()
         # print(json.dumps(s, indent=4, sort_keys=True))
