@@ -91,7 +91,6 @@ def get_table(url, local_filename, table_defs):
             print(f"got {row}")
         try:
             assert len(row) == len(table_defs)
-
             ret = {}
             for col, (name, func) in zip(row, table_defs):
                 try:
@@ -228,7 +227,7 @@ def get_formats():
         yield row
 
 
-class Definitions():
+class Definitions:
     def __init__(self):
         self._characteristics = None
         self._units = None
