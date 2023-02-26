@@ -60,15 +60,17 @@ def get_table_rows(html=None):
     biggest_table = max(tables, key=len, default=0)
 
     # service_table=soup.find("table", attrs={"summary":"Documents This library contains Services."})
+    try:
+        assert biggest_table
 
-    assert biggest_table
-
-    for row in biggest_table.find_all("tr"):
-        cols = row.find_all("td")
-        cols = [ele.text.strip() for ele in cols]
-        outrow = [ele for ele in cols if ele]  # Get rid of empty values
-        if outrow:
-            yield outrow
+        for row in biggest_table.find_all("tr"):
+            cols = row.find_all("td")
+            cols = [ele.text.strip() for ele in cols]
+            outrow = [ele for ele in cols if ele]  # Get rid of empty values
+            if outrow:
+                yield outrow
+    except AssertionError:
+        pass
 
 
 def get_table(url, local_filename, table_defs):
