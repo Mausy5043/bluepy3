@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Fetch UUIDs for characteristics, descriptors, formats, services and units from bluetooth.com
+and store them in uuids.json for later use by `btle.py`
+
+Note that the original tables from which the UUIDs were gathered nolonger exist.
+Therefore, the archived webpages are used from archive.com
+"""
+
 import errno
 import os
 import tempfile
@@ -19,7 +27,13 @@ DEBUG = True
 def get_html(url: str, local_filename: str) -> object:
     """Fetch a URL and store it in a local tempfile
 
-def get_html(url, local_filename):
+    Args:
+        url (str): URL of webpage to fetch
+        local_filename: location where to store the webpage
+
+    Returns:
+        object: content of webpage
+    """
     cachedir = os.path.join(tempfile.gettempdir(), "bluepy3")
     try:
         os.mkdir(cachedir)
