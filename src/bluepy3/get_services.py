@@ -15,6 +15,7 @@ import tempfile
 import requests
 from bs4 import BeautifulSoup
 
+# fmt: off
 URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/" \
                       "https://www.bluetooth.com/specifications/gatt/characteristics"
 URL_DECLARATIONS = "https://web.archive.org/web/20170502191915/" \
