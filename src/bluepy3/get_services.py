@@ -42,12 +42,11 @@ def get_html(url: str, local_filename: str) -> object:
             raise
 
     cachefilename = os.path.join(cachedir, local_filename)
-
-    try:
-        html = open(cachefilename, 'r').read()
-    except:
-        html = requests.get(url).content
-        open(cachefilename, "wb").write(html)
+    # try:
+    #     html = open(cachefilename, 'r').read()
+    # except:
+    html = requests.get(url).content
+    open(cachefilename, "wb").write(html)
     return html
 
 
