@@ -16,6 +16,7 @@ import requests
 from bs4 import BeautifulSoup
 
 URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/https://www.bluetooth.com/specifications/gatt/characteristics"
+URL_DECLARATIONS = "https://web.archive.org/web/20170502191915/https://www.bluetooth.com/specifications/gatt/declarations"
 URL_DESCRIPTORS = "https://web.archive.org/web/20170201043201/https://www.bluetooth.com/specifications/gatt/descriptors"
 URL_FORMATS = "https://web.archive.org/web/20160410055350/https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx"
 URL_SERVICES = "https://web.archive.org/web/20170711074819/https://www.bluetooth.com/specifications/gatt/services"
@@ -148,6 +149,27 @@ def get_descriptors():
         yield row
 
 
+def get_declarations():
+    if DEBUG:
+        print("\ndeclarations")
+    for row in get_table(
+        URL_DECLARATIONS,
+        "declarations.html",
+        (
+            ("Name", None),
+            ("Type", None),
+            ("Number", lambda x: int(x, 16)),
+            ("Level", None),
+        ),
+    ):
+        if DEBUG:
+            # example
+            # row {'Name': 'GATT Primary Service Declaration', 'Type': 'org.bluetooth.attribute.gatt.primary_service_declaration', 'Number': 10240, 'Level': 'Adopted'}
+            print(f"row {row}")
+        row["cname"] = row["Type"].split(".")[-1]
+        yield row
+
+
 def get_characteristics():
     if DEBUG:
         print("\ncharacteristics")
@@ -207,6 +229,7 @@ class Definitions(object):
         self._units = None
         self._services = None
         self._descriptors = None
+        self._declarations = None
         self._formats = None
 
     @property
@@ -228,6 +251,12 @@ class Definitions(object):
         return self._services
 
     @property
+    def declarations(self):
+        if not self._declarations:
+            self._declarations = list(get_declarations())
+        return self._declarations
+
+    @property
     def descriptors(self):
         if not self._descriptors:
             self._descriptors = list(get_descriptors())
@@ -247,6 +276,7 @@ class Definitions(object):
         return {
             "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
             "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
+            "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
             "formats": [(row["Name"], row["Description"]) for row in self.formats],
             "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
             "units_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
@@ -267,6 +297,7 @@ class Definitions(object):
             # "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
             # "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
             "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
+            "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
         }
 
 
