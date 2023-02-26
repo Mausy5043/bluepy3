@@ -85,21 +85,25 @@ def get_table(url, local_filename, table_defs):
         try:
             assert len(row) == len(table_defs)
 
-        ret = {}
-        for col, (name, func) in zip(row, table_defs):
-            try:
-                if func is None:
+            ret = {}
+            for col, (name, func) in zip(row, table_defs):
+                try:
+                    if func is None:
 
-                    def func(x):
-                        return x
+                        def func(x):
+                            return x
 
-                ret[name] = func(col)
-            except:
-                print(name)
-                print(col)
-                print(row)
-                raise
-        yield ret
+                    ret[name] = func(col)
+                except:
+                    print(name)
+                    print(col)
+                    print(row)
+                    raise
+            yield ret
+        except AssertionError:
+            if DEBUG:
+                print(f"*** not parsing {row}")
+            pass
 
 
 def get_service_names():
