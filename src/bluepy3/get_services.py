@@ -59,7 +59,7 @@ def get_html(url: str, local_filename: str) -> object:
 
 def get_table_rows(html=None):
     if html is None:
-        html = get_html()
+        html = get_html("", "")
     soup = BeautifulSoup(html, features="lxml")
     tables = soup.find_all("table")
     if DEBUG:
