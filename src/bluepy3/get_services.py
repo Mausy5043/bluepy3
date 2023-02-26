@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Fetch UUIDs for characteristics, descriptors, formats, services and units from bluetooth.com
+Fetch UUIDs for GATT characteristics, declarations, descriptors, formats, services and units from bluetooth.com
 and store them in uuids.json for later use by `btle.py`
 
 Note that the original tables from which the UUIDs were gathered nolonger exist.
