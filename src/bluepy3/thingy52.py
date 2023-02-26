@@ -205,7 +205,9 @@ class EnvironmentService:
             else:
                 self.color_cccd.write(b"\x00\x00", True)
 
+    # fmt: off
     def configure(self, temp_int=None, press_int=None, humid_int=None, gas_mode_int=None, color_int=None, color_sens_calib=None,):
+        # fmt: on
         if self.config_char is not None:
             current_config = binascii.b2a_hex(self.config_char.read())
             if temp_int is not None:
