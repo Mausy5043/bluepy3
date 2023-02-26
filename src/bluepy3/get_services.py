@@ -15,12 +15,18 @@ import tempfile
 import requests
 from bs4 import BeautifulSoup
 
-URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/https://www.bluetooth.com/specifications/gatt/characteristics"
-URL_DECLARATIONS = "https://web.archive.org/web/20170502191915/https://www.bluetooth.com/specifications/gatt/declarations"
-URL_DESCRIPTORS = "https://web.archive.org/web/20170201043201/https://www.bluetooth.com/specifications/gatt/descriptors"
-URL_FORMATS = "https://web.archive.org/web/20160410055350/https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx"
-URL_SERVICES = "https://web.archive.org/web/20170711074819/https://www.bluetooth.com/specifications/gatt/services"
-URL_UNITS = "https://web.archive.org/web/20160305020847/https://developer.bluetooth.org/gatt/units/Pages/default.aspx"
+URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/" \
+                      "https://www.bluetooth.com/specifications/gatt/characteristics"
+URL_DECLARATIONS = "https://web.archive.org/web/20170502191915/" \
+                   "https://www.bluetooth.com/specifications/gatt/declarations"
+URL_DESCRIPTORS = "https://web.archive.org/web/20170201043201/" \
+                  "https://www.bluetooth.com/specifications/gatt/descriptors"
+URL_FORMATS = "https://web.archive.org/web/20160410055350/" \
+              "https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx"
+URL_SERVICES = "https://web.archive.org/web/20170711074819/" \
+               "https://www.bluetooth.com/specifications/gatt/services"
+URL_UNITS = "https://web.archive.org/web/20160305020847/" \
+            "https://developer.bluetooth.org/gatt/units/Pages/default.aspx"
 
 DEBUG = False
 
