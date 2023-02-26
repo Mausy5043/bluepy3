@@ -246,10 +246,10 @@ class Definitions(object):
         """
         return {
             "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
-            "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
             "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
-            "units_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
             "formats": [(row["Name"], row["Description"]) for row in self.formats],
+            "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
+            "units_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
 
 
@@ -274,5 +274,9 @@ if __name__ == "__main__":
     d = Definitions()
 
     import json
-
-    print(json.dumps(d.data(), indent=4, sort_keys=True))
+    if DEBUG:
+        s = d.data_debug()
+        # print(json.dumps(s, indent=4, sort_keys=True))
+    else:
+        s = d.data()
+        print(json.dumps(s, indent=4, sort_keys=True))
