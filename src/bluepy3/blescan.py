@@ -25,7 +25,7 @@ else:
 
 
 def dump_services(dev):
-    services = sorted(dev.services, key=lambda s: s.hndStart)
+    services = sorted(dev.services, key=lambda k: k.hndStart)
     for s in services:
         print(f"\t{s.hndStart:04X}: {s}")
         if s.hndStart == s.hndEnd:
