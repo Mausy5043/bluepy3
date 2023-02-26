@@ -101,7 +101,7 @@ def get_table(url, local_filename, table_defs):
                             return x
 
                     ret[name] = func(col)
-                except:
+                except Exception:
                     print(name)
                     print(col)
                     print(row)
