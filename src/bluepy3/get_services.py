@@ -110,7 +110,7 @@ def get_service_names():
     if DEBUG:
         print("\nservices")
     for row in get_table(
-        "https://web.archive.org/web/20160318231314/https://developer.bluetooth.org/gatt/services/Pages/ServicesHome.aspx",
+        URL_SERVICES,
         "services.html",
         (
             ("Name", None),
@@ -131,7 +131,7 @@ def get_descriptors():
     if DEBUG:
         print("\ndescriptors")
     for row in get_table(
-        "https://web.archive.org/web/20160318161646/https://developer.bluetooth.org/gatt/descriptors/Pages/DescriptorsHomePage.aspx",
+        URL_DESCRIPTORS,
         "descriptors.html",
         (
             ("Name", None),
@@ -152,7 +152,7 @@ def get_characteristics():
     if DEBUG:
         print("\ncharacteristics")
     for row in get_table(
-        "https://web.archive.org/web/20160318225546/https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicsHome.aspx",
+        URL_CHARACTERISTICS,
         "characteristics.html",
         (
             ("Name", None),
@@ -173,7 +173,7 @@ def get_units():
     if DEBUG:
         print("\nunits")
     for row in get_table(
-        "https://web.archive.org/web/20160305020847/https://developer.bluetooth.org/gatt/units/Pages/default.aspx",
+        URL_UNITS,
         "units.html",
         (("Number", lambda x: int(x, 16)), ("Name", None), ("Type", None)),
     ):
@@ -189,7 +189,7 @@ def get_formats():
     if DEBUG:
         print("\nformats")
     for row in get_table(
-        "https://web.archive.org/web/20160410055350/https://developer.bluetooth.org/gatt/Pages/FormatTypes.aspx",
+        URL_FORMATS,
         "formats.html",
         (("Name", None), ("Description", None)),
     ):
