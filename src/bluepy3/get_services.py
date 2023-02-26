@@ -28,6 +28,7 @@ URL_SERVICES = "https://web.archive.org/web/20170711074819/" \
                "https://www.bluetooth.com/specifications/gatt/services"
 URL_UNITS = "https://web.archive.org/web/20160305020847/" \
             "https://developer.bluetooth.org/gatt/units/Pages/default.aspx"
+# fmt: on
 
 DEBUG = False
 
