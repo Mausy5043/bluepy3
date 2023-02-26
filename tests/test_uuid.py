@@ -7,9 +7,7 @@ Run with:
 """
 
 import binascii
-import sys
 import unittest
-import warnings
 
 from bluepy3.btle import UUID
 
