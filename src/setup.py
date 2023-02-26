@@ -17,13 +17,14 @@ VERSION = "1.3.1"  # -kimnaty
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
+    cmd = ""
     try:
         print(f"Working dir is {os.getcwd()}")
         with open("bluepy3/version.h", "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}"\n')
         for cmd in ["make -C ./bluepy3 clean", "make -C bluepy3 -j1"]:
             print(f"execute {cmd}")
-            msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+            msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
     except subprocess.CalledProcessError as e:
         print("Failed to compile bluepy3-helper. Exiting install.")
         print(f"Command was {repr(cmd)} in {os.getcwd()}")
@@ -32,26 +33,26 @@ def pre_install():
         sys.exit(1)
 
 
-class my_build_py(build_py):
+class MyBuildPy(build_py):
     def run(self):
         pre_install()
         build_py.run(self)
 
 
 setup_cmdclass = {
-    "build_py": my_build_py,
+    "build_py": MyBuildPy,
 }
 
 # Force package to be *not* pure Python
 # Discusssed at issue #158
 
 try:
-    from wheel.bdist_wheel import bdist_wheel
+    from wheel.bdist_wheel import bdist_wheel  # noqa
 
     class BluepyBdistWheel(bdist_wheel):
         def finalize_options(self):
             bdist_wheel.finalize_options(self)
-            self.root_is_pure = False
+            self.root_is_pure = False  # noqa
 
     setup_cmdclass["bdist_wheel"] = BluepyBdistWheel
 except ImportError:
