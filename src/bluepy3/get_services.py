@@ -285,7 +285,7 @@ class Definitions(object):
             "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
             "formats": [(row["Name"], row["Description"]) for row in self.formats],
             "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
-            "units_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
+            "unit_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
 
 
