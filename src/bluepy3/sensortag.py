@@ -3,7 +3,7 @@
 import math
 import struct
 
-from bluepy3.btle import UUID, Peripheral, DefaultDelegate, AssignedNumbers
+from .btle import UUID, Peripheral, DefaultDelegate, AssignedNumbers
 
 
 def _TI_UUID(val):

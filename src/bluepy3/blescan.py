@@ -5,7 +5,7 @@ import binascii
 import os
 import sys
 
-from bluepy3 import btle  # noqa
+from . import btle
 
 if os.getenv("C", "1") == "0":
     ANSI_RED = ""

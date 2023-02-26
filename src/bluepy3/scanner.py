@@ -3,7 +3,7 @@
 import sys
 from time import gmtime, strftime
 
-from bluepy3.btle import Scanner, DefaultDelegate
+from .btle import Scanner, DefaultDelegate
 
 
 class ScanDelegate(DefaultDelegate):
