@@ -10,20 +10,20 @@ from bluepy3.btle import UUID, Peripheral, ADDR_TYPE_RANDOM, DefaultDelegate
 def write_uint16(data, value, index):
     """Write 16bit value into data string at index and return new string"""
     data = data.decode("utf-8")  # This line is added to make sure both Python 2 and 3 works
-    return "{}{:02x}{:02x}{}".format(data[: index * 4], value & 0xFF, value >> 8, data[index * 4 + 4 :])
+    return f"{data[: index * 4]}{value & 0xFF:02x}{value >> 8:02x}{data[index * 4 + 4 :]}"
 
 
 def write_uint8(data, value, index):
     """Write 8bit value into data string at index and return new string"""
     data = data.decode("utf-8")  # This line is added to make sure both Python 2 and 3 works
-    return "{}{:02x}{}".format(data[: index * 2], value, data[index * 2 + 2 :])
+    return f"{data[: index * 2]}{value:02x}{data[index * 2 + 2 :]}"
 
 
 # Please see # Ref https://nordicsemiconductor.github.io/Nordic-Thingy52-FW/documentation
 # for more information on the UUIDs of the Services and Characteristics that are being used
 def Nordic_UUID(val):
     """Adds base UUID and inserts value to return Nordic UUID"""
-    return UUID("EF68%04X-9B35-4933-9B10-52FFA9740042" % val)
+    return UUID(f"EF68{val:04X}-9B35-4933-9B10-52FFA9740042")
 
 
 # Definition of all UUID used by Thingy
@@ -269,7 +269,7 @@ class UserInterfaceService:
         self.led_char.write(b"\x00", True)
 
     def set_led_mode_constant(self, r, g, b):
-        teptep = "01{:02X}{:02X}{:02X}".format(r, g, b)
+        teptep = f"01{r:02X}{g:02X}{b:02X}"
         self.led_char.write(binascii.a2b_hex(teptep), True)
 
     def set_led_mode_breathe(self, color, intensity, delay):
@@ -279,7 +279,7 @@ class UserInterfaceService:
         intensity [%] has to be within 1-100
         delay [ms] has to be within 1 ms - 10 s
         """
-        teptep = "02{:02X}{:02X}{:02X}{:02X}".format(color, intensity, delay & 0xFF, delay >> 8)
+        teptep = f"02{color:02X}{intensity:02X}{delay & 0xFF:02X}{delay >> 8:02X}"
         self.led_char.write(binascii.a2b_hex(teptep), True)
 
     def set_led_mode_one_shot(self, color, intensity):
@@ -288,7 +288,7 @@ class UserInterfaceService:
         color has to be within 0x01 and 0x07
         intensity [%] has to be within 1-100
         """
-        teptep = "03{:02X}{:02X}".format(color, intensity)
+        teptep = "03{color:02X}{intensity:02X}"
         self.led_char.write(binascii.a2b_hex(teptep), True)
 
     def set_btn_notification(self, state):
@@ -542,7 +542,7 @@ class SoundService:
 
     def play_speaker_sample(self, sample=0):
         if self.speaker_data_char is not None:
-            sample_str = "{:02X}".format(sample)
+            sample_str = "f{sample:02X}"
             self.speaker_data_char.write(binascii.a2b_hex(sample_str), False)
 
     def set_speaker_status_notification(self, state):
@@ -579,79 +579,75 @@ class MyDelegate(DefaultDelegate):
         # Debug print repr(data)
         if hnd == e_temperature_handle:
             teptep = binascii.b2a_hex(data)
-            print(
-                "Notification: Temp received:  {}.{} degCelsius".format(
-                    self._str_to_int(teptep[:-2]), int(teptep[-2:], 16)
-                )
-            )
+            print(f"Notification: Temp received:  {self._str_to_int(teptep[:-2])}.{int(teptep[-2:], 16)} degCelsius")
 
         elif hnd == e_pressure_handle:
             pressure_int, pressure_dec = self._extract_pressure_data(data)
-            print("Notification: Press received: {}.{} hPa".format(pressure_int, pressure_dec))
+            print(f"Notification: Press received: {pressure_int}.{pressure_dec} hPa")
 
         elif hnd == e_humidity_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Humidity received: {} %".format(self._str_to_int(teptep)))
+            print(f"Notification: Humidity received: {self._str_to_int(teptep)} %")
 
         elif hnd == e_gas_handle:
             eco2, tvoc = self._extract_gas_data(data)
-            print("Notification: Gas received: eCO2 ppm: {}, TVOC ppb: {} %".format(eco2, tvoc))
+            print(f"Notification: Gas received: eCO2 ppm: {eco2}, TVOC ppb: {tvoc} %")
 
         elif hnd == e_color_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Color: {}".format(teptep))
+            print(f"Notification: Color: {teptep}")
 
         elif hnd == ui_button_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Button state [1 -> released]: {}".format(self._str_to_int(teptep)))
+            print(f"Notification: Button state [1 -> released]: {self._str_to_int(teptep)}")
 
         elif hnd == m_tap_handle:
             direction, count = self._extract_tap_data(data)
-            print("Notification: Tap: direction: {}, count: {}".format(direction, self._str_to_int(count)))
+            print(f"Notification: Tap: direction: {direction}, count: {self._str_to_int(count)}")
 
         elif hnd == m_orient_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Orient: {}".format(teptep))
+            print(f"Notification: Orient: {teptep}")
 
         elif hnd == m_quaternion_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Quaternion: {}".format(teptep))
+            print(f"Notification: Quaternion: {teptep}")
 
         elif hnd == m_stepcnt_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Step Count: {}".format(teptep))
+            print(f"Notification: Step Count: {teptep}")
 
         elif hnd == m_rawdata_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Raw data: {}".format(teptep))
+            print(f"Notification: Raw data: {teptep}")
 
         elif hnd == m_euler_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Euler: {}".format(teptep))
+            print(f"Notification: Euler: {teptep}")
 
         elif hnd == m_rotation_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Rotation matrix: {}".format(teptep))
+            print(f"Notification: Rotation matrix: {teptep}")
 
         elif hnd == m_heading_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Heading: {}".format(teptep))
+            print(f"Notification: Heading: {teptep}")
 
         elif hnd == m_gravity_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Gravity: {}".format(teptep))
+            print(f"Notification: Gravity: {teptep}")
 
         elif hnd == s_speaker_status_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Speaker Status: {}".format(teptep))
+            print(f"Notification: Speaker Status: {teptep}")
 
         elif hnd == s_microphone_handle:
             teptep = binascii.b2a_hex(data)
-            print("Notification: Microphone: {}".format(teptep))
+            print(f"Notification: Microphone: {teptep}")
 
         else:
             teptep = binascii.b2a_hex(data)
-            print("Notification: UNKOWN: hnd {}, data {}".format(hnd, teptep))
+            print(f"Notification: UNKOWN: hnd {hnd}, data {teptep}")
 
     def _str_to_int(self, s):
         """Transform hex str into int."""
@@ -734,7 +730,7 @@ def main():
     parser.add_argument("--microphone", action="store_true", default=False)
     args = parser.parse_args()
 
-    print("Connecting to " + args.mac_address)
+    print(f"Connecting to {args.mac_address}")
     thingy = Thingy52(args.mac_address)
     print("Connected...")
     thingy.setDelegate(MyDelegate())

@@ -27,7 +27,7 @@ else:
 def dump_services(dev):
     services = sorted(dev.services, key=lambda s: s.hndStart)
     for s in services:
-        print("\t%04x: %s" % (s.hndStart, s))
+        print(f"\t{s.hndStart:04X}: {s}")
         if s.hndStart == s.hndEnd:
             continue
         chars = s.getCharacteristics()
@@ -44,7 +44,7 @@ def dump_services(dev):
                     string = "<s" + binascii.b2a_hex(val).decode("utf-8") + ">"
             else:
                 string = ""
-            print("\t%04x:    %-59s %-12s %s" % (h, c, props, string))
+            print(f"\t{h:04X}:    {c} {props:>59} {string:>12}")
 
             while True:
                 h += 1
@@ -52,7 +52,8 @@ def dump_services(dev):
                     break
                 try:
                     val = dev.readCharacteristic(h)
-                    print("\t%04x:     <%s>" % (h, binascii.b2a_hex(val).decode("utf-8")))
+                    bval = binascii.b2a_hex(val).decode("utf-8")
+                    print(f"\t{h:04x}:     <{bval}>")
                 except btle.BTLEException:
                     break
 
@@ -76,25 +77,21 @@ class ScanPrint(btle.DefaultDelegate):
 
         if dev.rssi < self.opts.sensitivity:
             return
-
+        dev_connectable = "(not connectable)"
+        if dev.connectable:
+            dev_connectable = ""
         print(
-            "    Device (%s): %s (%s), %d dBm %s"
-            % (
-                status,
-                ANSI_WHITE + dev.addr + ANSI_OFF,
-                dev.addrType,
-                dev.rssi,
-                ("" if dev.connectable else "(not connectable)"),
-            )
+            f"    Device ({status}): {ANSI_WHITE}{dev.addr}{ANSI_OFF} ({dev.addrType}),"
+            f" {dev.rssi} dBm {dev_connectable}"
         )
         for (sdid, desc, val) in dev.getScanData():
             if sdid in [8, 9]:
-                print("\t" + desc + ": '" + ANSI_CYAN + val + ANSI_OFF + "'")
+                print(f"\t{desc}: '{ANSI_CYAN}{val}{ANSI_OFF}'")
             else:
-                print("\t" + desc + ": <" + val + ">")
+                print(f"\t{desc}: <{val}>")
         if not dev.scanData:
             print("\t(no data)")
-        print
+        print()
 
 
 def main():

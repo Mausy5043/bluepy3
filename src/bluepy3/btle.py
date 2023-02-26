@@ -57,15 +57,14 @@ class BTLEException(Exception):
     def __str__(self):
         msg = self.message
         if self.estat or self.emsg:
-            msg = msg + " ("
+            msg = f"{msg} ("
             if self.estat:
-                msg = msg + "code: %s" % self.estat
+                msg = f"{msg}code: {self.estat}"
             if self.estat and self.emsg:
-                msg = msg + ", "
+                msg = f"{msg}, "
             if self.emsg:
-                msg = msg + "error: %s" % self.emsg
-            msg = msg + ")"
-
+                msg = f"{msg}error: {self.emsg}"
+            msg = f"{msg})"
         return msg
 
 
@@ -91,13 +90,14 @@ class BTLEGattError(BTLEException):
 
 class UUID:
     def __init__(self, val, commonName=None):
-        """Initialisation"""
-        """We accept: 32-digit hex strings, with and without '-' characters,
-           4 to 8 digit hex strings, and integers"""
+        """Initialisation
+        We accept: 32-digit hex strings, with and without '-' characters,
+        4 to 8 digit hex strings, and integers
+        """
         if isinstance(val, int):
             if (val < 0) or (val > 0xFFFFFFFF):
                 raise ValueError("Short form UUIDs must be in range 0..0xFFFFFFFF")
-            val = "%04X" % val
+            val = f"{val:04X}"
         elif isinstance(val, self.__class__):
             val = str(val)
         else:
@@ -109,7 +109,7 @@ class UUID:
 
         self.binVal = binascii.a2b_hex(val.encode("utf-8"))
         if len(self.binVal) != 16:
-            raise ValueError("UUID must be 16 bytes, got '%s' (len=%d)" % (val, len(self.binVal)))
+            raise ValueError(f"UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})")
         self.commonName = commonName
 
     def __str__(self):
@@ -168,11 +168,7 @@ class Service:
         return self.descs
 
     def __str__(self):
-        return "Service <uuid=%s handleStart=%s handleEnd=%s>" % (
-            self.uuid.getCommonName(),
-            self.hndStart,
-            self.hndEnd,
-        )
+        return f"Service <uuid={self.uuid.getCommonName()} handleStart={self.hndStart} handleEnd={self.hndEnd}>"
 
 
 class Characteristic:
@@ -228,7 +224,7 @@ class Characteristic:
         return self.descs
 
     def __str__(self):
-        return "Characteristic <%s>" % self.uuid.getCommonName()
+        return f"Characteristic <{self.uuid.getCommonName()}>"
 
     def supportsRead(self):
         if self.properties & Characteristic.props["READ"]:
@@ -253,7 +249,7 @@ class Descriptor:
         self.uuid = UUID(uuidVal)
 
     def __str__(self):
-        return "Descriptor <%s>" % self.uuid.getCommonName()
+        return f"Descriptor <{self.uuid.getCommonName()}>"
 
     def read(self):
         return self.peripheral.readCharacteristic(self.handle)
@@ -339,7 +335,7 @@ class BluepyHelper:
         rsp = self._waitResp("mgmt")
         if rsp["code"][0] != "success":
             self._stopHelper()
-            raise BTLEManagementError("Failed to execute management command '%s'" % (cmd), rsp)
+            raise BTLEManagementError(f"Failed to execute management command '{cmd}'", rsp)
 
     @staticmethod
     def parseResp(line):
@@ -356,7 +352,7 @@ class BluepyHelper:
             elif tval[0] == "b":
                 val = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
-                raise BTLEInternalError("Cannot understand response value %s" % repr(tval))
+                raise BTLEInternalError(f"Cannot understand response value {repr(tval)}")
             if tag not in resp:
                 resp[tag] = [val]
             else:
@@ -411,12 +407,12 @@ class BluepyHelper:
                 elif errcode == "atterr":
                     raise BTLEGattError("Bluetooth command failed", resp)
                 else:
-                    raise BTLEException("Error from bluepy3-helper (%s)" % errcode, resp)
+                    raise BTLEException(f"Error from bluepy3-helper ({errcode})", resp)
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
             else:
-                raise BTLEInternalError("Unexpected response (%s)" % respType, resp)
+                raise BTLEInternalError(f"Unexpected response ({respType})", resp)
 
     def status(self):
         self._writeCmd("stat\n")
@@ -464,9 +460,9 @@ class Peripheral(BluepyHelper):
 
     def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=None):
         if len(addr.split(":")) != 6:
-            raise ValueError("Expected MAC address, got %s" % repr(addr))
+            raise ValueError(f"Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
-            raise ValueError("Expected address type public or random, got {}".format(addrType))
+            raise ValueError(f"Expected address type public or random, got {addrType}")
         self.retries = 3
         while self.retries > 0:
             self._startHelper(iface)
@@ -474,12 +470,12 @@ class Peripheral(BluepyHelper):
             self.addrType = addrType
             self.iface = iface
             if iface is not None:
-                self._writeCmd("conn %s %s %s\n" % (addr, addrType, "hci" + str(iface)))
+                self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
-                self._writeCmd("conn %s %s\n" % (addr, addrType))
+                self._writeCmd(f"conn {addr} {addrType}\n")
             rsp = self._getResp("stat", timeout)
             timeout_exception = BTLEDisconnectError(
-                "Timed out while trying to connect to peripheral %s, addr type: %s" % (addr, addrType),
+                f"Timed out while trying to connect to peripheral {addr}, addr type: {addrType}",
                 rsp,
             )
             if rsp is None:
@@ -499,7 +495,7 @@ class Peripheral(BluepyHelper):
                     time.sleep(5.0)
                     if self.retries <= 1:
                         raise BTLEDisconnectError(
-                            "Failed to connect to peripheral %s, addr type: %s" % (addr, addrType),
+                            f"Failed to connect to peripheral {addr}, addr type: {addrType}",
                             rsp,
                         )
             self.retries -= 1
@@ -550,10 +546,10 @@ class Peripheral(BluepyHelper):
         uuid = UUID(uuidVal)
         if self._serviceMap is not None and uuid in self._serviceMap:
             return self._serviceMap[uuid]
-        self._writeCmd("svcs %s\n" % uuid)
+        self._writeCmd(f"svcs {uuid}\n")
         rsp = self._getResp("find")
         if "hstart" not in rsp:
-            raise BTLEGattError("Service %s not found" % (uuid.getCommonName()), rsp)
+            raise BTLEGattError(f"Service {uuid.getCommonName()} not found", rsp)
         svc = Service(self, uuid, rsp["hstart"][0], rsp["hend"][0])
 
         if self._serviceMap is None:
@@ -563,18 +559,17 @@ class Peripheral(BluepyHelper):
 
     def _getIncludedServices(self, startHnd=1, endHnd=0xFFFF):
         # TODO: No working example of this yet
-        self._writeCmd("incl %X %X\n" % (startHnd, endHnd))
+        self._writeCmd(f"incl {startHnd:X} {endHnd:X}\n")
         return self._getResp("find")
 
     def getCharacteristics(self, startHnd=1, endHnd=0xFFFF, uuid=None, timeout=None):
-        cmd = "char %X %X" % (startHnd, endHnd)
+        cmd = f"char {startHnd:X} {endHnd:X}"
         if uuid:
-            cmd += " %s" % UUID(uuid)
+            cmd += f" {UUID(uuid)}"
         self._writeCmd(cmd + "\n")
         rsp = self._getResp("find", timeout)
         timeout_exception = BTLEDisconnectError(
-            "Timed out while trying to get characteristics from peripheral %s, addr type: %s"
-            % (self.addr, self.addrType),
+            f"Timed out while trying to get characteristics from peripheral {self.addr}, addr type: {self.addrType}",
             rsp,
         )
         if rsp is None:
@@ -585,7 +580,7 @@ class Peripheral(BluepyHelper):
         ]
 
     def getDescriptors(self, startHnd=1, endHnd=0xFFFF):
-        self._writeCmd("desc %X %X\n" % (startHnd, endHnd))
+        self._writeCmd("desc {startHnd}:X} {endHnd:X}\n")
         # Historical note:
         # Certain Bluetooth LE devices are not capable of sending back all
         # descriptors in one packet due to the limited size of MTU. So the
@@ -599,24 +594,25 @@ class Peripheral(BluepyHelper):
         return [Descriptor(self, resp["uuid"][i], resp["hnd"][i]) for i in range(ndesc)]
 
     def readCharacteristic(self, handle):
-        self._writeCmd("rd %X\n" % handle)
+        self._writeCmd(f"rd {handle:X}\n")
         resp = self._getResp("rd")
         return resp["d"][0]
 
     def _readCharacteristicByUUID(self, uuid, startHnd, endHnd):
         # Not used at present
-        self._writeCmd("rdu %s %X %X\n" % (UUID(uuid), startHnd, endHnd))
+        self._writeCmd(f"rdu {UUID(uuid)} {startHnd:X} {endHnd:X}\n")
         return self._getResp("rd")
 
     def writeCharacteristic(self, handle, val, withResponse=False, timeout=None):
         # Without response, a value too long for one packet will be truncated,
         # but with response, it will be sent as a queued write
         cmd = "wrr" if withResponse else "wr"
-        self._writeCmd("%s %X %s\n" % (cmd, handle, binascii.b2a_hex(val).decode("utf-8")))
+        bval = binascii.b2a_hex(val).decode("utf-8")
+        self._writeCmd(f"{cmd} {handle:X} {bval}\n")
         return self._getResp("wr", timeout)
 
     def setSecurityLevel(self, level):
-        self._writeCmd("secu %s\n" % level)
+        self._writeCmd(f"secu {level}\n")
         return self._getResp("stat")
 
     def unpair(self):
@@ -629,7 +625,7 @@ class Peripheral(BluepyHelper):
         return self._mtu
 
     def setMTU(self, mtu):
-        self._writeCmd("mtu %x\n" % mtu)
+        self._writeCmd(f"mtu {mtu}\n")
         return self._getResp("stat")
 
     def waitForNotifications(self, timeout):
@@ -653,9 +649,9 @@ class Peripheral(BluepyHelper):
 
     def setRemoteOOB(self, address, address_type, oob_data, iface=None):
         if len(address.split(":")) != 6:
-            raise ValueError("Expected MAC address, got %s" % repr(address))
+            raise ValueError(f"Expected MAC address, got {repr(address)}")
         if address_type not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
-            raise ValueError("Expected address type public or random, got {}".format(address_type))
+            raise ValueError(f"Expected address type public or random, got {address_type}")
         if isinstance(address, ScanEntry):
             return self._setOOB(address.addr, address.addrType, oob_data, address.iface)
         elif address is not None:
@@ -764,7 +760,7 @@ class ScanEntry:
     def _update(self, resp):
         addrType = self.addrTypes.get(resp["type"][0], None)
         if (self.addrType is not None) and (addrType != self.addrType):
-            raise BTLEInternalError("Address type changed during scan, for address %s" % self.addr)
+            raise BTLEInternalError(f"Address type changed during scan, for address {self.addr}")
         self.addrType = addrType
         self.rssi = -resp["rssi"][0]
         self.connectable = (resp["flag"][0] & 0x4) == 0
@@ -793,7 +789,7 @@ class ScanEntry:
         rs = ""
         # Bytes are little-endian; convert to big-endian string
         for i in range(nbytes):
-            rs = ("%02X" % bval[i]) + rs
+            rs = f"{bval[i]:02X}{rs}"
         return UUID(rs)
 
     def _decodeUUIDlist(self, val, nbytes):
@@ -920,7 +916,7 @@ class Scanner(BluepyHelper):
                     self.delegate.handleDiscovery(dev, (dev.updateCount <= 1), isNewData)
 
             else:
-                raise BTLEInternalError("Unexpected response: " + respType, resp)
+                raise BTLEInternalError(f"Unexpected response: {respType}", resp)
 
     def getDevices(self):
         return list(self.scanned.values())
@@ -972,29 +968,29 @@ AssignedNumbers = _UUIDNameMap(get_json_uuid())
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        sys.exit("Usage:\n  %s <mac-address> [random]" % sys.argv[0])
+        sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
     if not os.path.isfile(helperExe):
-        raise ImportError("Cannot find required executable '%s'" % helperExe)
+        raise ImportError(f"Cannot find required executable '{helperExe}'")
 
     devAddr = sys.argv[1]
     if len(sys.argv) == 3:
         addrType = sys.argv[2]
     else:
         addrType = ADDR_TYPE_PUBLIC
-    print("Connecting to: {}, address type: {}".format(devAddr, addrType))
+    print(f"Connecting to: {devAddr}, address type: {addrType}")
     conn = Peripheral(devAddr, addrType)
     try:
         for svc in conn.services:
-            print(str(svc), ":")
+            print(f"{str(svc)}:")
             for ch in svc.getCharacteristics():
-                print("    {}, hnd={}, supports {}".format(ch, hex(ch.handle), ch.propertiesToString()))
+                print(f"    {ch}, hnd={hex(ch.handle)}, supports {ch.propertiesToString()}")
                 chName = AssignedNumbers.getCommonName(ch.uuid)
                 if ch.supportsRead():
                     try:
-                        print("    ->", repr(ch.read()))
+                        print(f"    ->{repr(ch.read())}")
                     except BTLEException as e:
-                        print("    ->", e)
+                        print(f"    ->{e}")
 
     finally:
         conn.disconnect()

@@ -7,7 +7,7 @@ from bluepy3.btle import UUID, Peripheral, DefaultDelegate, AssignedNumbers
 
 
 def _TI_UUID(val):
-    return UUID("%08X-0451-4000-b000-000000000000" % (0xF0000000 + val))
+    return UUID(f"{0xF0000000 + val:08X}-0451-4000-b000-000000000000")
 
 
 # Sensortag versions

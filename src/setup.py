@@ -18,17 +18,17 @@ VERSION = "1.3.1"  # -kimnaty
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     try:
-        print("Working dir is " + os.getcwd())
+        print(f"Working dir is {os.getcwd()}")
         with open("bluepy3/version.h", "w") as verfile:
-            verfile.write('#define VERSION_STRING "%s"\n' % VERSION)
+            verfile.write(f'#define VERSION_STRING "{VERSION}"\n')
         for cmd in ["make -C ./bluepy3 clean", "make -C bluepy3 -j1"]:
-            print("execute " + cmd)
+            print(f"execute {cmd}")
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         print("Failed to compile bluepy3-helper. Exiting install.")
-        print("Command was " + repr(cmd) + " in " + os.getcwd())
-        print("Return code was %d" % e.returncode)
-        print("Output was:\n%s" % e.output)
+        print(f"Command was {repr(cmd)} in {os.getcwd()}")
+        print(f"Return code was {e.returncode}")
+        print(f"Output was:\n{e.output}")
         sys.exit(1)
 
 
