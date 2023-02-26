@@ -55,8 +55,9 @@ def get_table_rows(html=None):
         html = get_html()
     soup = BeautifulSoup(html, features="lxml")
     tables = soup.find_all("table")
-
-    biggest_table = max(tables, key=len)
+    if DEBUG:
+        print(tables)
+    biggest_table = max(tables, key=len, default=0)
 
     # service_table=soup.find("table", attrs={"summary":"Documents This library contains Services."})
 
