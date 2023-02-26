@@ -228,7 +228,7 @@ def get_formats():
         yield row
 
 
-class Definitions(object):
+class Definitions():
     def __init__(self):
         self._characteristics = None
         self._units = None
