@@ -21,7 +21,7 @@ URL_FORMATS = "https://web.archive.org/web/20160410055350/https://developer.blue
 URL_SERVICES = "https://web.archive.org/web/20170711074819/https://www.bluetooth.com/specifications/gatt/services"
 URL_UNITS = "https://web.archive.org/web/20160305020847/https://developer.bluetooth.org/gatt/units/Pages/default.aspx"
 
-DEBUG = True
+DEBUG = False
 
 
 def get_html(url: str, local_filename: str) -> object:
