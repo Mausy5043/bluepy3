@@ -112,7 +112,6 @@ def get_table(url, local_filename, table_defs):
         except AssertionError:
             if DEBUG:
                 print(f"*** not parsing {row}")
-            pass
 
 
 def get_service_names():
