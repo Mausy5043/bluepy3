@@ -125,6 +125,7 @@ def get_service_names():
         ),
     ):
         if DEBUG:
+            # pylint: disable=C0301
             # example:
             # row {'Name': 'Weight Scale', 'Type': 'org.bluetooth.service.weight_scale', 'Number': 6173, 'Level': 'Adopted'}
             print(f"row {row}")
@@ -146,7 +147,8 @@ def get_descriptors():
         ),
     ):
         if DEBUG:
-            # example
+            # pylint: disable=C0301
+            # example:
             # row {'Name': 'Value Trigger Setting', 'Type': 'org.bluetooth.descriptor.value_trigger_setting', 'Number': 10506, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
@@ -167,7 +169,8 @@ def get_declarations():
         ),
     ):
         if DEBUG:
-            # example
+            # pylint: disable=C0301
+            # example:
             # row {'Name': 'GATT Primary Service Declaration', 'Type': 'org.bluetooth.attribute.gatt.primary_service_declaration', 'Number': 10240, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
@@ -188,6 +191,7 @@ def get_characteristics():
         ),
     ):
         if DEBUG:
+            # pylint: disable=C0301
             # example:
             # row {'Name': 'Wind Chill', 'Type': 'org.bluetooth.characteristic.wind_chill', 'Number': 10873, 'Level': 'Adopted'}
             print(f"row {row}")
@@ -204,6 +208,7 @@ def get_units():
         (("Number", lambda x: int(x, 16)), ("Name", None), ("Type", None)),
     ):
         if DEBUG:
+            # pylint: disable=C0301
             # example:
             # {'Number': 10168, 'Name': 'mass (pound)', 'Type': 'org.bluetooth.unit.mass.pound'}
             print(row)
@@ -220,6 +225,7 @@ def get_formats():
         (("Name", None), ("Description", None)),
     ):
         if DEBUG:
+            # pylint: disable=C0301
             # example:
             # row {'Name': 'float64', 'Description': 'IEEE-754 64-bit floating point'}
             print(f"row {row}")
