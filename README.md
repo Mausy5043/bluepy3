@@ -13,6 +13,13 @@ The code needs an executable `bluepy3-helper` to be compiled from C source. This
 automatically if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
+If you want to rebuild `uuids.json` then Python3 modules `requests` and `lxml` need to be installed.   
+Then rebuild thus: 
+```
+cd src/bluepy3
+make uuid.json
+```
+
 ## Installation
 
 To install the current released version, on most Debian-based systems:
@@ -35,6 +42,7 @@ cd bluepy3
 ```
 It is recommended having command-line tools from BlueZ available for debugging. There
 are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org/RPi_Bluetooth_LE.
+
 
 ## Documentation
 
