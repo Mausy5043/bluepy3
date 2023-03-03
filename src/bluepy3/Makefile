@@ -1,4 +1,5 @@
-BLUEZ_PATH=./bluez-5.47
+BLUEZ_VERSION="5.47"
+BLUEZ_PATH=/tmp/bluez-$(BLUEZ_VERSION)
 
 BLUEZ_SRCS  = lib/bluetooth.c lib/hci.c lib/sdp.c lib/uuid.c
 BLUEZ_SRCS += attrib/att.c attrib/gatt.c attrib/gattrib.c attrib/utils.c
@@ -29,13 +30,13 @@ all: bluepy3-helper
 bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 	$(CC) -L. $(CFLAGS) $(CPPFLAGS) -o $@ $(LOCAL_SRCS) $(IMPORT_SRCS) $(LDLIBS)
 
-$(IMPORT_SRCS): bluez-src.tgz
-	tar -xzf $< --no-same-owner
+$(IMPORT_SRCS):
+	git clone --depth 1 --branch $(BLUEZ_VERSION) https://github.com/bluez/bluez.git $(BLUEZ_PATH)
 	touch $(IMPORT_SRCS)
 
-.PHONY: bluez-tarfile
-bluez-tarfile:
-	(cd ..; tar --no-same-owner -czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) )
+#.PHONY: bluez-tarfile
+#bluez-tarfile:
+#	(cd ..; tar --no-same-owner -czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) )
 
 GET_SERVICES=get_services.py
 
