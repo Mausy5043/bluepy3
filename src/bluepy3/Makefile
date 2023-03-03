@@ -34,7 +34,6 @@ $(IMPORT_SRCS): bluez-src.tgz
 	touch $(IMPORT_SRCS)
 
 .PHONY: bluez-tarfile
-
 bluez-tarfile:
 	(cd ..; tar --no-same-owner -czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) )
 
