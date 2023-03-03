@@ -32,6 +32,7 @@ bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 
 $(IMPORT_SRCS):
 	git clone --depth 1 --branch $(BLUEZ_VERSION) https://github.com/bluez/bluez.git $(BLUEZ_PATH)
+	cp ./config.$(BLUEZ_VERSION).h $(BLUEZ_PATH)/config.h
 	touch $(IMPORT_SRCS)
 
 #.PHONY: bluez-tarfile
