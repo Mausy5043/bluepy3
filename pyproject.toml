@@ -14,7 +14,7 @@ dependencies = [
     "requests"
 ]
 license = "GPL-2.0-or-later OR MIT"
-license-files = { paths = [ "LICENSE", "./src/bluez-5.47/COPYING", "./src/bluez-5.47/COPYING.LIB" ] }
+license-files = { paths = [ "LICENSE" ] }
 authors = [
   { name="Mausy5043" },
 ]

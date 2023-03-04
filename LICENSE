@@ -1,7 +1,3 @@
-This project uses code from the bluez project, which is made available under
-versions 2 and 2.1 of the GNU Public License. Files COPYING and COPYING.LIB in
-the bluez-x.xx/ directory contain the full text of these licenses.
-
 MIT License
 
 Copyright (c) 2023 Maurice (mausy5043) Hendrix
