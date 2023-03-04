@@ -1,4 +1,4 @@
-BLUEZ_VERSION=5.50
+BLUEZ_VERSION=5.60
 BLUEZ_PATH=/tmp/bluez-$(BLUEZ_VERSION)
 
 BLUEZ_SRCS  = lib/bluetooth.c lib/hci.c lib/sdp.c lib/uuid.c
@@ -6,6 +6,8 @@ BLUEZ_SRCS += attrib/att.c attrib/gatt.c attrib/gattrib.c attrib/utils.c
 BLUEZ_SRCS += btio/btio.c src/log.c src/shared/mgmt.c
 BLUEZ_SRCS += src/shared/crypto.c src/shared/att.c src/shared/queue.c src/shared/util.c
 BLUEZ_SRCS += src/shared/io-glib.c src/shared/timeout-glib.c
+# compiling against bluez 5.50+ requires these additional sources
+BLUEZ_SRCS += src/shared/log.c
 
 IMPORT_SRCS = $(addprefix $(BLUEZ_PATH)/, $(BLUEZ_SRCS))
 LOCAL_SRCS  = bluepy3-helper.c
@@ -31,7 +33,7 @@ bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 	$(CC) -L. $(CFLAGS) $(CPPFLAGS) -o $@ $(LOCAL_SRCS) $(IMPORT_SRCS) $(LDLIBS)
 
 $(IMPORT_SRCS):
-	git clone --depth 1 --branch $(BLUEZ_VERSION) https://github.com/bluez/bluez.git $(BLUEZ_PATH)
+	git -c advice.detachedHead=false clone --depth 1 --branch $(BLUEZ_VERSION) https://github.com/bluez/bluez.git $(BLUEZ_PATH)
 	cp ./config.$(BLUEZ_VERSION).h $(BLUEZ_PATH)/config.h
 	touch $(IMPORT_SRCS)
 
