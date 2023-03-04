@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 [project]
 name = "bluepy3"
 description = "A Python3 interface to Bluetooth LE on Linux."
-version = "0.0.9
+version = "0.0.9"
 dependencies = [
     "bs4",
     "requests"
