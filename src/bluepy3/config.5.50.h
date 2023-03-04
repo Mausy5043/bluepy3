@@ -93,10 +93,14 @@
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
+
 /* Enable GNU extensions on systems that have them.  */
+/* Extensions are enabled in each individual source file
+   ref:   https://github.com/bluez/bluez/commit/261948090e9073514ac4b5f64c8715cf0a71eafa
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE 1
 #endif
+*/
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
 # define _POSIX_PTHREAD_SEMANTICS 1
