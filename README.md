@@ -13,9 +13,17 @@ The code needs an executable `bluepy3-helper` to be compiled from C source. This
 automatically if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
-If you want to rebuild `uuids.json` then Python3 modules `requests` and `lxml` need to be installed.   
-Then rebuild thus: 
+On Raspberry Pi (debian flavours like: dietpi; raspbian) additional APT packages are required and can be installed with:
+```(bash)
+sudo apt-get install libbluetooth-dev
 ```
+
+If you want to rebuild `uuids.json` then Python3 modules `requests` and `lxml` need to be installed.
+```(python3)
+python3 -m pip install requests lxml
+```
+Then rebuild `uuid.json` thus: 
+```(bash)
 cd src/bluepy3
 make uuid.json
 ```
@@ -23,26 +31,21 @@ make uuid.json
 ## Installation
 
 To install the current released version, on most Debian-based systems:
-```bash
+```(bash)
 sudo apt-get install python3-pip libglib2.0-dev
-sudo pip3 install bluepy3
-```
-
-On Fedora do:
-```bash
-sudo dnf install python3-pip glib2-devel
+python3 -m pip install bluepy3
 ```
 
 *If this fails* you should install from source.
 ```bash
-sudo apt-get install git build-essential libglib2.0-dev
+sudo apt-get install git build-essential libglib2.0-dev libbluetooth-dev
 git clone https://github.com/Mausy5043/bluepy3.git
 cd bluepy3
-..
+...tbd...
 ```
+
 It is recommended having command-line tools from BlueZ available for debugging. There
 are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org/RPi_Bluetooth_LE.
-
 
 ## Documentation
 
