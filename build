@@ -22,7 +22,7 @@ build_app(){
     echo
     echo "Building..."
     rm -r dist/*
-    python3 -m build
+    python3 -m build --outdir ./dist --sdist src
 }
 
 test_app() {
