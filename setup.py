@@ -15,12 +15,12 @@ def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     cmd = ""
     try:
-        print("\n\n*** Executing pre-install ***")
+        print("\n\n*** Executing pre-install ***\n")
         print(f"Working dir is {os.getcwd()}")
         with open("bluepy3/version.h", "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}"\n')
-        for cmd in ["make -ndC bluepy3 clean", "make -ndC bluepy3 -j1"]:
-            print(f"execute {cmd}")
+        for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
+            print(f"\nexecute {cmd}")
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
         print("\n\n*** Finished pre-install ***\n\n")
     except subprocess.CalledProcessError as e:
