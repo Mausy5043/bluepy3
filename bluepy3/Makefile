@@ -1,4 +1,5 @@
 BLUEZ_VERSION=5.66
+
 BLUEZ_PATH=/tmp/bluez-$(BLUEZ_VERSION)
 
 BLUEZ_SRCS  = lib/bluetooth.c lib/hci.c lib/sdp.c lib/uuid.c
