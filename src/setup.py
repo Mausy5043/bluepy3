@@ -8,23 +8,21 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "1.3.1"  # -kimnaty
-# versionnumber kept to fix error during installation:
-#   ERROR: pip's dependency resolver does not currently take into account all the packages that are installed.
-#   This behaviour is the source of the following dependency conflicts.
-#   lywsd02 0.0.9 requires bluepy==1.3.0, but you have bluepy 1.3.0-kimnaty which is incompatible.
+VERSION = "0.0.12"
 
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     cmd = ""
     try:
+        print("\n\n*** Executing pre-install ***")
         print(f"Working dir is {os.getcwd()}")
         with open("bluepy3/version.h", "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}"\n')
-        for cmd in ["make -C ./bluepy3 clean", "make -C bluepy3 -j1"]:
+        for cmd in ["make -ndC bluepy3 clean", "make -ndC bluepy3 -j1"]:
             print(f"execute {cmd}")
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
+        print("\n\n*** Finished pre-install ***\n\n")
     except subprocess.CalledProcessError as e:
         print("Failed to compile bluepy3-helper. Exiting install.")
         print(f"Command was {repr(cmd)} in {os.getcwd()}")
@@ -78,9 +76,9 @@ setup(
         "bluepy3": [
             "bluepy3-helper",
             "*.json",
-            "bluez-src.tgz",
             "bluepy3-helper.c",
             "version.h",
+            "config.*.h",
             "Makefile",
         ]
     },
