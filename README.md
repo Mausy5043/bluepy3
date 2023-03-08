@@ -9,43 +9,58 @@ This is a Python3 library to allow communication with Bluetooth Low Energy devic
 
 ## Requirements
 
+Please be aware that this is not a beginners or n00bs tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
+
+The package requires Python 3 v3.7 or higher to be installed. 
+
 The code needs an executable `bluepy3-helper` to be compiled from C source. This is done
 automatically if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
-On Raspberry Pi (debian flavours like: dietpi; raspbian) additional APT packages are required and can be installed with:
+On Raspberry Pi (Debian flavours like: dietpi & raspbian) additional APT packages are required and can be installed with:
 ```(bash)
 sudo apt-get install libbluetooth-dev
 ```
 
-If you want to rebuild `uuids.json` then Python3 modules `requests` and `lxml` need to be installed.
+To rebuild `uuids.json` the Python3 modules `bs4`, `requests` and `lxml` need to be installed.
 ```(python3)
-python3 -m pip install requests lxml
+python3 -m pip install bs4 lxml requests
 ```
-Then rebuild `uuid.json` thus: 
+Then find where bluepy3 is installed and rebuild `uuids.json` thus: 
 ```(bash)
-cd src/bluepy3
-make uuid.json
+cd some_path_name/site-packages/bluepy3/
+make uuids.json
 ```
 
 ## Installation
 
 To install the current released version, on most Debian-based systems:
 ```(bash)
-sudo apt-get install python3-pip libglib2.0-dev
-python3 -m pip install bluepy3
+sudo apt-get install libglib2.0-dev libbluetooth-dev
+python3 -m pip install --upgrade bluepy3
+sudo setcap cap_net_raw,cap_net_admin+ep bluepy3-helper
 ```
-
-*If this fails* you should install from source.
-```bash
-sudo apt-get install git build-essential libglib2.0-dev libbluetooth-dev
-git clone https://github.com/Mausy5043/bluepy3.git
-cd bluepy3
-...tbd...
+Then test the installation using
+```(bash)
+blescan -n
 ```
+This should list all (compatible) Bluetooth device in range.
 
-It is recommended having command-line tools from BlueZ available for debugging. There
+It may be considered to have command-line tools from BlueZ available for debugging. There
 are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org/RPi_Bluetooth_LE.
+
+## Troubleshooting
+
+Make sure the user is part of the `bluetooth` group
+Use `hciconfig` to confirm that the device actually exists. This should output something like:
+```
+hci0:    Type: Primary  Bus: UART
+BD Address: B8:27:EB:90:4F:F5  ACL MTU: 1021:8  SCO MTU: 64:1
+UP RUNNING
+RX bytes:15332515 acl:452626 sco:0 events:333729 errors:0
+TX bytes:7376962 acl:438075 sco:0 commands:72113 errors:0
+```
+Use `hciconfig [hci0] up` to activate the BT device if the above returns an error.
 
 ## Documentation
 
@@ -58,7 +73,8 @@ See [LICENSE](LICENSE)
 ## Acknowledgements
 
 This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy) and uses code 
-by the [BleuZ project](http://www.bluez.org/) (not a https site) and the more up-to-date [BleuZ on GitHub](https://github.com/bluez/bluez)
+by the [BleuZ project](http://www.bluez.org/) (not a https site) and the more 
+up-to-date [BleuZ on GitHub](https://github.com/bluez/bluez)
 
 Original source code and documentation can be found at:   
   https://github.com/IanHarvey/bluepy   
