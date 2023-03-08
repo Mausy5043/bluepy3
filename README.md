@@ -51,7 +51,7 @@ are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org
 
 ## Troubleshooting
 
-Make sure the user is part of the `bluetooth` group
+Make sure the user is part of the `bluetooth` group.   
 Use `hciconfig` to confirm that the device actually exists. This should output something like:
 ```
 hci0:    Type: Primary  Bus: UART
