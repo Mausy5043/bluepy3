@@ -22,7 +22,9 @@ build_app(){
     echo
     echo "Building..."
     rm -r dist/*
+    rm -r *.egg-info
     python3 -m build --outdir ./dist --sdist
+
 }
 
 test_app() {
