@@ -8,7 +8,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "0.0.27"
+VERSION = "0.0.29"
 
 
 def pre_install():
