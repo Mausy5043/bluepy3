@@ -38,10 +38,6 @@ $(IMPORT_SRCS):
 	cp ./config.$(BLUEZ_VERSION).h $(BLUEZ_PATH)/config.h
 	touch $(IMPORT_SRCS)
 
-#.PHONY: bluez-tarfile
-#bluez-tarfile:
-#	(cd ..; tar --no-same-owner -czf bluepy3/bluez-src.tgz $(BLUEZ_PATH) )
-
 GET_SERVICES=get_services.py
 
 uuids.json: $(GET_SERVICES)
