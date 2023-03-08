@@ -7,6 +7,9 @@
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
+Note: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. 
+Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
+
 ## Requirements
 
 Please be aware that this is not a beginners or n00bs tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
