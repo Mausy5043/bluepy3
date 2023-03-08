@@ -13,7 +13,7 @@ from bluepy3.btle import UUID
 
 
 def cmp(a, b):
-    return (a > b) - (a < b)
+    return (str(a) > b) - (str(a) < b)
 
 
 class TestUUID(unittest.TestCase):
