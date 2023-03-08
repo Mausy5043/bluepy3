@@ -8,7 +8,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "0.0.31"
+VERSION = "0.1.0"
 
 
 def pre_install():
@@ -71,11 +71,15 @@ setup(
         "Raspberry Pi",
     ],
     classifiers=[
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Topic :: Home Automation",
     ],
     packages=["bluepy3"],
     python_requires=">=3.7",
