@@ -287,7 +287,6 @@ class Definitions:
             "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
             "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
             "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
-            "formats": [(row["Name"], row["Description"]) for row in self.formats],
             "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
             "unit_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
@@ -298,13 +297,6 @@ class Definitions:
         number, name, common name.
         """
         return {
-            # Units = OK
-            # "units_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
-            # Formats = OK
-            # "formats": [(row["Name"], row["Description"]) for row in self.formats],
-            # Characteristics = OK
-            # "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
-            # "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
             "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
             "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
         }
