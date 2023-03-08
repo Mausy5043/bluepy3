@@ -8,7 +8,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "0.0.29"
+VERSION = "0.0.31"
 
 
 def pre_install():
@@ -63,7 +63,13 @@ setup(
     author="mausy5043",
     url="https://github.com/Mausy5043/bluepy3",
     download_url="https://github.com/Mausy5043/bluepy3",
-    keywords=["Bluetooth", "Bluetooth Smart", "BLE", "Bluetooth Low Energy"],
+    keywords=[
+        "Bluetooth",
+        "Bluetooth Smart",
+        "BLE",
+        "Bluetooth Low Energy",
+        "Raspberry Pi",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -72,6 +78,7 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     packages=["bluepy3"],
+    python_requires=">=3.7",
     package_data={
         "bluepy3": [
             "bluepy3-helper",
