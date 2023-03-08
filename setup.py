@@ -8,7 +8,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "0.0.25"
+VERSION = "0.0.27"
 
 
 def pre_install():
@@ -75,7 +75,7 @@ setup(
     package_data={
         "bluepy3": [
             "bluepy3-helper",
-            "*.json",
+            "uuids.json",
             "bluepy3-helper.c",
             "config.*.h",
             "version.h",
