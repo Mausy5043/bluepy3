@@ -263,10 +263,12 @@ class DefaultDelegate:
         pass
 
     def handleNotification(self, cHandle, data):
-        DBG("Notification:", cHandle, "sent data", binascii.b2a_hex(data))
+        hex_data = binascii.b2a_hex(data)
+        DBG(f"Notification: {cHandle} sent data {hex_data}")
 
     def handleDiscovery(self, scanEntry, isNewDev, isNewData):
-        DBG("Discovered device", scanEntry.addr)
+        dev_str = str(scanEntry.addr)
+        DBG(f"Discovered device {dev_str}")
 
 
 class BluepyHelper:
@@ -283,7 +285,7 @@ class BluepyHelper:
 
     def _startHelper(self, iface=None):
         if self._helper is None:
-            DBG("Running ", helperExe)
+            DBG(f"Running {helperExe}")
             self._aiti = 0
             self._lineq = Queue()
             self._mtu = 0
@@ -313,7 +315,7 @@ class BluepyHelper:
 
     def _stopHelper(self):
         if self._helper is not None:
-            DBG("Stopping ", helperExe)
+            DBG(f"Stopping {helperExe}")
             self._helper.stdin.write("quit\n")
             self._helper.stdin.flush()
             self._helper.wait()
@@ -326,7 +328,7 @@ class BluepyHelper:
     def _writeCmd(self, cmd):
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call connect()?)")
-        DBG("Sent: ", cmd)
+        DBG(f"Sent: {cmd}")
         self._helper.stdin.write(cmd)
         self._helper.stdin.flush()
 
@@ -370,7 +372,7 @@ class BluepyHelper:
                 DBG("Select timeout")
                 return None
 
-            DBG("Got:", repr(rv))
+            DBG(f"Got: {repr(rv)}")
             if rv.startswith("#") or rv == "\n" or len(rv) == 0:
                 continue
 
@@ -392,7 +394,7 @@ class BluepyHelper:
                 new_mtu = int(resp["mtu"][0])
                 if self._mtu != new_mtu:
                     self._mtu = new_mtu
-                    DBG("Updated MTU: " + str(self._mtu))
+                    DBG(f"Updated MTU: {str(self._mtu)}")
 
             if respType in wantType:
                 return resp
@@ -407,7 +409,7 @@ class BluepyHelper:
                 elif errcode == "atterr":
                     raise BTLEGattError("Bluetooth command failed", resp)
                 else:
-                    raise BTLEException(f"Error from bluepy3-helper ({errcode})", resp)
+                    raise BTLEException(f"Error from bluepy3-helper ({errcode}) - {resp}", resp)
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
