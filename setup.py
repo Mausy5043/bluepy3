@@ -13,6 +13,7 @@ MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
 
+
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     global BLUEZ_VERSION
@@ -24,7 +25,7 @@ def pre_install():
             lines = makefile.readlines()
             for line in lines:
                 if line.startswith('BLUEZ_VERSION'):
-                    BLUEZ_VERSION = line.split("=")[1]
+                    BLUEZ_VERSION = line.split("=")[1].strip()
         with open(VERSION_FILE, "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
