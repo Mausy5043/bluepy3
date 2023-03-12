@@ -271,7 +271,7 @@ class DefaultDelegate:
         DBG(f"Discovered device {dev_str}")
 
 
-class BluepyHelper:
+class Bluepy3Helper:
     def __init__(self):
         self._helper = None
         self._lineq = None
@@ -328,7 +328,7 @@ class BluepyHelper:
     def _writeCmd(self, cmd):
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call connect()?)")
-        DBG(f"Sent: {cmd}")
+        DBG(f"Sent:   {cmd}")
         self._helper.stdin.write(cmd)
         self._helper.stdin.flush()
 
@@ -371,12 +371,12 @@ class BluepyHelper:
             except Empty:
                 DBG("Select timeout")
                 return None
-
-            DBG(f"Got: {repr(rv)}")
+            dehex_rv = repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'","").strip("\"")
+            DBG(f"Got:    {dehex_rv}")
             if rv.startswith("#") or rv == "\n" or len(rv) == 0:
                 continue
 
-            resp = BluepyHelper.parseResp(rv)
+            resp = Bluepy3Helper.parseResp(rv)
             if "rsp" not in resp:
                 raise BTLEInternalError("No response type indicator", resp)
 
@@ -409,7 +409,7 @@ class BluepyHelper:
                 elif errcode == "atterr":
                     raise BTLEGattError("Bluetooth command failed", resp)
                 else:
-                    raise BTLEException(f"Error from bluepy3-helper ({errcode}) - {resp}", resp)
+                    raise BTLEException(f"Error from bluepy3-helper ({errcode})", resp)
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
@@ -421,9 +421,9 @@ class BluepyHelper:
         return self._waitResp(["stat"])
 
 
-class Peripheral(BluepyHelper):
+class Peripheral(Bluepy3Helper):
     def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=None):
-        BluepyHelper.__init__(self)
+        Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
         (self.deviceAddr, self.addrType, self.iface) = (None, None, None)
 
@@ -582,7 +582,7 @@ class Peripheral(BluepyHelper):
         ]
 
     def getDescriptors(self, startHnd=1, endHnd=0xFFFF):
-        self._writeCmd("desc {startHnd}:X} {endHnd:X}\n")
+        self._writeCmd(f"desc {startHnd:X} {endHnd:X}\n")
         # Historical note:
         # Certain Bluetooth LE devices are not capable of sending back all
         # descriptors in one packet due to the limited size of MTU. So the
@@ -851,9 +851,9 @@ class ScanEntry:
         return [(sdid, self.getDescription(sdid), self.getValueText(sdid)) for sdid in self.scanData.keys()]
 
 
-class Scanner(BluepyHelper):
+class Scanner(Bluepy3Helper):
     def __init__(self, iface=0):
-        BluepyHelper.__init__(self)
+        Bluepy3Helper.__init__(self)
         self.scanned = {}
         self.iface = iface
         self.passive = False
