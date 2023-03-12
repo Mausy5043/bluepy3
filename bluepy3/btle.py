@@ -371,7 +371,7 @@ class Bluepy3Helper:
             except Empty:
                 DBG("Select timeout")
                 return None
-            dehex_rv = repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'","").strip("\"")
+            dehex_rv = repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
             DBG(f"Got:    {dehex_rv}")
             if rv.startswith("#") or rv == "\n" or len(rv) == 0:
                 continue

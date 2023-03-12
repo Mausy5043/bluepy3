@@ -21,10 +21,10 @@ def pre_install():
     try:
         print("\n\n*** Executing pre-install ***\n")
         print(f"Working dir is {os.getcwd()}")
-        with open(MAKEFILE, 'r') as makefile:
+        with open(MAKEFILE, "r") as makefile:
             lines = makefile.readlines()
             for line in lines:
-                if line.startswith('BLUEZ_VERSION'):
+                if line.startswith("BLUEZ_VERSION"):
                     BLUEZ_VERSION = line.split("=")[1].strip()
         with open(VERSION_FILE, "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
