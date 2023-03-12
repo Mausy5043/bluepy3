@@ -8,17 +8,25 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "0.2.547"
-
+VERSION = "0.3.0"
+MAKEFILE = "bluepy3/Makefile"
+VERSION_FILE = "bluepy3/version.h"
+BLUEZ_VERSION = "(unknown)"
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
+    global BLUEZ_VERSION
     cmd = ""
     try:
         print("\n\n*** Executing pre-install ***\n")
         print(f"Working dir is {os.getcwd()}")
-        with open("bluepy3/version.h", "w") as verfile:
-            verfile.write(f'#define VERSION_STRING "{VERSION}"\n')
+        with open(MAKEFILE, 'r') as makefile:
+            lines = makefile.readlines()
+            for line in lines:
+                if line.find('BLUEZ_VERSION') != -1:
+                    BLUEZ_VERSION = line.split("=")[1]
+        with open(VERSION_FILE, "w") as verfile:
+            verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
             print(f"\nexecute {cmd}")
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
