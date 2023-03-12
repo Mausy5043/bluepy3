@@ -16,20 +16,23 @@ Please be aware that this is not a beginners or n00bs tool. Some experience with
 
 The package requires Python 3 v3.7 or higher to be installed. 
 
-The code needs an executable `bluepy3-helper` to be compiled from C source. This is done
-automatically if you use the recommended pip installation method (see below). Otherwise,
+The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
+if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
-On Raspberry Pi (Debian flavours like: dietpi & raspbian) additional APT packages are required and can be installed with:
-```(bash)
+On a Raspberry Pi (specifically when running Debian flavours like: dietpi & raspbian) 
+additional APT packages are required and can be installed with:
+```bash
 sudo apt-get install libbluetooth-dev
 ```
 
-To rebuild `uuids.json` the Python3 modules `bs4`, `requests` and `lxml` need to be installed.
+The package comes installed with lists of compatible UUIDs in `uuids.json`. 
+If, for whatever reason, you want to rebuild those lists, then the Python3 modules
+`bs4`, `requests` and `lxml` need to be installed.
 ```(python3)
 python3 -m pip install bs4 lxml requests
 ```
-Then find where bluepy3 is installed and rebuild `uuids.json` thus: 
+Then find where the bluepy3 package is installed and rebuild `uuids.json` thus: 
 ```(bash)
 cd some_path_name/site-packages/bluepy3/
 make uuids.json
@@ -41,11 +44,12 @@ To install the current released version, on most Debian-based systems:
 ```(bash)
 sudo apt-get install libglib2.0-dev libbluetooth-dev
 python3 -m pip install --upgrade bluepy3
-sudo setcap cap_net_raw,cap_net_admin+ep bluepy3-helper
 ```
-Then test the installation using
+Then test the installation using:
 ```(bash)
+sudo setcap cap_net_raw,cap_net_admin+ep $(find . -name bluepy3-helper)
 blescan -n
+sudo hcitool lescan
 ```
 This should list all (compatible) Bluetooth device in range.
 
