@@ -23,7 +23,7 @@ def pre_install():
         with open(MAKEFILE, 'r') as makefile:
             lines = makefile.readlines()
             for line in lines:
-                if line.find('BLUEZ_VERSION') != -1:
+                if line.startswith('BLUEZ_VERSION'):
                     BLUEZ_VERSION = line.split("=")[1]
         with open(VERSION_FILE, "w") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
