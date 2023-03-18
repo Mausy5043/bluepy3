@@ -49,23 +49,23 @@
 #define IO_CAPABILITY_NOINPUTNOOUTPUT   0x03
 
 #ifdef BLUEPY_DEBUG
-#define DBG(fmt, ...) do {printf("# %s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(stdout); \
-    } while(0)
+    #define DBG(fmt, ...) do {printf("# %s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(stdout); \
+        } while(0)
 #else
-#ifdef BLUEPY_DEBUG_FILE_LOG
-static FILE * fp = NULL;
+    #ifdef BLUEPY_DEBUG_FILE_LOG
+        static FILE * fp = NULL;
 
-static void try_open(void) {
-    if (!fp) {
-        fp = fopen ("bluepy3-helper.log", "w");
-    }
-}
-#define DBG(fmt, ...) do {try_open();if (fp) {fprintf(fp, "%s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(fp);} \
-    } while(0)
+        static void try_open(void) {
+            if (!fp) {
+                fp = fopen ("bluepy3-helper.log", "w");
+            }
+        }
+        #define DBG(fmt, ...) do {try_open();if (fp) {fprintf(fp, "%s() :" fmt "\n", __FUNCTION__, ##__VA_ARGS__); fflush(fp);} \
+            } while(0)
 
-#else
-#define DBG(fmt, ...)
-#endif
+    #else
+        #define DBG(fmt, ...)
+    #endif
 #endif
 
 static GIOChannel *iochannel = NULL;
