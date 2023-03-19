@@ -30,6 +30,8 @@ SEC_LEVEL_HIGH = "high"
 ADDR_TYPE_PUBLIC = "public"
 ADDR_TYPE_RANDOM = "random"
 
+BTLE_TIMEOUT = 32.1
+BTLE_IFACE = 0
 
 def DBG(*args):
     if Debugging:
@@ -361,7 +363,7 @@ class Bluepy3Helper:
                 resp[tag].append(val)
         return resp
 
-    def _waitResp(self, wantType, timeout=None):
+    def _waitResp(self, wantType, timeout=BTLE_TIMEOUT):
         while True:
             if self._helper.poll() is not None:
                 raise BTLEInternalError("Helper exited")
@@ -422,7 +424,7 @@ class Bluepy3Helper:
 
 
 class Peripheral(Bluepy3Helper):
-    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=None):
+    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
         Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
         (self.deviceAddr, self.addrType, self.iface) = (None, None, None)
@@ -441,7 +443,7 @@ class Peripheral(Bluepy3Helper):
     def __exit__(self, type, value, traceback):
         self.disconnect()
 
-    def _getResp(self, wantType, timeout=None):
+    def _getResp(self, wantType, timeout=BTLE_TIMEOUT):
         if isinstance(wantType, list) is not True:
             wantType = [wantType]
 
@@ -460,7 +462,7 @@ class Peripheral(Bluepy3Helper):
                 continue
             return resp
 
-    def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=None):
+    def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
         if len(addr.split(":")) != 6:
             raise ValueError(f"Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
@@ -502,7 +504,7 @@ class Peripheral(Bluepy3Helper):
                         )
             self.retries -= 1
 
-    def connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=None):
+    def connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
         if isinstance(addr, ScanEntry):
             self._connect(addr.addr, addr.addrType, addr.iface, timeout)
         elif addr is not None:
@@ -564,7 +566,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(f"incl {startHnd:X} {endHnd:X}\n")
         return self._getResp("find")
 
-    def getCharacteristics(self, startHnd=1, endHnd=0xFFFF, uuid=None, timeout=None):
+    def getCharacteristics(self, startHnd=1, endHnd=0xFFFF, uuid=None, timeout=BTLE_TIMEOUT):
         cmd = f"char {startHnd:X} {endHnd:X}"
         if uuid:
             cmd += f" {UUID(uuid)}"
@@ -605,7 +607,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(f"rdu {UUID(uuid)} {startHnd:X} {endHnd:X}\n")
         return self._getResp("rd")
 
-    def writeCharacteristic(self, handle, val, withResponse=False, timeout=None):
+    def writeCharacteristic(self, handle, val, withResponse=False, timeout=BTLE_TIMEOUT):
         # Without response, a value too long for one packet will be truncated,
         # but with response, it will be sent as a queued write
         cmd = "wrr" if withResponse else "wr"
