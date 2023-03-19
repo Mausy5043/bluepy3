@@ -477,7 +477,7 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType}\n")
             rsp = self._getResp("stat", timeout)
             timeout_exception = BTLEDisconnectError(
-                f"Timed out while trying to connect to peripheral {addr}, addr type: {addrType}",
+                f"Timed out while trying to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
             if rsp is None:
@@ -497,7 +497,7 @@ class Peripheral(Bluepy3Helper):
                     time.sleep(5.0)
                     if self.retries <= 1:
                         raise BTLEDisconnectError(
-                            f"Failed to connect to peripheral {addr}, addr type: {addrType}",
+                            f"Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                             rsp,
                         )
             self.retries -= 1
@@ -660,6 +660,7 @@ class Peripheral(Bluepy3Helper):
             return self._setRemoteOOB(address, address_type, oob_data, iface)
 
     def getLocalOOB(self, iface=None):
+        cmd = ""
         if self._helper is None:
             self._startHelper(iface)
         self.iface = iface
