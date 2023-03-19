@@ -33,7 +33,7 @@ test_app() {
     python3 -m twine upload --repository testpypi dist/*
     echo ""
     echo "To test installing this package use:"
-    echo "python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps ${PACKAGE_NAME}"
+    echo "python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps --upgrade ${PACKAGE_NAME}"
 }
 
 dist_app() {
