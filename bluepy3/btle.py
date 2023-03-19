@@ -462,11 +462,12 @@ class Peripheral(Bluepy3Helper):
             return resp
 
     def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
+        max_retries = 10
         if len(addr.split(":")) != 6:
             raise ValueError(f"*** -btle- Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
             raise ValueError(f"*** -btle- Expected address type public or random, got {addrType}")
-        self.retries = 3
+        self.retries = max_retries
         while self.retries > 0:
             self._startHelper(iface)
             self.addr = addr
@@ -495,7 +496,7 @@ class Peripheral(Bluepy3Helper):
                     raise timeout_exception
                 else:
                     DBG(f"*** -btle-  Failed to connect. ({self.retries})")
-                    time.sleep(0.5)
+                    time.sleep(0.5 * (max_retries - self.retries))
                     if self.retries <= 1:
                         raise BTLEDisconnectError(
                             f"*** -btle- Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
