@@ -32,6 +32,7 @@ ADDR_TYPE_RANDOM = "random"
 
 BTLE_TIMEOUT = 32.1
 
+
 def DBG(*args):
     if Debugging:
         msg = " ".join([str(a) for a in args])
