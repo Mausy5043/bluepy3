@@ -7,26 +7,20 @@
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
-Note: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. 
-Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
+###### Note: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
 
 ## Requirements
 
-Please be aware that this is not a beginners or n00bs tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
+Please be aware that this is not a beginners tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
 
-The package requires Python 3 v3.7 or higher to be installed. 
+The package requires Python 3 v3.7 or higher to be installed. It has been extensively tested on a 
+Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 kernel 6.1.19-v8+.
 
 The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
 if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
-On a Raspberry Pi (specifically when running Debian flavours like: dietpi & raspbian) 
-additional APT packages are required and can be installed with:
-```bash
-sudo apt-get install libbluetooth-dev
-```
-
-The package comes installed with lists of compatible UUIDs in `uuids.json`. 
+The `bluepy3` package comes installed with lists of compatible UUIDs in `uuids.json`. 
 If, for whatever reason, you want to rebuild those lists, then the Python3 modules
 `bs4`, `requests` and `lxml` need to be installed.
 ```(python3)
@@ -51,7 +45,7 @@ sudo setcap cap_net_raw,cap_net_admin+ep $(find . -name bluepy3-helper)
 blescan -n
 sudo hcitool lescan
 ```
-This should list all (compatible) Bluetooth device in range.
+This should list all (compatible) Bluetooth devices in range.
 
 It may be considered to have command-line tools from BlueZ available for debugging. There
 are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org/RPi_Bluetooth_LE.
