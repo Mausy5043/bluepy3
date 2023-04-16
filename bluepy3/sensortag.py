@@ -212,7 +212,9 @@ class MagnetometerSensor(SensorBase):
     def read(self):
         """Returns (x, y, z) in uT units"""
         x_y_z = struct.unpack("<hhh", self.data.read())
-        return tuple([1000.0 * (v / 32768.0) for v in x_y_z])  # Revisit - some absolute calibration is needed
+        return tuple(
+            [1000.0 * (v / 32768.0) for v in x_y_z]
+        )  # Revisit - some absolute calibration is needed
 
 
 class MagnetometerSensorMPU9250:
@@ -448,7 +450,9 @@ def main():
         type=int,
         help="Number of times to loop data",
     )
-    parser.add_argument("-t", action="store", type=float, default=5.0, help="time between polling")
+    parser.add_argument(
+        "-t", action="store", type=float, default=5.0, help="time between polling"
+    )
     parser.add_argument("-T", "--temperature", action="store_true", default=False)
     parser.add_argument("-A", "--accelerometer", action="store_true", default=False)
     parser.add_argument("-H", "--humidity", action="store_true", default=False)

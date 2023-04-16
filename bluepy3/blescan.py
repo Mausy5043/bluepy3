@@ -138,7 +138,12 @@ def main():
         action="store_true",
         help="Display only new adv responses, by default show new + updated",
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Increase output verbosity"
+    )
     arg = parser.parse_args(sys.argv[1:])
 
     btle.Debugging = arg.verbose

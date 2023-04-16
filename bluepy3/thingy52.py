@@ -88,8 +88,12 @@ class BatterySensor:
     Battery Service module. Instance the class and enable to get access to Battery interface.
     """
 
-    svcUUID = UUID(BATTERY_SERVICE_UUID)  # Ref https://www.bluetooth.com/specifications/gatt/services
-    dataUUID = UUID(BATTERY_LEVEL_UUID)  # Ref https://www.bluetooth.com/specifications/gatt/characteristics
+    svcUUID = UUID(
+        BATTERY_SERVICE_UUID
+    )  # Ref https://www.bluetooth.com/specifications/gatt/services
+    dataUUID = UUID(
+        BATTERY_LEVEL_UUID
+    )  # Ref https://www.bluetooth.com/specifications/gatt/characteristics
 
     def __init__(self, periph):
         self.periph = periph
@@ -148,15 +152,21 @@ class EnvironmentService:
         if self.environment_service is None:
             self.environment_service = self.periph.getServiceByUUID(self.serviceUUID)
         if self.temperature_char is None:
-            self.temperature_char = self.environment_service.getCharacteristics(self.temperature_char_uuid)[0]
+            self.temperature_char = self.environment_service.getCharacteristics(
+                self.temperature_char_uuid
+            )[0]
             e_temperature_handle = self.temperature_char.getHandle()
             self.temperature_cccd = self.temperature_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.pressure_char is None:
-            self.pressure_char = self.environment_service.getCharacteristics(self.pressure_char_uuid)[0]
+            self.pressure_char = self.environment_service.getCharacteristics(
+                self.pressure_char_uuid
+            )[0]
             e_pressure_handle = self.pressure_char.getHandle()
             self.pressure_cccd = self.pressure_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.humidity_char is None:
-            self.humidity_char = self.environment_service.getCharacteristics(self.humidity_char_uuid)[0]
+            self.humidity_char = self.environment_service.getCharacteristics(
+                self.humidity_char_uuid
+            )[0]
             e_humidity_handle = self.humidity_char.getHandle()
             self.humidity_cccd = self.humidity_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.gas_char is None:
@@ -164,11 +174,15 @@ class EnvironmentService:
             e_gas_handle = self.gas_char.getHandle()
             self.gas_cccd = self.gas_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.color_char is None:
-            self.color_char = self.environment_service.getCharacteristics(self.color_char_uuid)[0]
+            self.color_char = self.environment_service.getCharacteristics(self.color_char_uuid)[
+                0
+            ]
             e_color_handle = self.color_char.getHandle()
             self.color_cccd = self.color_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.config_char is None:
-            self.config_char = self.environment_service.getCharacteristics(self.config_char_uuid)[0]
+            self.config_char = self.environment_service.getCharacteristics(
+                self.config_char_uuid
+            )[0]
 
     def set_temperature_notification(self, state):
         if self.temperature_cccd is not None:
@@ -367,15 +381,21 @@ class MotionService:
             m_orient_handle = self.orient_char.getHandle()
             self.orient_cccd = self.orient_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.quaternion_char is None:
-            self.quaternion_char = self.motion_service.getCharacteristics(self.quaternion_char_uuid)[0]
+            self.quaternion_char = self.motion_service.getCharacteristics(
+                self.quaternion_char_uuid
+            )[0]
             m_quaternion_handle = self.quaternion_char.getHandle()
             self.quaternion_cccd = self.quaternion_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.stepcnt_char is None:
-            self.stepcnt_char = self.motion_service.getCharacteristics(self.stepcnt_char_uuid)[0]
+            self.stepcnt_char = self.motion_service.getCharacteristics(self.stepcnt_char_uuid)[
+                0
+            ]
             m_stepcnt_handle = self.stepcnt_char.getHandle()
             self.stepcnt_cccd = self.stepcnt_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.rawdata_char is None:
-            self.rawdata_char = self.motion_service.getCharacteristics(self.rawdata_char_uuid)[0]
+            self.rawdata_char = self.motion_service.getCharacteristics(self.rawdata_char_uuid)[
+                0
+            ]
             m_rawdata_handle = self.rawdata_char.getHandle()
             self.rawdata_cccd = self.rawdata_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.euler_char is None:
@@ -383,15 +403,21 @@ class MotionService:
             m_euler_handle = self.euler_char.getHandle()
             self.euler_cccd = self.euler_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.rotation_char is None:
-            self.rotation_char = self.motion_service.getCharacteristics(self.rotation_char_uuid)[0]
+            self.rotation_char = self.motion_service.getCharacteristics(
+                self.rotation_char_uuid
+            )[0]
             m_rotation_handle = self.rotation_char.getHandle()
             self.rotation_cccd = self.rotation_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.heading_char is None:
-            self.heading_char = self.motion_service.getCharacteristics(self.heading_char_uuid)[0]
+            self.heading_char = self.motion_service.getCharacteristics(self.heading_char_uuid)[
+                0
+            ]
             m_heading_handle = self.heading_char.getHandle()
             self.heading_cccd = self.heading_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.gravity_char is None:
-            self.gravity_char = self.motion_service.getCharacteristics(self.gravity_char_uuid)[0]
+            self.gravity_char = self.motion_service.getCharacteristics(self.gravity_char_uuid)[
+                0
+            ]
             m_gravity_handle = self.gravity_char.getHandle()
             self.gravity_cccd = self.gravity_char.getDescriptors(forUUID=CCCD_UUID)[0]
 
@@ -530,15 +556,25 @@ class SoundService:
         if self.config_char is None:
             self.config_char = self.sound_service.getCharacteristics(self.config_char_uuid)[0]
         if self.speaker_data_char is None:
-            self.speaker_data_char = self.sound_service.getCharacteristics(self.speaker_data_char_uuid)[0]
+            self.speaker_data_char = self.sound_service.getCharacteristics(
+                self.speaker_data_char_uuid
+            )[0]
         if self.speaker_status_char is None:
-            self.speaker_status_char = self.sound_service.getCharacteristics(self.speaker_status_char_uuid)[0]
+            self.speaker_status_char = self.sound_service.getCharacteristics(
+                self.speaker_status_char_uuid
+            )[0]
             s_speaker_status_handle = self.speaker_status_char.getHandle()
-            self.speaker_status_char_cccd = self.speaker_status_char.getDescriptors(forUUID=CCCD_UUID)[0]
+            self.speaker_status_char_cccd = self.speaker_status_char.getDescriptors(
+                forUUID=CCCD_UUID
+            )[0]
         if self.microphone_char is None:
-            self.microphone_char = self.sound_service.getCharacteristics(self.microphone_char_uuid)[0]
+            self.microphone_char = self.sound_service.getCharacteristics(
+                self.microphone_char_uuid
+            )[0]
             s_microphone_handle = self.microphone_char.getHandle()
-            self.microphone_char_cccd = self.microphone_char.getDescriptors(forUUID=CCCD_UUID)[0]
+            self.microphone_char_cccd = self.microphone_char.getDescriptors(forUUID=CCCD_UUID)[
+                0
+            ]
 
     def play_speaker_sample(self, sample=0):
         if self.speaker_data_char is not None:
@@ -579,7 +615,9 @@ class MyDelegate(DefaultDelegate):
         # Debug print repr(data)
         if hnd == e_temperature_handle:
             teptep = binascii.b2a_hex(data)
-            print(f"Notification: Temp received:  {self._str_to_int(teptep[:-2])}.{int(teptep[-2:], 16)} degCelsius")
+            print(
+                f"Notification: Temp received:  {self._str_to_int(teptep[:-2])}.{int(teptep[-2:], 16)} degCelsius"
+            )
 
         elif hnd == e_pressure_handle:
             pressure_int, pressure_dec = self._extract_pressure_data(data)
@@ -603,7 +641,9 @@ class MyDelegate(DefaultDelegate):
 
         elif hnd == m_tap_handle:
             direction, count = self._extract_tap_data(data)
-            print(f"Notification: Tap: direction: {direction}, count: {self._str_to_int(count)}")
+            print(
+                f"Notification: Tap: direction: {direction}, count: {self._str_to_int(count)}"
+            )
 
         elif hnd == m_orient_handle:
             teptep = binascii.b2a_hex(data)
@@ -709,7 +749,9 @@ def main():
         type=int,
         help="Number of times to loop data",
     )
-    parser.add_argument("-t", action="store", type=float, default=2.0, help="time between polling")
+    parser.add_argument(
+        "-t", action="store", type=float, default=2.0, help="time between polling"
+    )
     parser.add_argument("--temperature", action="store_true", default=False)
     parser.add_argument("--pressure", action="store_true", default=False)
     parser.add_argument("--humidity", action="store_true", default=False)

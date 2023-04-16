@@ -70,7 +70,9 @@ def get_table_rows(html=None):
     try:
         assert biggest_table
 
-        for row in biggest_table.find_all("tr"):  # noqa : "Cannot find reference 'find_all' in 'Sized | int'"
+        for row in biggest_table.find_all(
+            "tr"
+        ):  # noqa : "Cannot find reference 'find_all' in 'Sized | int'"
             cols = row.find_all("td")
             cols = [ele.text.strip() for ele in cols]
             outrow = [ele for ele in cols if ele]  # Get rid of empty values
@@ -284,10 +286,18 @@ class Definitions:
         number, name, common name.
         """
         return {
-            "characteristic_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.characteristics],
-            "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
-            "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
-            "service_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.services],
+            "characteristic_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.characteristics
+            ],
+            "descriptor_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.descriptors
+            ],
+            "declaration_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.declarations
+            ],
+            "service_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.services
+            ],
             "unit_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
 
@@ -297,8 +307,12 @@ class Definitions:
         number, name, common name.
         """
         return {
-            "descriptor_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.descriptors],
-            "declaration_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.declarations],
+            "descriptor_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.descriptors
+            ],
+            "declaration_UUIDs": [
+                (row["Number"], row["cname"], row["Name"]) for row in self.declarations
+            ],
         }
 
 

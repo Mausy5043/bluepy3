@@ -111,7 +111,9 @@ class UUID:
 
         self.binVal = binascii.a2b_hex(val.encode("utf-8"))
         if len(self.binVal) != 16:
-            raise ValueError(f"*** -btle- UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})")
+            raise ValueError(
+                f"*** -btle- UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})"
+            )
         self.commonName = commonName
 
     def __str__(self):
@@ -149,7 +151,9 @@ class Service:
     def getCharacteristics(self, forUUID=None):
         if not self.chars:  # Unset, or empty
             self.chars = (
-                [] if self.hndEnd <= self.hndStart else self.peripheral.getCharacteristics(self.hndStart, self.hndEnd)
+                []
+                if self.hndEnd <= self.hndStart
+                else self.peripheral.getCharacteristics(self.hndStart, self.hndEnd)
             )
         if forUUID is not None:
             u = UUID(forUUID)
@@ -339,7 +343,9 @@ class Bluepy3Helper:
         rsp = self._waitResp("mgmt")
         if rsp["code"][0] != "success":
             self._stopHelper()
-            raise BTLEManagementError(f"*** -btle- Failed to execute management command '{cmd}'", rsp)
+            raise BTLEManagementError(
+                f"*** -btle- Failed to execute management command '{cmd}'", rsp
+            )
 
     @staticmethod
     def parseResp(line):
@@ -356,7 +362,9 @@ class Bluepy3Helper:
             elif tval[0] == "b":
                 val = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
-                raise BTLEInternalError(f"*** -btle- Cannot understand response value {repr(tval)}")
+                raise BTLEInternalError(
+                    f"*** -btle- Cannot understand response value {repr(tval)}"
+                )
             if tag not in resp:
                 resp[tag] = [val]
             else:
@@ -373,7 +381,9 @@ class Bluepy3Helper:
             except Empty:
                 DBG("*** -btle- Select timeout")
                 return None
-            dehex_rv = repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
+            dehex_rv = (
+                repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
+            )
             DBG(f"    -btle- Got:    {dehex_rv}")
             if rv.startswith("#") or rv == "\n" or len(rv) == 0:
                 continue
@@ -407,11 +417,15 @@ class Bluepy3Helper:
             elif respType == "err":
                 errcode = resp["code"][0]
                 if errcode == "nomgmt":
-                    raise BTLEManagementError("*** -btle- Management not available (permissions problem?)", resp)
+                    raise BTLEManagementError(
+                        "*** -btle- Management not available (permissions problem?)", resp
+                    )
                 elif errcode == "atterr":
                     raise BTLEGattError("*** -btle- Bluetooth command failed", resp)
                 else:
-                    raise BTLEException(f"*** -btle- Error from bluepy3-helper ({errcode})", resp)
+                    raise BTLEException(
+                        f"*** -btle- Error from bluepy3-helper ({errcode})", resp
+                    )
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
@@ -424,7 +438,9 @@ class Bluepy3Helper:
 
 
 class Peripheral(Bluepy3Helper):
-    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
+    def __init__(
+        self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT
+    ):
         Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
         (self.deviceAddr, self.addrType, self.iface) = (None, None, None)
@@ -467,7 +483,9 @@ class Peripheral(Bluepy3Helper):
         if len(addr.split(":")) != 6:
             raise ValueError(f"*** -btle- Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
-            raise ValueError(f"*** -btle- Expected address type public or random, got {addrType}")
+            raise ValueError(
+                f"*** -btle- Expected address type public or random, got {addrType}"
+            )
         self.retries = max_retries
         while self.retries > 0:
             self._startHelper(iface)
@@ -581,7 +599,8 @@ class Peripheral(Bluepy3Helper):
             raise timeout_exception
         nChars = len(rsp["hnd"])
         return [
-            Characteristic(self, rsp["uuid"][i], rsp["hnd"][i], rsp["props"][i], rsp["vhnd"][i]) for i in range(nChars)
+            Characteristic(self, rsp["uuid"][i], rsp["hnd"][i], rsp["props"][i], rsp["vhnd"][i])
+            for i in range(nChars)
         ]
 
     def getDescriptors(self, startHnd=1, endHnd=0xFFFF):
@@ -656,7 +675,9 @@ class Peripheral(Bluepy3Helper):
         if len(address.split(":")) != 6:
             raise ValueError(f"*** -btle- Expected MAC address, got {repr(address)}")
         if address_type not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
-            raise ValueError(f"*** -btle- Expected address type public or random, got {address_type}")
+            raise ValueError(
+                f"*** -btle- Expected address type public or random, got {address_type}"
+            )
         if isinstance(address, ScanEntry):
             return self._setOOB(address.addr, address.addrType, oob_data, address.iface)
         elif address is not None:
@@ -675,20 +696,35 @@ class Peripheral(Bluepy3Helper):
             data = resp.get("d", [""])[0]
             if data is None:
                 raise BTLEManagementError("*** -btle- Failed to get local OOB data.")
-            if struct.unpack_from("<B", data, 0)[0] != 8 or struct.unpack_from("<B", data, 1)[0] != 0x1B:
+            if (
+                struct.unpack_from("<B", data, 0)[0] != 8
+                or struct.unpack_from("<B", data, 1)[0] != 0x1B
+            ):
                 raise BTLEManagementError("*** -btle- Malformed local OOB data (address).")
             address = data[2:8]
             address_type = data[8:9]
-            if struct.unpack_from("<B", data, 9)[0] != 2 or struct.unpack_from("<B", data, 10)[0] != 0x1C:
+            if (
+                struct.unpack_from("<B", data, 9)[0] != 2
+                or struct.unpack_from("<B", data, 10)[0] != 0x1C
+            ):
                 raise BTLEManagementError("*** -btle- Malformed local OOB data (role).")
             role = data[11:12]
-            if struct.unpack_from("<B", data, 12)[0] != 17 or struct.unpack_from("<B", data, 13)[0] != 0x22:
+            if (
+                struct.unpack_from("<B", data, 12)[0] != 17
+                or struct.unpack_from("<B", data, 13)[0] != 0x22
+            ):
                 raise BTLEManagementError("*** -btle- Malformed local OOB data (confirm).")
             confirm = data[14:30]
-            if struct.unpack_from("<B", data, 30)[0] != 17 or struct.unpack_from("<B", data, 31)[0] != 0x23:
+            if (
+                struct.unpack_from("<B", data, 30)[0] != 17
+                or struct.unpack_from("<B", data, 31)[0] != 0x23
+            ):
                 raise BTLEManagementError("*** -btle- Malformed local OOB data (random).")
             random = data[32:48]
-            if struct.unpack_from("<B", data, 48)[0] != 2 or struct.unpack_from("<B", data, 49)[0] != 0x1:
+            if (
+                struct.unpack_from("<B", data, 48)[0] != 2
+                or struct.unpack_from("<B", data, 49)[0] != 0x1
+            ):
                 raise BTLEManagementError("*** -btle- Malformed local OOB data (flags).")
             flags = data[50:51]
             return {
@@ -766,7 +802,9 @@ class ScanEntry:
     def _update(self, resp):
         addrType = self.addrTypes.get(resp["type"][0], None)
         if (self.addrType is not None) and (addrType != self.addrType):
-            raise BTLEInternalError(f"*** -btle- Address type changed during scan, for address {self.addr}")
+            raise BTLEInternalError(
+                f"*** -btle- Address type changed during scan, for address {self.addr}"
+            )
         self.addrType = addrType
         self.rssi = -resp["rssi"][0]
         self.connectable = (resp["flag"][0] & 0x4) == 0
@@ -852,7 +890,10 @@ class ScanEntry:
 
     def getScanData(self):
         """Return list of tuples [(tag, description, value)]"""
-        return [(sdid, self.getDescription(sdid), self.getValueText(sdid)) for sdid in self.scanData.keys()]
+        return [
+            (sdid, self.getDescription(sdid), self.getValueText(sdid))
+            for sdid in self.scanData.keys()
+        ]
 
 
 class Scanner(Bluepy3Helper):
