@@ -463,7 +463,7 @@ class Peripheral(Bluepy3Helper):
             return resp
 
     def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
-        max_retries = 10
+        max_retries = 5
         if len(addr.split(":")) != 6:
             raise ValueError(f"*** -btle- Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
