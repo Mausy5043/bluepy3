@@ -684,7 +684,7 @@ class Peripheral(Bluepy3Helper):
                 f"*** -btle- Expected address type public or random, got {address_type}"
             )
         if isinstance(address, ScanEntry):
-            return self._setOOB(address.addr, address.addrType, oob_data, address.iface)
+            return self._setRemoteOOB(address.addr, address.addrType, oob_data, address.iface)
         elif address is not None:
             return self._setRemoteOOB(address, address_type, oob_data, iface)
 
