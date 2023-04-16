@@ -2,13 +2,13 @@
 
 """Bluetooth Low Energy Python3 interface"""
 
-import sys
-import os
-import time
-import subprocess
 import binascii
-import struct
+import os
 import signal
+import struct
+import subprocess
+import sys
+import time
 from queue import Queue, Empty
 from threading import Thread
 
@@ -75,7 +75,12 @@ class BTLEInternalError(BTLEException):
         BTLEException.__init__(self, message, rsp)
 
 
-class BTLEDisconnectError(BTLEException):
+class BTLEConnectError(BTLEException):
+    def __init__(self, message, rsp=None):
+        BTLEException.__init__(self, message, rsp)
+
+
+class BTLEConnectTimeout(BTLEException):
     def __init__(self, message, rsp=None):
         BTLEException.__init__(self, message, rsp)
 
@@ -413,7 +418,7 @@ class Bluepy3Helper:
             elif respType == "stat":
                 if "state" in resp and len(resp["state"]) > 0 and resp["state"][0] == "disc":
                     self._stopHelper()
-                    raise BTLEDisconnectError("*** -btle- Device disconnected", resp)
+                    raise BTLEConnectError("*** -btle- Device disconnected", resp)
             elif respType == "err":
                 errcode = resp["code"][0]
                 if errcode == "nomgmt":
@@ -497,7 +502,7 @@ class Peripheral(Bluepy3Helper):
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
             rsp = self._getResp("stat", timeout)
-            timeout_exception = BTLEDisconnectError(
+            timeout_exception = BTLEConnectTimeout(
                 f" -btle- Timed out while trying to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
@@ -517,7 +522,7 @@ class Peripheral(Bluepy3Helper):
                     DBG(f"*** -btle-  Failed to connect. ({self.retries})")
                     time.sleep(0.5 * (max_retries - self.retries))
                     if self.retries <= 1:
-                        raise BTLEDisconnectError(
+                        raise BTLEConnectError(
                             f"*** -btle- Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                             rsp,
                         )
@@ -591,7 +596,7 @@ class Peripheral(Bluepy3Helper):
             cmd += f" {UUID(uuid)}"
         self._writeCmd(cmd + "\n")
         rsp = self._getResp("find", timeout)
-        timeout_exception = BTLEDisconnectError(
+        timeout_exception = BTLEConnectTimeout(
             f" -btle- Timed out while trying to get characteristics from peripheral {self.addr}, addr type: {self.addrType}",
             rsp,
         )
