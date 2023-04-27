@@ -139,10 +139,7 @@ def main():
         help="Display only new adv responses, by default show new + updated",
     )
     parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Increase output verbosity"
+        "-v", "--verbose", action="store_true", help="Increase output verbosity"
     )
     arg = parser.parse_args(sys.argv[1:])
 
