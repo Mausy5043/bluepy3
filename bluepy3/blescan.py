@@ -84,7 +84,7 @@ class ScanPrint(btle.DefaultDelegate):
             f"    Device ({status}): {ANSI_WHITE}{dev.addr}{ANSI_OFF} ({dev.addrType}),"
             f" {dev.rssi} dBm {dev_connectable}"
         )
-        for (sdid, desc, val) in dev.getScanData():
+        for sdid, desc, val in dev.getScanData():
             if sdid in [8, 9]:
                 print(f"\t{desc}: '{ANSI_CYAN}{val}{ANSI_OFF}'")
             else:
