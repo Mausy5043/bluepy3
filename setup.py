@@ -8,7 +8,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "1.3.2"
+VERSION = "1.4.1"
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
