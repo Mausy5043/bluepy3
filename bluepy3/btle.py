@@ -348,7 +348,9 @@ class Bluepy3Helper:
         rsp = self._waitResp("mgmt")
         if rsp["code"][0] != "success":
             self._stopHelper()
-            raise BTLEManagementError(f"(btle.py) Failed to execute management command '{cmd}'", rsp)
+            raise BTLEManagementError(
+                f"(btle.py) Failed to execute management command '{cmd}'", rsp
+            )
 
     @staticmethod
     def parseResp(line):
@@ -400,7 +402,9 @@ class Bluepy3Helper:
                 self._aiti += 1
                 if self._aiti > 3:
                     self._stopHelper()
-                    raise BTLEInternalError("(btle.py) Device keeps repeating itself. Giving up.", resp)
+                    raise BTLEInternalError(
+                        "(btle.py) Device keeps repeating itself. Giving up.", resp
+                    )
 
             respType = resp["rsp"][0]
 
