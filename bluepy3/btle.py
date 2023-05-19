@@ -349,9 +349,7 @@ class Bluepy3Helper:
         rsp = self._waitResp("mgmt")
         if rsp["code"][0] != "success":
             self._stopHelper()
-            raise BTLEManagementError(
-                f"Failed to execute management command '{cmd}'", rsp
-            )
+            raise BTLEManagementError(f"Failed to execute management command '{cmd}'", rsp)
 
     @staticmethod
     def parseResp(line):
@@ -368,9 +366,7 @@ class Bluepy3Helper:
             elif tval[0] == "b":
                 val = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
-                raise BTLEInternalError(
-                    f"Cannot understand response value {repr(tval)}"
-                )
+                raise BTLEInternalError(f"Cannot understand response value {repr(tval)}")
             if tag not in resp:
                 resp[tag] = [val]
             else:
@@ -403,9 +399,7 @@ class Bluepy3Helper:
                 self._aiti += 1
                 if self._aiti > 3:
                     self._stopHelper()
-                    raise BTLEInternalError(
-                        "Device keeps repeating itself. Giving up.", resp
-                    )
+                    raise BTLEInternalError("Device keeps repeating itself. Giving up.", resp)
 
             respType = resp["rsp"][0]
 
@@ -431,9 +425,7 @@ class Bluepy3Helper:
                 elif errcode == "atterr":
                     raise BTLEGattError("Bluetooth command failed", resp)
                 else:
-                    raise BTLEException(
-                        f"Error from bluepy3-helper ({errcode})", resp
-                    )
+                    raise BTLEException(f"Error from bluepy3-helper ({errcode})", resp)
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
