@@ -67,6 +67,7 @@ class BTLEException(Exception):
             if self.emsg:
                 msg = f"{msg}error: {self.emsg}"
             msg = f"{msg})"
+        msg = f"(btle) {self.message}"
         return msg
 
 
@@ -338,7 +339,7 @@ class Bluepy3Helper:
 
     def _writeCmd(self, cmd):
         if self._helper is None:
-            raise BTLEInternalError("(btle.py) Helper not started (did you call connect()?)")
+            raise BTLEInternalError("Helper not started (did you call connect()?)")
         DBG(f"    -btle- Sent:   {cmd}")
         self._helper.stdin.write(cmd)
         self._helper.stdin.flush()
@@ -349,7 +350,7 @@ class Bluepy3Helper:
         if rsp["code"][0] != "success":
             self._stopHelper()
             raise BTLEManagementError(
-                f"(btle.py) Failed to execute management command '{cmd}'", rsp
+                f"Failed to execute management command '{cmd}'", rsp
             )
 
     @staticmethod
@@ -368,7 +369,7 @@ class Bluepy3Helper:
                 val = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
                 raise BTLEInternalError(
-                    f"(btle.py) Cannot understand response value {repr(tval)}"
+                    f"Cannot understand response value {repr(tval)}"
                 )
             if tag not in resp:
                 resp[tag] = [val]
@@ -379,7 +380,7 @@ class Bluepy3Helper:
     def _waitResp(self, wantType, timeout=BTLE_TIMEOUT):
         while True:
             if self._helper.poll() is not None:
-                raise BTLEInternalError("(btle.py) Helper exited")
+                raise BTLEInternalError("Helper exited")
 
             try:
                 rv = self._lineq.get(timeout=timeout)
@@ -395,7 +396,7 @@ class Bluepy3Helper:
 
             resp = Bluepy3Helper.parseResp(rv)
             if "rsp" not in resp:
-                raise BTLEInternalError("(btle.py) No response type indicator", resp)
+                raise BTLEInternalError("No response type indicator", resp)
 
             # sometimes devices just keep sending `ntfy`
             if "ntfy" in repr(rv):
@@ -403,7 +404,7 @@ class Bluepy3Helper:
                 if self._aiti > 3:
                     self._stopHelper()
                     raise BTLEInternalError(
-                        "(btle.py) Device keeps repeating itself. Giving up.", resp
+                        "Device keeps repeating itself. Giving up.", resp
                     )
 
             respType = resp["rsp"][0]
@@ -420,24 +421,24 @@ class Bluepy3Helper:
             elif respType == "stat":
                 if "state" in resp and len(resp["state"]) > 0 and resp["state"][0] == "disc":
                     self._stopHelper()
-                    raise BTLEConnectError("(btle.py) Device disconnected", resp)
+                    raise BTLEConnectError("Device disconnected", resp)
             elif respType == "err":
                 errcode = resp["code"][0]
                 if errcode == "nomgmt":
                     raise BTLEManagementError(
-                        "(btle.py) Management not available (permissions problem?)", resp
+                        "Management not available (permissions problem?)", resp
                     )
                 elif errcode == "atterr":
-                    raise BTLEGattError("(btle.py) Bluetooth command failed", resp)
+                    raise BTLEGattError("Bluetooth command failed", resp)
                 else:
                     raise BTLEException(
-                        f"(btle.py) Error from bluepy3-helper ({errcode})", resp
+                        f"Error from bluepy3-helper ({errcode})", resp
                     )
             elif respType == "scan":
                 # Scan response when we weren't interested. Ignore it
                 continue
             else:
-                raise BTLEInternalError(f"(btle.py) Unexpected response ({respType})", resp)
+                raise BTLEInternalError(f"Unexpected response ({respType})", resp)
 
     def status(self):
         self._writeCmd("stat\n")
@@ -505,7 +506,7 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType}\n")
             rsp = self._getResp("stat", timeout)
             timeout_exception = BTLEConnectTimeout(
-                f"(btle.py) Timed out while trying to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
+                f"Timed out while trying to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
             if rsp is None:
@@ -525,7 +526,7 @@ class Peripheral(Bluepy3Helper):
                     time.sleep(0.5 * (max_retries - self.retries))
                     if self.retries <= 1:
                         raise BTLEConnectError(
-                            f"(btle.py) Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
+                            f"Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
                             rsp,
                         )
             self.retries -= 1
@@ -579,7 +580,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(f"svcs {uuid}\n")
         rsp = self._getResp("find")
         if "hstart" not in rsp:
-            raise BTLEGattError(f"(btle.py) Service {uuid.getCommonName()} not found", rsp)
+            raise BTLEGattError(f"Service {uuid.getCommonName()} not found", rsp)
         svc = Service(self, uuid, rsp["hstart"][0], rsp["hend"][0])
 
         if self._serviceMap is None:
@@ -599,7 +600,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(cmd + "\n")
         rsp = self._getResp("find", timeout)
         timeout_exception = BTLEConnectTimeout(
-            f"(btle.py) Timed out while trying to get characteristics from peripheral {self.addr}, addr type: {self.addrType}",
+            f"Timed out while trying to get characteristics from peripheral {self.addr}, addr type: {self.addrType}",
             rsp,
         )
         if rsp is None:
@@ -702,37 +703,37 @@ class Peripheral(Bluepy3Helper):
         if resp is not None:
             data = resp.get("d", [""])[0]
             if data is None:
-                raise BTLEManagementError("(btle.py) Failed to get local OOB data.")
+                raise BTLEManagementError("Failed to get local OOB data.")
             if (
                 struct.unpack_from("<B", data, 0)[0] != 8
                 or struct.unpack_from("<B", data, 1)[0] != 0x1B
             ):
-                raise BTLEManagementError("(btle.py) Malformed local OOB data (address).")
+                raise BTLEManagementError("Malformed local OOB data (address).")
             address = data[2:8]
             address_type = data[8:9]
             if (
                 struct.unpack_from("<B", data, 9)[0] != 2
                 or struct.unpack_from("<B", data, 10)[0] != 0x1C
             ):
-                raise BTLEManagementError("(btle.py) Malformed local OOB data (role).")
+                raise BTLEManagementError("Malformed local OOB data (role).")
             role = data[11:12]
             if (
                 struct.unpack_from("<B", data, 12)[0] != 17
                 or struct.unpack_from("<B", data, 13)[0] != 0x22
             ):
-                raise BTLEManagementError("(btle.py) Malformed local OOB data (confirm).")
+                raise BTLEManagementError("Malformed local OOB data (confirm).")
             confirm = data[14:30]
             if (
                 struct.unpack_from("<B", data, 30)[0] != 17
                 or struct.unpack_from("<B", data, 31)[0] != 0x23
             ):
-                raise BTLEManagementError("(btle.py) Malformed local OOB data (random).")
+                raise BTLEManagementError("Malformed local OOB data (random).")
             random = data[32:48]
             if (
                 struct.unpack_from("<B", data, 48)[0] != 2
                 or struct.unpack_from("<B", data, 49)[0] != 0x1
             ):
-                raise BTLEManagementError("(btle.py) Malformed local OOB data (flags).")
+                raise BTLEManagementError("Malformed local OOB data (flags).")
             flags = data[50:51]
             return {
                 "Address": "".join(["%02X" % struct.unpack("<B", c)[0] for c in address]),
@@ -810,7 +811,7 @@ class ScanEntry:
         addrType = self.addrTypes.get(resp["type"][0], None)
         if (self.addrType is not None) and (addrType != self.addrType):
             raise BTLEInternalError(
-                f"(btle.py) Address type changed during scan, for address {self.addr}"
+                f"Address type changed during scan, for address {self.addr}"
             )
         self.addrType = addrType
         self.rssi = -resp["rssi"][0]
@@ -937,7 +938,7 @@ class Scanner(Bluepy3Helper):
 
     def process(self, timeout=10.0):
         if self._helper is None:
-            raise BTLEInternalError("(btle.py) Helper not started (did you call start()?)")
+            raise BTLEInternalError("Helper not started (did you call start()?)")
         start = time.time()
         while True:
             if timeout:
@@ -970,7 +971,7 @@ class Scanner(Bluepy3Helper):
                     self.delegate.handleDiscovery(dev, (dev.updateCount <= 1), isNewData)
 
             else:
-                raise BTLEInternalError(f"(btle.py) Unexpected response: {respType}", resp)
+                raise BTLEInternalError(f"Unexpected response: {respType}", resp)
 
     def getDevices(self):
         return list(self.scanned.values())
