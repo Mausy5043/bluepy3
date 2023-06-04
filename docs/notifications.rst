@@ -12,7 +12,7 @@ a notification is received from the peripheral, as shown below:
     Called when a notification has been received from a ``Peripheral``. Normally
     you will call the peripheral's ``waitForNotifications()`` method to allow this,
     but note that a Bluetooth LE device may transmit notifications at any time. This
-    means that *handleNotification()* can potentially be called when any BluePy call
+    means that *handleNotification()* can potentially be called when any BluePy3 call
     is in progress.
 
     The *cHandle* parameter is the GATT 'handle' for the characteristic which is

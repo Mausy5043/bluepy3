@@ -8,7 +8,7 @@ such as notifications, indications, and advertising data - pass this information
 to the user by calling methods on a 'delegate' object.
 
 To be useful, the delegate object will be from a class created by the user.
-Bluepy's ``DefaultDelegate`` is a base class for this - you should override
+Bluepy3's ``DefaultDelegate`` is a base class for this - you should override
 some or all of the methods here with your own application-specific code.
 
 Constructor

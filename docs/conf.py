@@ -47,7 +47,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "bluepy3"
-copyright = "2023, Mausy5043"
+copyright = "2023, mausy5043"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

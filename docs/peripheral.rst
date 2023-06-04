@@ -3,7 +3,7 @@
 The ``Peripheral`` class
 ========================
 
-Bluepy's ``Peripheral`` class encapsulates a connection to a Bluetooth LE peripheral. You create a ``Peripheral`` object directly by specifying its MAC address; when the connection is established, the services and characteristics offered by that device can be discovered and read or written.
+Bluepy3's ``Peripheral`` class encapsulates a connection to a Bluetooth LE peripheral. You create a ``Peripheral`` object directly by specifying its MAC address; when the connection is established, the services and characteristics offered by that device can be discovered and read or written.
 
 Constructor
 -----------
