@@ -13,8 +13,7 @@ This is a Python3 library to allow communication with Bluetooth Low Energy devic
 
 Please be aware that this is not a beginners tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
 
-The package requires Python 3 v3.7 or higher to be installed. It has been extensively tested on a 
-Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 kernel 6.1.19-v8+.
+The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 kernel 6.* and Python 3.9.*. It requires Python v3.7 or higher to be installed.
 
 The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
 if you use the recommended pip installation method (see below). Otherwise,
@@ -63,9 +62,11 @@ TX bytes:7376962 acl:438075 sco:0 commands:72113 errors:0
 ```
 Use `hciconfig [hci0] up` to activate the BT device if the above returns an error.
 
+Although Python v3.7 will still work, official support for v3.7 is dropped as of JUN2023 since that is EOL. It is advised to upgrade your Python installation to v3.9 or above.
+
 ## Documentation
 
-Documentation can be built from the sources in the docs/ directory using Sphinx.
+Documentation can be built from the sources in the `docs/` directory using Sphinx.
 
 ## License  
 
@@ -77,6 +78,6 @@ This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/b
 by the [BleuZ project](http://www.bluez.org/) (not a https site) and the more 
 up-to-date [BleuZ on GitHub](https://github.com/bluez/bluez)
 
-Original source code and documentation can be found at:   
+Original source code and excellent documentation can be found at:   
   https://github.com/IanHarvey/bluepy   
   http://ianharvey.github.io/bluepy-doc/
