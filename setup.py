@@ -8,8 +8,8 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-# VERSION = "1.5.1"   # latest version for testing
-VERSION = "1.6.3"  # latest version for production
+VERSION = "1.7.1"  # latest version for testing
+# VERSION = "1.6.3"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
@@ -17,17 +17,17 @@ BLUEZ_VERSION = "(unknown)"
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
-    global BLUEZ_VERSION
+    global BLUEZ_VERSION  # noqa
     cmd = ""
     try:
         print("\n\n*** Executing pre-install ***\n")
         print(f"Working dir is {os.getcwd()}")
-        with open(MAKEFILE, "r") as makefile:
+        with open(MAKEFILE, "r", encoding="utf-8") as makefile:
             lines = makefile.readlines()
             for line in lines:
                 if line.startswith("BLUEZ_VERSION"):
                     BLUEZ_VERSION = line.split("=")[1].strip()
-        with open(VERSION_FILE, "w") as verfile:
+        with open(VERSION_FILE, "w", encoding="utf-8") as verfile:
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
             print(f"\nexecute {cmd}")
