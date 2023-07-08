@@ -8,8 +8,8 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-# VERSION = "1.7.1"  # latest version for testing
-VERSION = "1.6.4"  # latest version for production
+# VERSION = "1.7.8"  # latest version for testing
+VERSION = "1.8.1"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
@@ -34,10 +34,11 @@ def pre_install():
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
         print("\n\n*** Finished pre-install ***\n\n")
     except subprocess.CalledProcessError as e:
-        print("Failed to compile bluepy3-helper. Exiting install.")
         print(f"Command was {repr(cmd)} in {os.getcwd()}")
         print(f"Return code was {e.returncode}")
-        print(f"Output was:\n{e.output}")
+        err_out = e.output
+        print(f"Output was:\n{err_out.decode('utf-8')}")
+        print(f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}. Exiting install.\n")
         sys.exit(1)
 
 
