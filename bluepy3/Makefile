@@ -1,4 +1,4 @@
-BLUEZ_VERSION=5.66
+BLUEZ_VERSION=5.68
 
 BLUEZ_PATH=/tmp/bluez-$(BLUEZ_VERSION)
 
@@ -9,6 +9,8 @@ BLUEZ_SRCS += src/shared/crypto.c src/shared/att.c src/shared/queue.c src/shared
 BLUEZ_SRCS += src/shared/io-glib.c src/shared/timeout-glib.c
 # compiling against bluez 5.50+ requires these additional sources
 BLUEZ_SRCS += src/shared/log.c
+# compiling against bluez 5.58+ requires these additional sources
+BLUEZ_SRCS += src/shared/gatt-client.c src/shared/gatt-db.c src/shared/gatt-helpers.c
 
 IMPORT_SRCS = $(addprefix $(BLUEZ_PATH)/, $(BLUEZ_SRCS))
 LOCAL_SRCS  = bluepy3-helper.c
