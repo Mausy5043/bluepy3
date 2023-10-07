@@ -75,8 +75,8 @@ See [LICENSE](LICENSE)
 ## Acknowledgements
 
 This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy) and uses code 
-by the [BleuZ project](http://www.bluez.org/) (not a https site) and the more 
-up-to-date [BleuZ on GitHub](https://github.com/bluez/bluez)
+by the [BlueZ project](http://www.bluez.org/) (not a https site) and the more 
+up-to-date [BlueZ on GitHub](https://github.com/bluez/bluez)
 
 Original source code and excellent documentation can be found at:   
   https://github.com/IanHarvey/bluepy   
