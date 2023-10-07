@@ -9,7 +9,7 @@ from setuptools import setup
 from setuptools.command.build_py import build_py
 
 # VERSION = "1.7.8"  # latest version for testing
-VERSION = "1.8.1"  # latest version for production
+VERSION = "1.9.1"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
@@ -38,7 +38,9 @@ def pre_install():
         print(f"Return code was {e.returncode}")
         err_out = e.output
         print(f"Output was:\n{err_out.decode('utf-8')}")
-        print(f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}. Exiting install.\n")
+        print(
+            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}. Exiting install.\n"
+        )
         sys.exit(1)
 
 
