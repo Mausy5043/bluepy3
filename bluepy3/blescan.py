@@ -163,7 +163,7 @@ def main():
                 dump_services(dev)
                 dev.disconnect()
             except:
-                print(ANSI_RED + "Oops! Device doesn't want to talk to us." + ANSI_OFF)
+                print(ANSI_RED + "        Oops! Device doesn't want to talk to us." + ANSI_OFF)
             print()
 
 
