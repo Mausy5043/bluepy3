@@ -158,10 +158,12 @@ def main():
                 continue
 
             print("    Connecting to", ANSI_WHITE + d.addr + ANSI_OFF + ":")
-
-            dev = btle.Peripheral(d)
-            dump_services(dev)
-            dev.disconnect()
+            try:
+                dev = btle.Peripheral(d)
+                dump_services(dev)
+                dev.disconnect()
+            except:
+                print(ANSI_RED + "Oops! Device doesn't want to talk to us." + ANSI_OFF)
             print()
 
 
