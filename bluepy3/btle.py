@@ -483,9 +483,7 @@ class Peripheral(Bluepy3Helper):
         if len(addr.split(":")) != 6:
             raise ValueError(f"(btle.py) Expected MAC address, got {repr(addr)}")
         if addrType not in (ADDR_TYPE_PUBLIC, ADDR_TYPE_RANDOM):
-            raise ValueError(
-                f"(btle.py) Expected address type public or random, got {addrType}"
-            )
+            raise ValueError(f"(btle.py) Expected address type public or random, got {addrType}")
         self.retries = max_retries
         while self.retries > 0:
             self._startHelper(iface)
@@ -802,9 +800,7 @@ class ScanEntry:
     def _update(self, resp):
         addrType = self.addrTypes.get(resp["type"][0], None)
         if (self.addrType is not None) and (addrType != self.addrType):
-            raise BTLEInternalError(
-                f"Address type changed during scan, for address {self.addr}"
-            )
+            raise BTLEInternalError(f"Address type changed during scan, for address {self.addr}")
         self.addrType = addrType
         self.rssi = -resp["rssi"][0]
         self.connectable = (resp["flag"][0] & 0x4) == 0

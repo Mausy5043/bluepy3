@@ -174,15 +174,11 @@ class EnvironmentService:
             e_gas_handle = self.gas_char.getHandle()
             self.gas_cccd = self.gas_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.color_char is None:
-            self.color_char = self.environment_service.getCharacteristics(self.color_char_uuid)[
-                0
-            ]
+            self.color_char = self.environment_service.getCharacteristics(self.color_char_uuid)[0]
             e_color_handle = self.color_char.getHandle()
             self.color_cccd = self.color_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.config_char is None:
-            self.config_char = self.environment_service.getCharacteristics(
-                self.config_char_uuid
-            )[0]
+            self.config_char = self.environment_service.getCharacteristics(self.config_char_uuid)[0]
 
     def set_temperature_notification(self, state):
         if self.temperature_cccd is not None:
@@ -387,15 +383,11 @@ class MotionService:
             m_quaternion_handle = self.quaternion_char.getHandle()
             self.quaternion_cccd = self.quaternion_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.stepcnt_char is None:
-            self.stepcnt_char = self.motion_service.getCharacteristics(self.stepcnt_char_uuid)[
-                0
-            ]
+            self.stepcnt_char = self.motion_service.getCharacteristics(self.stepcnt_char_uuid)[0]
             m_stepcnt_handle = self.stepcnt_char.getHandle()
             self.stepcnt_cccd = self.stepcnt_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.rawdata_char is None:
-            self.rawdata_char = self.motion_service.getCharacteristics(self.rawdata_char_uuid)[
-                0
-            ]
+            self.rawdata_char = self.motion_service.getCharacteristics(self.rawdata_char_uuid)[0]
             m_rawdata_handle = self.rawdata_char.getHandle()
             self.rawdata_cccd = self.rawdata_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.euler_char is None:
@@ -403,21 +395,15 @@ class MotionService:
             m_euler_handle = self.euler_char.getHandle()
             self.euler_cccd = self.euler_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.rotation_char is None:
-            self.rotation_char = self.motion_service.getCharacteristics(
-                self.rotation_char_uuid
-            )[0]
+            self.rotation_char = self.motion_service.getCharacteristics(self.rotation_char_uuid)[0]
             m_rotation_handle = self.rotation_char.getHandle()
             self.rotation_cccd = self.rotation_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.heading_char is None:
-            self.heading_char = self.motion_service.getCharacteristics(self.heading_char_uuid)[
-                0
-            ]
+            self.heading_char = self.motion_service.getCharacteristics(self.heading_char_uuid)[0]
             m_heading_handle = self.heading_char.getHandle()
             self.heading_cccd = self.heading_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.gravity_char is None:
-            self.gravity_char = self.motion_service.getCharacteristics(self.gravity_char_uuid)[
-                0
-            ]
+            self.gravity_char = self.motion_service.getCharacteristics(self.gravity_char_uuid)[0]
             m_gravity_handle = self.gravity_char.getHandle()
             self.gravity_cccd = self.gravity_char.getDescriptors(forUUID=CCCD_UUID)[0]
 
@@ -572,9 +558,7 @@ class SoundService:
                 self.microphone_char_uuid
             )[0]
             s_microphone_handle = self.microphone_char.getHandle()
-            self.microphone_char_cccd = self.microphone_char.getDescriptors(forUUID=CCCD_UUID)[
-                0
-            ]
+            self.microphone_char_cccd = self.microphone_char.getDescriptors(forUUID=CCCD_UUID)[0]
 
     def play_speaker_sample(self, sample=0):
         if self.speaker_data_char is not None:
@@ -641,9 +625,7 @@ class MyDelegate(DefaultDelegate):
 
         elif hnd == m_tap_handle:
             direction, count = self._extract_tap_data(data)
-            print(
-                f"Notification: Tap: direction: {direction}, count: {self._str_to_int(count)}"
-            )
+            print(f"Notification: Tap: direction: {direction}, count: {self._str_to_int(count)}")
 
         elif hnd == m_orient_handle:
             teptep = binascii.b2a_hex(data)
