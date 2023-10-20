@@ -13,7 +13,7 @@ This is a Python3 library to allow communication with Bluetooth Low Energy devic
 
 Please be aware that this is not a beginners tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
 
-The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 kernel 6.* and Python 3.9.*. It requires Python v3.7 or higher to be installed.
+The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 and Python 3.9.* AND with Debian GNU Linux 12 and Python 3.11.*. `bluepy3` requires Python v3.7 or higher to be installed, version 3.9 or higher is strongly advised.
 
 The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
 if you use the recommended pip installation method (see below). Otherwise,
