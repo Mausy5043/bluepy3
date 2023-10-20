@@ -44,7 +44,7 @@ sudo setcap cap_net_raw,cap_net_admin+ep $(find . -name bluepy3-helper)
 blescan -n
 sudo hcitool lescan
 ```
-This should list all (compatible) Bluetooth devices in range.
+This should list the (compatible) Bluetooth devices in range.
 
 It may be considered to have command-line tools from BlueZ available for debugging.
 
