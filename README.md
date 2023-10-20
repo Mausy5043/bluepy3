@@ -46,8 +46,7 @@ sudo hcitool lescan
 ```
 This should list all (compatible) Bluetooth devices in range.
 
-It may be considered to have command-line tools from BlueZ available for debugging. There
-are instructions for building BlueZ on the Raspberry Pi at http://www.elinux.org/RPi_Bluetooth_LE.
+It may be considered to have command-line tools from BlueZ available for debugging.
 
 ## Troubleshooting
 
