@@ -108,8 +108,6 @@ setup(
     cmdclass=setup_cmdclass,
     entry_points={
         "console_scripts": [
-            "thingy52=bluepy3.thingy52:main",
-            "sensortag=bluepy3.sensortag:main",
             "blescan=bluepy3.blescan:main",
         ]
     },
