@@ -222,20 +222,21 @@ class EnvironmentService:
         # fmt: on
         if self.config_char is not None:
             current_config = binascii.b2a_hex(self.config_char.read())
+            new_config = current_config
             if temp_int is not None:
-                new_config = write_uint16(current_config, temp_int, 0)
+                new_config = write_uint16(new_config, temp_int, 0)
             if press_int is not None:
-                new_config = write_uint16(current_config, press_int, 1)
+                new_config = write_uint16(new_config, press_int, 1)
             if humid_int is not None:
-                new_config = write_uint16(current_config, humid_int, 2)
+                new_config = write_uint16(new_config, humid_int, 2)
             if gas_mode_int is not None:
-                new_config = write_uint8(current_config, gas_mode_int, 8)
+                new_config = write_uint8(new_config, gas_mode_int, 8)
             if color_int is not None:
-                new_config = write_uint16(current_config, color_int, 3)
+                new_config = write_uint16(new_config, color_int, 3)
             if color_sens_calib is not None:
-                new_config = write_uint8(current_config, color_sens_calib[0], 9)
-                new_config = write_uint8(current_config, color_sens_calib[1], 10)
-                new_config = write_uint8(current_config, color_sens_calib[2], 11)
+                new_config = write_uint8(new_config, color_sens_calib[0], 9)
+                new_config = write_uint8(new_config, color_sens_calib[1], 10)
+                new_config = write_uint8(new_config, color_sens_calib[2], 11)
             self.config_char.write(binascii.a2b_hex(new_config), True)
 
     def disable(self):
