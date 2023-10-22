@@ -26,7 +26,7 @@ When you want to make changes, the best way to do that is by creating a [feature
 
 ### Formatting and Coding Style
  * [We use `black`](https://github.com/psf/black). Code style formatting of all commits must adhere to `black --line-length 98`.
- * Please use `pylint` with this project's `.pylintrc` and `flake8` and `pycodestyle` using the project's `tox.ini` to discover suggestions for code improvement. Since the code isn't perfect you are free to ignore any suggestions by the linters that are unrelated to your changes. However, you are also welcome to fix those suggestions if you want ;-)
+ * Please use `pylint` with this project's `.pylintrc` and `flake8` and `pydocstyle` using the project's `tox.ini` to discover suggestions for code improvement. Since the code isn't perfect you are free to ignore any suggestions by the linters that are unrelated to your changes. However, you are also welcome to fix those suggestions if you want ;-)
 
 Note that most, if not all, of us do this in our free time, so sometimes you get a quick response and other times it may take longer.   
 We assume that you've read GitHub's help page [regarding pull requests](https://help.github.com/articles/using-pull-requests/).
