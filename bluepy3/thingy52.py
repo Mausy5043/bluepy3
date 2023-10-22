@@ -21,7 +21,7 @@ def write_uint8(data, value, index):
 
 # Please see # Ref https://nordicsemiconductor.github.io/Nordic-Thingy52-FW/documentation
 # for more information on the UUIDs of the Services and Characteristics that are being used
-def Nordic_UUID(val):
+def Nordic_UUID(val):    # noqa
     """Adds base UUID and inserts value to return Nordic UUID"""
     return UUID(f"EF68{val:04X}-9B35-4933-9B10-52FFA9740042")
 
