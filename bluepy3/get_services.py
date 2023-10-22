@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 """
-Fetch UUIDs for GATT characteristics, declarations, descriptors, formats, services and units from bluetooth.com
-and store them in uuids.json for later use by `btle.py`
+Fetch UUIDs for GATT characteristics, declarations, descriptors, formats, services and
+units from bluetooth.com and store them in uuids.json for later use by `btle.py`
 
 Note that the original tables from which the UUIDs were gathered nolonger exist.
 Therefore, the archived webpages are used from archive.com
@@ -65,7 +65,8 @@ def get_table_rows(html=None):
         print(tables)
     biggest_table = max(tables, key=len, default=0)
 
-    # service_table=soup.find("table", attrs={"summary":"Documents This library contains Services."})
+    # service_table=soup.find("table",
+    #                         attrs={"summary":"Documents This library contains Services."})
     try:
         assert biggest_table
 
@@ -128,7 +129,8 @@ def get_service_names():
         if DEBUG:
             # pylint: disable=C0301
             # example:
-            # row {'Name': 'Weight Scale', 'Type': 'org.bluetooth.service.weight_scale', 'Number': 6173, 'Level': 'Adopted'}
+            # row {'Name': 'Weight Scale', 'Type': 'org.bluetooth.service.weight_scale',
+            #      'Number': 6173, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
         yield row
@@ -150,7 +152,8 @@ def get_descriptors():
         if DEBUG:
             # pylint: disable=C0301
             # example:
-            # row {'Name': 'Value Trigger Setting', 'Type': 'org.bluetooth.descriptor.value_trigger_setting', 'Number': 10506, 'Level': 'Adopted'}
+            # row {'Name': 'Value Trigger Setting', 'Type': 'org.bluetooth.descriptor.value_trigger_setting',
+            #      'Number': 10506, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
         yield row
@@ -172,7 +175,9 @@ def get_declarations():
         if DEBUG:
             # pylint: disable=C0301
             # example:
-            # row {'Name': 'GATT Primary Service Declaration', 'Type': 'org.bluetooth.attribute.gatt.primary_service_declaration', 'Number': 10240, 'Level': 'Adopted'}
+            # row {'Name': 'GATT Primary Service Declaration',
+            #      'Type': 'org.bluetooth.attribute.gatt.primary_service_declaration',
+            #      'Number': 10240, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
         yield row
@@ -194,7 +199,8 @@ def get_characteristics():
         if DEBUG:
             # pylint: disable=C0301
             # example:
-            # row {'Name': 'Wind Chill', 'Type': 'org.bluetooth.characteristic.wind_chill', 'Number': 10873, 'Level': 'Adopted'}
+            # row {'Name': 'Wind Chill', 'Type': 'org.bluetooth.characteristic.wind_chill',
+            #      'Number': 10873, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
         yield row

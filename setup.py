@@ -9,7 +9,7 @@ from setuptools import setup
 from setuptools.command.build_py import build_py
 
 # VERSION = "1.7.8"  # latest version for testing
-VERSION = "1.10.3"  # latest version for production
+VERSION = "1.10.4"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
@@ -87,7 +87,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -95,7 +94,7 @@ setup(
         "Topic :: Home Automation",
     ],
     packages=["bluepy3"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     package_data={
         "bluepy3": [
             "bluepy3-helper",
@@ -109,8 +108,6 @@ setup(
     cmdclass=setup_cmdclass,
     entry_points={
         "console_scripts": [
-            "thingy52=bluepy3.thingy52:main",
-            "sensortag=bluepy3.sensortag:main",
             "blescan=bluepy3.blescan:main",
         ]
     },
