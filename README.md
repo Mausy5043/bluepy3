@@ -7,15 +7,15 @@
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
-###### Note: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
+###### ATTENTION: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
 
 ## Requirements
 
 Please be aware that this is not a beginners tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
 
-The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 and Python 3.9.* AND with Debian GNU Linux 12 and Python 3.11.*.
-
 Development of this package is done in Python 3.9. The package is considered forwards compatible at least upto Python 3.11 and probably also beyond. Backwards compatibility is not guaranteed; if it works on Python 3.7 or before consider yourself lucky. [Python versions that are end-of-life](https://devguide.python.org/versions/) are not supported.
+
+The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 w/ Python 3.9.* AND with Debian GNU Linux 12 /w Python 3.11.*.
 
 The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
 if you use the recommended pip installation method (see below). Otherwise,
@@ -35,7 +35,7 @@ make uuids.json
 
 ## Installation
 
-To install the current released version, on most Debian-based systems:
+To install the currently released version, on most Debian-based systems:
 ```(bash)
 sudo apt-get install libglib2.0-dev libbluetooth-dev
 python3 -m pip install --upgrade bluepy3
@@ -63,11 +63,9 @@ TX bytes:7376962 acl:438075 sco:0 commands:72113 errors:0
 ```
 Use `hciconfig [hci0] up` to activate the BT device if the above returns an error.
 
-Although Python v3.7 will still work, official support for v3.7 is dropped as of JUN2023 since that is EOL. It is advised to upgrade your Python installation to v3.9 or above.
-
 ## Documentation
 
-Documentation can be built from the sources in the `docs/` directory using Sphinx.
+For documentation you are referred to [the documentation that comes with `bluepy`](http://ianharvey.github.io/bluepy-doc/).
 
 ## License  
 
@@ -79,6 +77,5 @@ This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/b
 by the [BlueZ project](http://www.bluez.org/) (not a https site) and the more 
 up-to-date [BlueZ on GitHub](https://github.com/bluez/bluez)
 
-Original source code and excellent documentation can be found at:   
-  https://github.com/IanHarvey/bluepy   
-  http://ianharvey.github.io/bluepy-doc/
+Original source code can be found at:   
+>  https://github.com/IanHarvey/bluepy
