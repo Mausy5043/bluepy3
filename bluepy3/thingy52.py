@@ -178,7 +178,9 @@ class EnvironmentService:
             e_color_handle = self.color_char.getHandle()
             self.color_cccd = self.color_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.config_char is None:
-            self.config_char = self.environment_service.getCharacteristics(self.config_char_uuid)[0]
+            self.config_char = self.environment_service.getCharacteristics(self.config_char_uuid)[
+                0
+            ]
 
     def set_temperature_notification(self, state):
         if self.temperature_cccd is not None:
@@ -395,7 +397,9 @@ class MotionService:
             m_euler_handle = self.euler_char.getHandle()
             self.euler_cccd = self.euler_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.rotation_char is None:
-            self.rotation_char = self.motion_service.getCharacteristics(self.rotation_char_uuid)[0]
+            self.rotation_char = self.motion_service.getCharacteristics(self.rotation_char_uuid)[
+                0
+            ]
             m_rotation_handle = self.rotation_char.getHandle()
             self.rotation_cccd = self.rotation_char.getDescriptors(forUUID=CCCD_UUID)[0]
         if self.heading_char is None:
