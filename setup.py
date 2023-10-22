@@ -87,7 +87,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -95,7 +94,7 @@ setup(
         "Topic :: Home Automation",
     ],
     packages=["bluepy3"],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     package_data={
         "bluepy3": [
             "bluepy3-helper",
