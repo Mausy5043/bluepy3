@@ -17,7 +17,7 @@ BLUEZ_VERSION = "(unknown)"
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
-    global BLUEZ_VERSION  # noqa
+    global BLUEZ_VERSION  # noqa  # pylint: disable=global-statement
     cmd = ""
     try:
         print("\n\n*** Executing pre-install ***\n")
