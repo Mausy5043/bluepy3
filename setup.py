@@ -8,8 +8,8 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-# VERSION = "1.7.8"  # latest version for testing
-VERSION = "1.10.4"  # latest version for production
+VERSION = "1.11.1"  # latest version for testing
+#VERSION = "1.10.4"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
 BLUEZ_VERSION = "(unknown)"
@@ -17,7 +17,7 @@ BLUEZ_VERSION = "(unknown)"
 
 def pre_install():
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
-    global BLUEZ_VERSION  # noqa
+    global BLUEZ_VERSION  # noqa  # pylint: disable=global-statement
     cmd = ""
     try:
         print("\n\n*** Executing pre-install ***\n")
@@ -39,7 +39,8 @@ def pre_install():
         err_out = e.output
         print(f"Output was:\n{err_out.decode('utf-8')}")
         print(
-            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}. Exiting install.\n"
+            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}."
+            f" Exiting install.\n"
         )
         sys.exit(1)
 

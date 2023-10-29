@@ -67,6 +67,11 @@ Use `hciconfig [hci0] up` to activate the BT device if the above returns an erro
 
 For documentation you are referred to [the documentation that comes with `bluepy`](http://ianharvey.github.io/bluepy-doc/).
 
+## Contributing
+
+Your assistance to improve this package is greatly appreciated.  
+See [CONTRIBUTING](CONTRIBUTING.md) for details.
+
 ## License  
 
 See [LICENSE](LICENSE)

@@ -152,7 +152,8 @@ def get_descriptors():
         if DEBUG:
             # pylint: disable=C0301
             # example:
-            # row {'Name': 'Value Trigger Setting', 'Type': 'org.bluetooth.descriptor.value_trigger_setting',
+            # row {'Name': 'Value Trigger Setting',
+            #      'Type': 'org.bluetooth.descriptor.value_trigger_setting',
             #      'Number': 10506, 'Level': 'Adopted'}
             print(f"row {row}")
         row["cname"] = row["Type"].split(".")[-1]
