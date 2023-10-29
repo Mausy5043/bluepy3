@@ -39,7 +39,8 @@ def pre_install():
         err_out = e.output
         print(f"Output was:\n{err_out.decode('utf-8')}")
         print(
-            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}. Exiting install.\n"
+            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}."
+            f" Exiting install.\n"
         )
         sys.exit(1)
 

@@ -180,7 +180,11 @@ class Service:
         return self.descs
 
     def __str__(self):
-        return f"Service <uuid={self.uuid.getCommonName()} handleStart={self.hndStart} handleEnd={self.hndEnd}>"
+        return (
+            f"Service <uuid={self.uuid.getCommonName()} "
+            f"handleStart={self.hndStart} "
+            f"handleEnd={self.hndEnd}>"
+        )
 
 
 class Characteristic:
@@ -496,7 +500,8 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType}\n")
             rsp = self._getResp("stat", timeout)
             timeout_exception = BTLEConnectTimeout(
-                f"Timed out while trying to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
+                f"Timed out while trying to connect to peripheral {addr}, "
+                f"addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
             if rsp is None:
@@ -516,7 +521,8 @@ class Peripheral(Bluepy3Helper):
                     time.sleep(0.5 * (max_retries - self.retries))
                     if self.retries <= 1:
                         raise BTLEConnectError(
-                            f"Failed to connect to peripheral {addr}, addr type: {addrType}, interface {iface}, timeout={timeout}",
+                            f"Failed to connect to peripheral {addr}, "
+                            f"addr type: {addrType}, interface {iface}, timeout={timeout}",
                             rsp,
                         )
             self.retries -= 1
@@ -590,7 +596,8 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(cmd + "\n")
         rsp = self._getResp("find", timeout)
         timeout_exception = BTLEConnectTimeout(
-            f"Timed out while trying to get characteristics from peripheral {self.addr}, addr type: {self.addrType}",
+            f"Timed out while trying to get characteristics from peripheral {self.addr}, "
+            f"addr type: {self.addrType}",
             rsp,
         )
         if rsp is None:
