@@ -1,0 +1,12 @@
+# When making changes to this file update requirements.txt also !!
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pip
+  # Not on conda channels:
+  - pip:
+      - pylint
