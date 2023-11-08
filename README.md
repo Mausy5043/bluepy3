@@ -1,9 +1,9 @@
-# bluepy3
-
 [![PyPI version](https://img.shields.io/pypi/v/bluepy3.svg?logo=pypi&logoColor=FFE873)](https://pypi.org/project/bluepy3)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/bluepy3?logo=python&logoColor=FFE873)](https://pypi.org/project/bluepy3)
 [![PyPI downloads](https://img.shields.io/pypi/dm/bluepy3.svg)](https://pypistats.org/packages/bluepy3)
 [![Code style: Black](https://img.shields.io/badge/code%20style-Black-000000.svg)](https://github.com/psf/black)
+
+# bluepy3
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
