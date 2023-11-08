@@ -55,11 +55,12 @@ setup_cmdclass = {
     "build_py": MyBuildPy,
 }
 
+# TODO: this is, maybe, not OR always required on Python 3.8+
 # Force package to be *not* pure Python
-# Discusssed at issue #158
+# Discussed at https://github.com/IanHarvey/bluepy/issues/158
 
 try:
-    from wheel.bdist_wheel import bdist_wheel  # noqa
+    from wheel.bdist_wheel import bdist_wheel  # type: ignore
 
     class BluepyBdistWheel(bdist_wheel):
         def finalize_options(self):
