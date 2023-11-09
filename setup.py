@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# type: ignore
+
 """Python setup script for bluepy3"""
 
 import os
