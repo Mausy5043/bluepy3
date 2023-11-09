@@ -12,7 +12,7 @@ import errno
 import os
 import tempfile
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  # type: ignore
 
 # fmt: off
 URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/" \
@@ -50,7 +50,7 @@ def get_html(url: str, local_filename: str) -> object:
             raise
 
     cachefilename = os.path.join(cachedir, local_filename)
-    html = requests.get(url).content
+    html = requests.get(url, timeout=60.0).content
     with open(cachefilename, "wb") as file:
         file.write(html)
     return html
