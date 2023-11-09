@@ -34,6 +34,7 @@ def pre_install():
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
             print(f"\nexecute {cmd}")
+            # pylint: disable-next=unused-variable
             msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
         print("\n\n*** Finished pre-install ***\n\n")
     except subprocess.CalledProcessError as e:
@@ -68,7 +69,7 @@ try:
     class BluepyBdistWheel(bdist_wheel):
         def finalize_options(self):
             bdist_wheel.finalize_options(self)
-            self.root_is_pure = False  # noqa
+            self.root_is_pure = False  # noqa    # pylint: disable=attribute-defined-outside-init
 
     setup_cmdclass["bdist_wheel"] = BluepyBdistWheel
 except ImportError:
