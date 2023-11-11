@@ -63,7 +63,7 @@ class ScanPrint(btle.DefaultDelegate):
         btle.DefaultDelegate.__init__(self)
         self.opts = opts
 
-    def handleDiscovery(self, dev, isNewDev, isNewData):
+    def handleDiscovery(self, scanEntry, isNewDev, isNewData):
         if isNewDev:
             status = "new"
         elif isNewData:
@@ -75,21 +75,22 @@ class ScanPrint(btle.DefaultDelegate):
                 return
             status = "old"
 
-        if dev.rssi < self.opts.sensitivity:
+        if scanEntry.rssi < self.opts.sensitivity:
             return
         dev_connectable = "(not connectable)"
-        if dev.connectable:
+        if scanEntry.connectable:
             dev_connectable = ""
         print(
-            f"    Device ({status}): {ANSI_WHITE}{dev.addr}{ANSI_OFF} ({dev.addrType}),"
-            f" {dev.rssi} dBm {dev_connectable}"
+            f"    Device ({status}): {ANSI_WHITE}{scanEntry.addr}{ANSI_OFF}"
+            f" ({scanEntry.addrType}),"
+            f" {scanEntry.rssi} dBm {dev_connectable}"
         )
-        for sdid, desc, val in dev.getScanData():
+        for sdid, desc, val in scanEntry.getScanData():
             if sdid in [8, 9]:
                 print(f"\t{desc}: '{ANSI_CYAN}{val}{ANSI_OFF}'")
             else:
                 print(f"\t{desc}: <{val}>")
-        if not dev.scanData:
+        if not scanEntry.scanData:
             print("\t(no data)")
         print()
 
@@ -160,7 +161,7 @@ def main():
                 dev = btle.Peripheral(d)
                 dump_services(dev)
                 dev.disconnect()
-            except:
+            except Exception:
                 print(ANSI_RED + "        Oops! Device doesn't want to talk to us." + ANSI_OFF)
             print()
 
