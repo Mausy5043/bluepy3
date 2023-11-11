@@ -12,7 +12,7 @@ import errno
 import os
 import tempfile
 import requests
-from bs4 import BeautifulSoup  # type: ignore
+from bs4 import BeautifulSoup  # pyright: ignore reportMissingImports
 
 # fmt: off
 URL_CHARACTERISTICS = "https://web.archive.org/web/20170201044907/" \
