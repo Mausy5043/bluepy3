@@ -589,7 +589,6 @@ class Peripheral(Bluepy3Helper):
         return svc
 
     def _getIncludedServices(self, startHnd=1, endHnd=0xFFFF):
-        # TODO: No working example of this yet
         self._writeCmd(f"incl {startHnd:X} {endHnd:X}\n")
         return self._getResp("find")
 
