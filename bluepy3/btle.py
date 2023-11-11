@@ -448,15 +448,15 @@ class Bluepy3Helper:
 
 class Peripheral(Bluepy3Helper):
     # fmt: off
-    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
+    def __init__(self, addr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
         Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
-        (self.deviceAddr, self.addrType, self.iface) = (None, None, None)
+        (self.addr, self.addrType, self.iface) = (addr, addrType, iface)
 
-        if isinstance(deviceAddr, ScanEntry):
-            self._connect(deviceAddr.addr, deviceAddr.addrType, deviceAddr.iface, timeout)
-        elif deviceAddr is not None:
-            self._connect(deviceAddr, addrType, iface, timeout)
+        if isinstance(addr, ScanEntry):
+            self._connect(addr.addr, addr.addrType, addr.iface, timeout)
+        elif addr is not None:
+            self._connect(addr, addrType, iface, timeout)
     # fmt: on
 
     def setDelegate(self, delegate_):  # same as withDelegate(), deprecated
