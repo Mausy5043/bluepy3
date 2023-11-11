@@ -248,7 +248,7 @@ class Characteristic:
 
     def propertiesToString(self):
         propStr = ""
-        for p in Characteristic.propNames:
+        for p in Characteristic.propNames:  # pylint: disable=consider-using-dict-items)
             if p & self.properties:
                 propStr += Characteristic.propNames[p] + " "
         return propStr
@@ -309,11 +309,13 @@ class Bluepy3Helper:
             self._aita = 0
             self._lineq = Queue()
             self._mtu = 0
+            # pylint: disable-next=consider-using-with
             self._stderr = open(os.devnull, "w")  # pylint: disable=unspecified-encoding
             args = [helperExe]
             if iface is not None:
                 args.append(str(iface))
-            # pylint: disable-next=W1509  # FIXME
+            #
+            # pylint: disable-next=consider-using-with, disable-next=W1509  # FIXME: should not be using preexec_fn
             self._helper = subprocess.Popen(
                 args,
                 stdin=subprocess.PIPE,
@@ -445,9 +447,8 @@ class Bluepy3Helper:
 
 
 class Peripheral(Bluepy3Helper):
-    def __init__(
-        self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMETIMEOUT
-    ):
+    # fmt: off
+    def __init__(self, deviceAddr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
         Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
         (self.deviceAddr, self.addrType, self.iface) = (None, None, None)
@@ -456,6 +457,7 @@ class Peripheral(Bluepy3Helper):
             self._connect(deviceAddr.addr, deviceAddr.addrType, deviceAddr.iface, timeout)
         elif deviceAddr is not None:
             self._connect(deviceAddr, addrType, iface, timeout)
+    # fmt: on
 
     def setDelegate(self, delegate_):  # same as withDelegate(), deprecated
         return self.withDelegate(delegate_)
@@ -476,7 +478,7 @@ class Peripheral(Bluepy3Helper):
                 return None
 
             respType = resp["rsp"][0]
-            if respType == "ntfy" or respType == "ind":
+            if respType in ["ntfy", "ind"]:
                 hnd = resp["hnd"][0]
                 data = resp["d"][0]
                 if self.delegate is not None:
@@ -743,6 +745,7 @@ class Peripheral(Bluepy3Helper):
                 "Flags": "".join(["%02X" % struct.unpack("<B", c)[0] for c in flags]),          # pylint: disable=C0209
             }
             # fmt: on
+        return {}
 
     def __del__(self):
         self.disconnect()
@@ -839,7 +842,7 @@ class ScanEntry:
                 return val.decode("utf-8")
             except UnicodeDecodeError:
                 bbval = bytearray(val)
-                return "".join([(chr(x) if (x >= 32 and x <= 127) else "?") for x in bbval])
+                return "".join([(chr(x) if x in range(32, 127) else "?") for x in bbval])
         if sdid in [ScanEntry.INCOMPLETE_16B_SERVICES, ScanEntry.COMPLETE_16B_SERVICES]:
             return self._decodeUUIDlist(val, 2)
         if sdid in [ScanEntry.INCOMPLETE_32B_SERVICES, ScanEntry.COMPLETE_32B_SERVICES]:
@@ -862,7 +865,7 @@ class ScanEntry:
         """Return list of tuples [(tag, description, value)]"""
         return [
             (sdid, self.getDescription(sdid), self.getValueText(sdid))
-            for sdid in self.scanData.keys()
+            for sdid in self.scanData.keys()  # pylint: disable=consider-iterating-dictionary
         ]
 
     def update(self, resp):
