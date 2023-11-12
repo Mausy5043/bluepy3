@@ -12,7 +12,7 @@ import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, Optional
+from typing import Any, Optional, TextIO
 
 
 def preexec_function() -> None:
@@ -436,12 +436,12 @@ class UUID:
 # Bluepy3Helper and derived classes below
 class Bluepy3Helper:
     def __init__(self) -> None:
-        self._helper = None
-        self._lineq = None
-        self._stderr = None
-        self._mtu = 0
+        self._helper: subprocess.Popen = None
+        self._lineq: Queue = None
+        self._stderr: TextIO = None
+        self._mtu: int = 0
         self.delegate = DefaultDelegate()
-        self._aita = 0
+        self._aita: int = 0
 
     def _mgmtCmd(self, cmd) -> None:
         self._writeCmd(cmd + "\n")
@@ -466,7 +466,7 @@ class Bluepy3Helper:
             self._mtu = 0
             # pylint: disable-next=consider-using-with
             self._stderr = open(os.devnull, "w")  # pylint: disable=unspecified-encoding
-            args = [helperExe]
+            args: list[str] = [helperExe]
             if iface is not None:
                 args.append(str(iface))
             #
