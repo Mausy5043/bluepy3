@@ -909,27 +909,11 @@ class Scanner(Bluepy3Helper):
     def _cmd(self) -> str:
         return "pasv" if self.passive else "scan"
 
-    def start(self, passive: bool = False) -> None:
-        self.passive = passive
-        self._startHelper(iface=self.iface)
-        self._mgmtCmd("le on")
-        self._writeCmd(self._cmd() + "\n")
-        rsp = self._waitResp("mgmt")
-        if rsp["code"][0] == "success":
-            return
-        # Sometimes previous scan still ongoing
-        if rsp["code"][0] == "busy":
-            self._mgmtCmd(self._cmd() + "end")
-            rsp = self._waitResp("stat")
-            assert rsp["state"][0] == "disc"
-            self._mgmtCmd(self._cmd())
-
-    def stop(self) -> None:
-        self._mgmtCmd(self._cmd() + "end")
-        self._stopHelper()
-
     def clear(self) -> None:
         self.scanned = {}
+
+    def getDevices(self):
+        return list(self.scanned.values())
 
     def process(self, timeout=10.0) -> None:
         if self._helper is None:
@@ -966,15 +950,31 @@ class Scanner(Bluepy3Helper):
             else:
                 raise BTLEInternalError(f"Unexpected response: {respType}", resp)
 
-    def getDevices(self):
-        return list(self.scanned.values())
-
     def scan(self, timeout=10, passive=False):
         self.clear()
         self.start(passive=passive)
         self.process(timeout)
         self.stop()
         return self.getDevices()
+
+    def start(self, passive: bool = False) -> None:
+        self.passive = passive
+        self._startHelper(iface=self.iface)
+        self._mgmtCmd("le on")
+        self._writeCmd(self._cmd() + "\n")
+        rsp = self._waitResp("mgmt")
+        if rsp["code"][0] == "success":
+            return
+        # Sometimes previous scan still ongoing
+        if rsp["code"][0] == "busy":
+            self._mgmtCmd(self._cmd() + "end")
+            rsp = self._waitResp("stat")
+            assert rsp["state"][0] == "disc"
+            self._mgmtCmd(self._cmd())
+
+    def stop(self) -> None:
+        self._mgmtCmd(self._cmd() + "end")
+        self._stopHelper()
 
 
 class _UUIDNameMap:
