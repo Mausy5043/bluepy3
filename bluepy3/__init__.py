@@ -2,4 +2,4 @@
 
 from . import btle
 
-__all__ = ["btle"]
+__all__: list[str] = ["btle"]
