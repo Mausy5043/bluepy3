@@ -12,6 +12,7 @@ import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
+from typing import Any, Optional
 
 
 def preexec_function() -> None:
@@ -34,17 +35,17 @@ ADDR_TYPE_RANDOM = "random"
 BTLE_TIMEOUT = 32.1
 
 
-def DBG(*args):
+def DBG(*args) -> None:  # type: ignore
     if Debugging:
-        msg = " ".join([str(a) for a in args])
+        msg: str = " ".join([str(a) for a in args])
         print(f"{msg}")
 
 
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message, resp_dict=None) -> None:
-        self.message = message
+    def __init__(self, message: str, resp_dict: Optional[dict[str, str]] = None) -> None:
+        self.message: str = message
 
         # optional messages from bluepy3-helper
         self.estat = None
@@ -58,7 +59,7 @@ class BTLEException(Exception):
                 self.emsg = self.emsg[0]
 
     def __str__(self) -> str:
-        msg = self.message
+        msg: str = self.message
         if self.estat or self.emsg:
             msg = f"{msg} ("
             if self.estat:
@@ -73,32 +74,32 @@ class BTLEException(Exception):
 
 
 class BTLEInternalError(BTLEException):
-    def __init__(self, message, rsp=None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectError(BTLEException):
-    def __init__(self, message, rsp=None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectTimeout(BTLEException):
-    def __init__(self, message, rsp=None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEManagementError(BTLEException):
-    def __init__(self, message, rsp=None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEGattError(BTLEException):
-    def __init__(self, message, rsp=None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class UUID:
-    def __init__(self, val, commonName=None) -> None:
+    def __init__(self, val: Any, commonName: str = "") -> None:
         """Initialisation
         We accept: 32-digit hex strings, with and without '-' characters,
         4 to 8 digit hex strings, and integers
@@ -116,27 +117,24 @@ class UUID:
         if len(val) <= 8:  # Short form
             val = ("0" * (8 - len(val))) + val + "00001000800000805F9B34FB"
 
-        self.binVal = binascii.a2b_hex(val.encode("utf-8"))
+        self.binVal: bytes = binascii.a2b_hex(val.encode("utf-8"))
         if len(self.binVal) != 16:
             raise ValueError(
                 f"(btle.py) UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})"
             )
-        self.commonName = commonName
+        self.commonName: str = commonName
 
     def __str__(self) -> str:
         s = binascii.b2a_hex(self.binVal).decode("utf-8")
         return "-".join([s[0:8], s[8:12], s[12:16], s[16:20], s[20:32]])
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self.binVal == UUID(other).binVal
 
-    # def __cmp__(self, other):
-    #     return cmp(self.binVal, UUID(other).binVal)
-
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.binVal)
 
-    def getCommonName(self):
+    def getCommonName(self) -> str:
         s = AssignedNumbers.getCommonName(self)
         if s:
             return s
@@ -167,7 +165,7 @@ class Service:
             return [ch for ch in self.chars if ch.uuid == u]
         return self.chars
 
-    def getDescriptors(self, forUUID=None):
+    def getDescriptors(self, forUUID=None) -> list:
         if not self.descs:
             # Grab all descriptors in our range, except for the service
             # declaration descriptor
@@ -180,7 +178,7 @@ class Service:
             return [desc for desc in self.descs if desc.uuid == u]
         return self.descs
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Service <uuid={self.uuid.getCommonName()} "
             f"handleStart={self.hndStart} "
@@ -448,14 +446,16 @@ class Bluepy3Helper:
 
 class Peripheral(Bluepy3Helper):
     # fmt: off
-    def __init__(self, addr=None, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
+    def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface: str = "", timeout: float = BTLE_TIMEOUT):
         Bluepy3Helper.__init__(self)
         self._serviceMap = None  # Indexed by UUID
-        (self.addr, self.addrType, self.iface) = (addr, addrType, iface)
+        self.addr = addr
+        self.addrType = addrType
+        self.iface = iface
 
         if isinstance(addr, ScanEntry):
             self._connect(addr.addr, addr.addrType, addr.iface, timeout)
-        elif addr is not None:
+        elif addr:
             self._connect(addr, addrType, iface, timeout)
     # fmt: on
 
@@ -487,7 +487,7 @@ class Peripheral(Bluepy3Helper):
                 continue
             return resp
 
-    def _connect(self, addr, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT):
+    def _connect(self, addr: str, addrType=ADDR_TYPE_PUBLIC, iface="", timeout=BTLE_TIMEOUT):
         max_retries = 5
         if len(addr.split(":")) != 6:
             raise ValueError(f"(btle.py) Expected MAC address, got {repr(addr)}")
@@ -499,7 +499,7 @@ class Peripheral(Bluepy3Helper):
             self.addr = addr
             self.addrType = addrType
             self.iface = iface
-            if iface is not None:
+            if iface:
                 self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
@@ -973,7 +973,7 @@ class Scanner(Bluepy3Helper):
         return self.getDevices()
 
 
-def capitaliseName(descr):
+def capitaliseName(descr: str) -> str:
     words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
     capWords = [words[0].lower()]
     capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
@@ -991,17 +991,29 @@ class _UUIDNameMap:
             vars(self)[attrName] = uuid
             self.idMap[uuid] = uuid
 
-    def getCommonName(self, uuid):
+    def getCommonName(self, uuid) -> str:
         if uuid in self.idMap:
             return self.idMap[uuid].commonName
-        return None
+        return ""
 
 
 def get_json_uuid():
+    uuid_entry = list[int, str, str]
+    # an entry in the uuid_list is a list containing an `int`` and two `str`
+    # example: [10082, 'day', 'time (day)']
+    uuid_list = list[uuid_entry]
+    # a list of `uuid_entry`s
+    json_content = dict[str, uuid_list]
+    # a dict containing the named `uuid_lists`s. The key is the name of each list as a `str`
+    _v: uuid_entry
+    number: int
+    cname: str
+    name: str
     with open(os.path.join(script_path, "uuids.json"), "rb") as fp:
-        uuid_data = json.loads(fp.read().decode("utf-8"))
-    for k in uuid_data.keys():
-        for number, cname, name in uuid_data[k]:
+        _uuid_data: json_content = json.loads(fp.read().decode("utf-8"))
+    for _, _v in _uuid_data.items():
+        print(_v)
+        for number, cname, name in _v:
             yield UUID(number, cname)
             yield UUID(number, name)
 
@@ -1009,15 +1021,17 @@ def get_json_uuid():
 AssignedNumbers = _UUIDNameMap(get_json_uuid())
 
 if __name__ == "__main__":
+    Debugging = True
+    print(AssignedNumbers.device_name)
     if len(sys.argv) < 2:
         sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
-    if not os.path.isfile(helperExe):
-        raise ImportError(f"(btle.py) Cannot find required executable '{helperExe}'")
+    # if not os.path.isfile(helperExe):
+    #     raise ImportError(f"(btle.py) Cannot find required executable '{helperExe}'")
 
-    my_device_address = sys.argv[1]
+    my_device_address: str = sys.argv[1]
     if len(sys.argv) == 3:
-        my_address_type = sys.argv[2]
+        my_address_type: str = sys.argv[2]
     else:
         my_address_type = ADDR_TYPE_PUBLIC
     print(f"Connecting to: {my_device_address}, address type: {my_address_type}")
