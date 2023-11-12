@@ -24,7 +24,7 @@ else:
     ANSI_OFF = ANSI_CSI + "0m"
 
 
-def dump_services(dev):
+def dump_services(dev) -> None:
     services = sorted(dev.services, key=lambda k: k.hndStart)
     for s in services:
         print(f"\t{s.hndStart:04X}: {s}")
@@ -59,11 +59,11 @@ def dump_services(dev):
 
 
 class ScanPrint(btle.DefaultDelegate):
-    def __init__(self, opts):
+    def __init__(self, opts) -> None:
         btle.DefaultDelegate.__init__(self)
         self.opts = opts
 
-    def handleDiscovery(self, scanEntry, isNewDev, isNewData):
+    def handleDiscovery(self, scanEntry, isNewDev, isNewData) -> None:
         if isNewDev:
             status = "new"
         elif isNewData:
@@ -95,7 +95,7 @@ class ScanPrint(btle.DefaultDelegate):
         print()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-i",
