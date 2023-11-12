@@ -128,12 +128,12 @@ class Characteristic:
     def __init__(self, *args) -> None:
         (self.peripheral, uuidVal, self.handle, self.properties, self.valHandle) = args
         self.uuid = UUID(uuidVal)
-        self.descs = None
+        self.descs: list = []
 
     def __str__(self) -> str:
         return f"Characteristic <{self.uuid.getCommonName()}>"
 
-    def getDescriptors(self, forUUID=None, hndEnd=0xFFFF):
+    def getDescriptors(self, forUUID: str = "", hndEnd: int = 0xFFFF):
         if not self.descs:
             # Descriptors (not counting the value descriptor) begin after
             # the handle for the value descriptor and stop when we reach
@@ -144,7 +144,7 @@ class Characteristic:
                     # Stop if we reach another characteristic or service
                     break
                 self.descs.append(desc)
-        if forUUID is not None:
+        if forUUID:
             u = UUID(forUUID)
             return [desc for desc in self.descs if desc.uuid == u]
         return self.descs
@@ -445,7 +445,7 @@ class Bluepy3Helper:
 
     def _mgmtCmd(self, cmd) -> None:
         self._writeCmd(cmd + "\n")
-        rsp = self._waitResp("mgmt")
+        rsp: dict[str, str] = self._waitResp("mgmt")
         if rsp["code"][0] != "success":
             self._stopHelper()
             raise BTLEManagementError(f"Failed to execute management command '{cmd}'", rsp)
@@ -495,24 +495,23 @@ class Bluepy3Helper:
             self._stderr.close()
             self._stderr = None
 
-    def _waitResp(self, wantType, timeout=BTLE_TIMEOUT) -> dict[str, str]:
+    def _waitResp(self, wantType: str, timeout: float = BTLE_TIMEOUT) -> dict[str, str]:
         while True:
             if self._helper.poll() is not None:
                 raise BTLEInternalError("Helper exited")
-
             try:
                 rv = self._lineq.get(timeout=timeout)
             except Empty:
                 DBG("*** -btle- Select timeout")
                 return None
-            dehex_rv = (
+            dehex_rv: str = (
                 repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
             )
             DBG(f"    -btle- Got:    {dehex_rv}")
             if rv.startswith("#") or rv == "\n" or len(rv) == 0:
                 continue
 
-            resp = Bluepy3Helper.parseResp(rv)
+            resp: dict[str, list[Any]] = Bluepy3Helper.parseResp(rv)
             if "rsp" not in resp:
                 raise BTLEInternalError("No response type indicator", resp)
 
@@ -523,7 +522,7 @@ class Bluepy3Helper:
                     self._stopHelper()
                     raise BTLEInternalError("Device keeps repeating itself. Giving up.", resp)
 
-            respType = resp["rsp"][0]
+            respType: str = resp["rsp"][0]
 
             # always check for MTU updates
             if "mtu" in resp and len(resp["mtu"]) > 0:
@@ -534,6 +533,8 @@ class Bluepy3Helper:
 
             if respType in wantType:
                 return resp
+
+            # anything else raises an error or retries
             if respType == "stat":
                 if "state" in resp and len(resp["state"]) > 0 and resp["state"][0] == "disc":
                     self._stopHelper()
@@ -560,8 +561,8 @@ class Bluepy3Helper:
         self._helper.stdin.flush()
 
     @staticmethod
-    def parseResp(line):
-        resp = {}
+    def parseResp(line: str) -> dict[str, list[Any]]:
+        resp: dict[str, list] = {}
         for item in line.rstrip().split("\x1e"):
             (tag, tval) = item.split("=")
             if len(tval) == 0:
@@ -572,7 +573,7 @@ class Bluepy3Helper:
             elif tval[0] == "h":
                 val = int(tval[1:], 16)
             elif tval[0] == "b":
-                val = binascii.a2b_hex(tval[1:].encode("utf-8"))
+                val: str = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
                 raise BTLEInternalError(f"Cannot understand response value {repr(tval)}")
             if tag not in resp:
@@ -581,11 +582,11 @@ class Bluepy3Helper:
                 resp[tag].append(val)
         return resp
 
-    def status(self):
+    def status(self) -> dict[str, str]:
         self._writeCmd("stat\n")
         return self._waitResp(["stat"])
 
-    def withDelegate(self, delegate_):
+    def withDelegate(self, delegate_: DefaultDelegate):
         self.delegate = delegate_
         return self
 
@@ -594,10 +595,10 @@ class Peripheral(Bluepy3Helper):
     # fmt: off
     def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface: str = "", timeout: float = BTLE_TIMEOUT) -> None:
         Bluepy3Helper.__init__(self)
-        self._serviceMap = None  # Indexed by UUID
-        self.addr = addr
-        self.addrType = addrType
-        self.iface = iface
+        self._serviceMap = {}  # Indexed by UUID
+        self.addr: str = addr
+        self.addrType: str = addrType
+        self.iface: str = iface
 
         if isinstance(addr, ScanEntry):
             self._connect(addr.addr, addr.addrType, addr.iface, timeout)
@@ -614,11 +615,13 @@ class Peripheral(Bluepy3Helper):
     def __exit__(self, exception_type, exception_value, exception_traceback) -> None:
         self.disconnect()
 
-    def _getIncludedServices(self, startHnd=1, endHnd=0xFFFF):
+    def _getIncludedServices(
+        self, startHnd: int = 1, endHnd: int = 0xFFFF
+    ) -> dict[str, str] | None:
         self._writeCmd(f"incl {startHnd:X} {endHnd:X}\n")
         return self._getResp("find")
 
-    def _getResp(self, wantType, timeout=BTLE_TIMEOUT):
+    def _getResp(self, wantType: str, timeout: float = BTLE_TIMEOUT) -> dict[str, str] | None:
         if isinstance(wantType, list) is not True:
             wantType = [wantType]
         while True:
@@ -636,7 +639,9 @@ class Peripheral(Bluepy3Helper):
                 continue
             return resp
 
-    def _readCharacteristicByUUID(self, uuid, startHnd, endHnd):
+    def _readCharacteristicByUUID(
+        self, uuid, startHnd: int, endHnd: int
+    ) -> dict[str, str] | None:
         # Not used at present
         self._writeCmd(f"rdu {UUID(uuid)} {startHnd:X} {endHnd:X}\n")
         return self._getResp("rd")
@@ -704,21 +709,23 @@ class Peripheral(Bluepy3Helper):
         self._getResp("stat")
         self._stopHelper()
 
-    def discoverServices(self):
+    def discoverServices(self) -> dict:
         self._writeCmd("svcs\n")
         rsp = self._getResp("find")
         starts = rsp["hstart"]
         ends = rsp["hend"]
         uuids = rsp["uuid"]
-        nSvcs = len(uuids)
+        nSvcs: int = len(uuids)
         assert len(starts) == nSvcs and len(ends) == nSvcs
         self._serviceMap = {}
         for i in range(nSvcs):
             self._serviceMap[UUID(uuids[i])] = Service(self, uuids[i], starts[i], ends[i])
         return self._serviceMap
 
-    def getCharacteristics(self, startHnd=1, endHnd=0xFFFF, uuid=None, timeout=BTLE_TIMEOUT):
-        cmd = f"char {startHnd:X} {endHnd:X}"
+    def getCharacteristics(
+        self, startHnd: int = 1, endHnd: int = 0xFFFF, uuid=None, timeout: float = BTLE_TIMEOUT
+    ) -> list[Characteristic]:
+        cmd: str = f"char {startHnd:X} {endHnd:X}"
         if uuid:
             cmd += f" {UUID(uuid)}"
         self._writeCmd(cmd + "\n")
@@ -741,7 +748,9 @@ class Peripheral(Bluepy3Helper):
         resp = self._getResp("rd")
         return resp["d"][0]
 
-    def writeCharacteristic(self, handle, val, withResponse=False, timeout=BTLE_TIMEOUT):
+    def writeCharacteristic(
+        self, handle, val, withResponse=False, timeout=BTLE_TIMEOUT
+    ) -> dict[str, str] | None:
         # Without response, a value too long for one packet will be truncated,
         # but with response, it will be sent as a queued write
         cmd = "wrr" if withResponse else "wr"
@@ -874,11 +883,11 @@ class Peripheral(Bluepy3Helper):
     def getServices(self):
         return self.services
 
-    def getState(self):
-        status = self.status()
+    def getState(self) -> str:
+        status: dict[str, str] = self.status()
         return status["state"][0]
 
-    def setSecurityLevel(self, level):
+    def setSecurityLevel(self, level) -> dict[str, str] | None:
         self._writeCmd(f"secu {level}\n")
         return self._getResp("stat")
 
@@ -886,7 +895,7 @@ class Peripheral(Bluepy3Helper):
         self._mgmtCmd("pair")
 
     @property
-    def services(self):
+    def services(self) -> list:
         if self._serviceMap is None:
             self._serviceMap = self.discoverServices()
         return list(self._serviceMap.values())
