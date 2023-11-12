@@ -130,11 +130,8 @@ class Characteristic:
         self.uuid = UUID(uuidVal)
         self.descs = None
 
-    def read(self):
-        return self.peripheral.readCharacteristic(self.valHandle)
-
-    def write(self, val, withResponse=False):
-        return self.peripheral.writeCharacteristic(self.valHandle, val, withResponse)
+    def __str__(self) -> str:
+        return f"Characteristic <{self.uuid.getCommonName()}>"
 
     def getDescriptors(self, forUUID=None, hndEnd=0xFFFF):
         if not self.descs:
@@ -152,11 +149,8 @@ class Characteristic:
             return [desc for desc in self.descs if desc.uuid == u]
         return self.descs
 
-    def __str__(self) -> str:
-        return f"Characteristic <{self.uuid.getCommonName()}>"
-
-    def supportsRead(self) -> bool:
-        return bool(self.properties & Characteristic.props["READ"])
+    def getHandle(self):
+        return self.valHandle
 
     def propertiesToString(self) -> str:
         propStr: str = ""
@@ -165,8 +159,14 @@ class Characteristic:
                 propStr += Characteristic.propNames[p] + " "
         return propStr
 
-    def getHandle(self):
-        return self.valHandle
+    def read(self):
+        return self.peripheral.readCharacteristic(self.valHandle)
+
+    def supportsRead(self) -> bool:
+        return bool(self.properties & Characteristic.props["READ"])
+
+    def write(self, val, withResponse=False):
+        return self.peripheral.writeCharacteristic(self.valHandle, val, withResponse)
 
 
 class DefaultDelegate:
