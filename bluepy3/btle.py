@@ -173,10 +173,6 @@ class DefaultDelegate:
     def __init__(self) -> None:
         pass
 
-    def handleNotification(self, cHandle, data) -> None:
-        hex_data: str = binascii.b2a_hex(data).decode("utf-8")
-        DBG(f"    -btle- Notification: {cHandle} sent data {hex_data}")
-
     def handleDiscovery(
         self,
         scanEntry,
@@ -185,6 +181,10 @@ class DefaultDelegate:
     ) -> None:
         dev_str: str = str(scanEntry.addr)
         DBG(f"    -btle- Discovered device {dev_str}")
+
+    def handleNotification(self, cHandle, data) -> None:
+        hex_data: str = binascii.b2a_hex(data).decode("utf-8")
+        DBG(f"    -btle- Notification: {cHandle} sent data {hex_data}")
 
 
 class Descriptor:
