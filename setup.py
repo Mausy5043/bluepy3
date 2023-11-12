@@ -11,7 +11,7 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "1.13.1"  # latest version for testing
+VERSION = "1.13.7"  # latest version for testing
 # VERSION = "1.12.1"  # latest version for production
 MAKEFILE = "bluepy3/Makefile"
 VERSION_FILE = "bluepy3/version.h"
