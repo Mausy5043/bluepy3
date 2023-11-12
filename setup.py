@@ -4,6 +4,7 @@
 """Python setup script for bluepy3"""
 
 import os
+import platform
 import shlex
 import subprocess
 import sys
@@ -11,22 +12,22 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION = "1.13.7"  # latest version for testing
-# VERSION = "1.12.1"  # latest version for production
-MAKEFILE = "bluepy3/Makefile"
-VERSION_FILE = "bluepy3/version.h"
-BLUEZ_VERSION = "(unknown)"
+VERSION: str = "1.13.10"  # latest version for testing
+# VERSION: str = "1.12.1"  # latest version for production
+MAKEFILE: str = "bluepy3/Makefile"
+VERSION_FILE: str = "bluepy3/version.h"
+BLUEZ_VERSION: str = "(unknown)"
 
 
-def pre_install():
+def pre_install() -> None:
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     global BLUEZ_VERSION  # noqa  # pylint: disable=global-statement
-    cmd = ""
+    cmd: str = ""
     try:
         print("\n\n*** Executing pre-install ***\n")
         print(f"Working dir is {os.getcwd()}")
         with open(MAKEFILE, "r", encoding="utf-8") as makefile:
-            lines = makefile.readlines()
+            lines: list[str] = makefile.readlines()
             for line in lines:
                 if line.startswith("BLUEZ_VERSION"):
                     BLUEZ_VERSION = line.split("=")[1].strip()
@@ -40,8 +41,8 @@ def pre_install():
     except subprocess.CalledProcessError as e:
         print(f"Command was {repr(cmd)} in {os.getcwd()}")
         print(f"Return code was {e.returncode}")
-        err_out = e.output
-        print(f"Output was:\n{err_out.decode('utf-8')}")
+        err_out: str = e.output.decode("utf-8")
+        print(f"Output was:\n{err_out}")
         print(
             f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}."
             f" Exiting install.\n"
@@ -51,7 +52,10 @@ def pre_install():
 
 class MyBuildPy(build_py):
     def run(self):
-        pre_install()
+        # To allow installation on non-Linux systems for testing purposes
+        # compiling of bluepy3-helper is avoided on those systems.
+        if platform.system() == "Linux":
+            pre_install()
         build_py.run(self)
 
 
@@ -62,7 +66,6 @@ setup_cmdclass = {
 # TODO: this is, maybe, not OR always required on Python 3.8+
 # Force package to be *not* pure Python
 # Discussed at https://github.com/IanHarvey/bluepy/issues/158
-
 try:
     from wheel.bdist_wheel import bdist_wheel  # type: ignore
 
