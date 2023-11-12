@@ -41,6 +41,7 @@ def DBG(*args) -> None:  # type: ignore
         print(f"{msg}")
 
 
+# Exceptions
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
@@ -98,94 +99,7 @@ class BTLEGattError(BTLEException):
         BTLEException.__init__(self, message, rsp)
 
 
-class UUID:
-    def __init__(self, val: Any, commonName: str = "") -> None:
-        """Initialisation
-        We accept: 32-digit hex strings, with and without '-' characters,
-        4 to 8 digit hex strings, and integers
-        """
-        if isinstance(val, int):
-            if (val < 0) or (val > 0xFFFFFFFF):
-                raise ValueError("(btle.py) Short form UUIDs must be in range 0..0xFFFFFFFF")
-            val = f"{val:04X}"
-        elif isinstance(val, self.__class__):
-            val = str(val)
-        else:
-            val = str(val)  # Do our best
-
-        val = val.replace("-", "")
-        if len(val) <= 8:  # Short form
-            val = ("0" * (8 - len(val))) + val + "00001000800000805F9B34FB"
-
-        self.binVal: bytes = binascii.a2b_hex(val.encode("utf-8"))
-        if len(self.binVal) != 16:
-            raise ValueError(
-                f"(btle.py) UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})"
-            )
-        self.commonName: str = commonName
-
-    def __str__(self) -> str:
-        s = binascii.b2a_hex(self.binVal).decode("utf-8")
-        return "-".join([s[0:8], s[8:12], s[12:16], s[16:20], s[20:32]])
-
-    def __eq__(self, other: Any) -> bool:
-        return self.binVal == UUID(other).binVal
-
-    def __hash__(self) -> int:
-        return hash(self.binVal)
-
-    def getCommonName(self) -> str:
-        s = AssignedNumbers.getCommonName(self)
-        if s:
-            return s
-        s = str(self)
-        if s.endswith("-0000-1000-8000-00805f9b34fb"):
-            s = s[0:8]
-            if s.startswith("0000"):
-                s = s[4:]
-        return s
-
-
-class Service:
-    def __init__(self, *args) -> None:
-        (self.peripheral, uuidVal, self.hndStart, self.hndEnd) = args
-        self.uuid = UUID(uuidVal)
-        self.chars = None
-        self.descs = None
-
-    def getCharacteristics(self, forUUID=None):
-        if not self.chars:  # Unset, or empty
-            self.chars = (
-                []
-                if self.hndEnd <= self.hndStart
-                else self.peripheral.getCharacteristics(self.hndStart, self.hndEnd)
-            )
-        if forUUID is not None:
-            u = UUID(forUUID)
-            return [ch for ch in self.chars if ch.uuid == u]
-        return self.chars
-
-    def getDescriptors(self, forUUID=None) -> list:
-        if not self.descs:
-            # Grab all descriptors in our range, except for the service
-            # declaration descriptor
-            all_descs = self.peripheral.getDescriptors(self.hndStart + 1, self.hndEnd)
-            # Filter out the descriptors for the characteristic properties
-            # Note that this does not filter out characteristic value descriptors
-            self.descs = [desc for desc in all_descs if desc.uuid != 0x2803]
-        if forUUID is not None:
-            u = UUID(forUUID)
-            return [desc for desc in self.descs if desc.uuid == u]
-        return self.descs
-
-    def __str__(self) -> str:
-        return (
-            f"Service <uuid={self.uuid.getCommonName()} "
-            f"handleStart={self.hndStart} "
-            f"handleEnd={self.hndEnd}>"
-        )
-
-
+# Main classes below
 class Characteristic:
     # Currently only READ is used in supportsRead function,
     # the rest is included to facilitate supportsXXXX functions if required
@@ -255,21 +169,6 @@ class Characteristic:
         return self.valHandle
 
 
-class Descriptor:
-    def __init__(self, *args) -> None:
-        (self.peripheral, uuidVal, self.handle) = args
-        self.uuid = UUID(uuidVal)
-
-    def __str__(self) -> str:
-        return f"Descriptor <{self.uuid.getCommonName()}>"
-
-    def read(self):
-        return self.peripheral.readCharacteristic(self.handle)
-
-    def write(self, val, withResponse=False) -> None:
-        self.peripheral.writeCharacteristic(self.handle, val, withResponse)
-
-
 class DefaultDelegate:
     def __init__(self) -> None:
         pass
@@ -288,6 +187,253 @@ class DefaultDelegate:
         DBG(f"    -btle- Discovered device {dev_str}")
 
 
+class Descriptor:
+    def __init__(self, *args) -> None:
+        (self.peripheral, uuidVal, self.handle) = args
+        self.uuid = UUID(uuidVal)
+
+    def __str__(self) -> str:
+        return f"Descriptor <{self.uuid.getCommonName()}>"
+
+    def read(self):
+        return self.peripheral.readCharacteristic(self.handle)
+
+    def write(self, val, withResponse=False) -> None:
+        self.peripheral.writeCharacteristic(self.handle, val, withResponse)
+
+
+class ScanEntry:
+    addrTypes: dict[int, str] = {1: ADDR_TYPE_PUBLIC, 2: ADDR_TYPE_RANDOM}
+
+    FLAGS: int = 0x01
+    INCOMPLETE_16B_SERVICES: int = 0x02
+    COMPLETE_16B_SERVICES: int = 0x03
+    INCOMPLETE_32B_SERVICES: int = 0x04
+    COMPLETE_32B_SERVICES: int = 0x05
+    INCOMPLETE_128B_SERVICES: int = 0x06
+    COMPLETE_128B_SERVICES: int = 0x07
+    SHORT_LOCAL_NAME: int = 0x08
+    COMPLETE_LOCAL_NAME: int = 0x09
+    TX_POWER: int = 0x0A
+    SERVICE_SOLICITATION_16B: int = 0x14
+    SERVICE_SOLICITATION_32B: int = 0x1F
+    SERVICE_SOLICITATION_128B: int = 0x15
+    SERVICE_DATA_16B: int = 0x16
+    SERVICE_DATA_32B: int = 0x20
+    SERVICE_DATA_128B: int = 0x21
+    PUBLIC_TARGET_ADDRESS: int = 0x17
+    RANDOM_TARGET_ADDRESS: int = 0x18
+    APPEARANCE: int = 0x19
+    ADVERTISING_INTERVAL: int = 0x1A
+    MANUFACTURER: int = 0xFF
+
+    dataTags: dict[int, str] = {
+        FLAGS: "Flags",
+        INCOMPLETE_16B_SERVICES: "Incomplete 16b Services",
+        COMPLETE_16B_SERVICES: "Complete 16b Services",
+        INCOMPLETE_32B_SERVICES: "Incomplete 32b Services",
+        COMPLETE_32B_SERVICES: "Complete 32b Services",
+        INCOMPLETE_128B_SERVICES: "Incomplete 128b Services",
+        COMPLETE_128B_SERVICES: "Complete 128b Services",
+        SHORT_LOCAL_NAME: "Short Local Name",
+        COMPLETE_LOCAL_NAME: "Complete Local Name",
+        TX_POWER: "Tx Power",
+        SERVICE_SOLICITATION_16B: "16b Service Solicitation",
+        SERVICE_SOLICITATION_32B: "32b Service Solicitation",
+        SERVICE_SOLICITATION_128B: "128b Service Solicitation",
+        SERVICE_DATA_16B: "16b Service Data",
+        SERVICE_DATA_32B: "32b Service Data",
+        SERVICE_DATA_128B: "128b Service Data",
+        PUBLIC_TARGET_ADDRESS: "Public Target Address",
+        RANDOM_TARGET_ADDRESS: "Random Target Address",
+        APPEARANCE: "Appearance",
+        ADVERTISING_INTERVAL: "Advertising Interval",
+        MANUFACTURER: "Manufacturer",
+    }
+
+    def __init__(self, addr, iface) -> None:
+        self.addr = addr
+        self.iface = iface
+        self.addrType = None
+        self.rssi = None
+        self.connectable = False
+        self.rawData = None
+        self.scanData = {}
+        self.updateCount = 0
+
+    def _decodeUUID(self, val, nbytes):
+        if len(val) < nbytes:
+            return None
+        bval = bytearray(val)
+        rs = ""
+        # Bytes are little-endian; convert to big-endian string
+        for i in range(nbytes):
+            rs = f"{bval[i]:02X}{rs}"
+        return UUID(rs)
+
+    def _decodeUUIDlist(self, val, nbytes):
+        result = []
+        for i in range(0, len(val), nbytes):
+            if len(val) >= (i + nbytes):
+                result.append(self._decodeUUID(val[i : i + nbytes], nbytes))
+        return result
+
+    def getDescription(self, sdid) -> str:
+        return self.dataTags.get(sdid, hex(sdid))
+
+    def getValue(self, sdid):
+        val = self.scanData.get(sdid, None)
+        if val is None:
+            return None
+        if sdid in [ScanEntry.SHORT_LOCAL_NAME, ScanEntry.COMPLETE_LOCAL_NAME]:
+            try:
+                # Beware! Vol 3 Part C 18.3 doesn't give an encoding. Other references
+                # to 'local name' (e.g. vol 3 E, 6.23) suggest it's UTF-8 but in practice
+                # devices sometimes have garbage here. See #259, #275, #292.
+                return val.decode("utf-8")
+            except UnicodeDecodeError:
+                bbval = bytearray(val)
+                return "".join([(chr(x) if x in range(32, 127) else "?") for x in bbval])
+        if sdid in [ScanEntry.INCOMPLETE_16B_SERVICES, ScanEntry.COMPLETE_16B_SERVICES]:
+            return self._decodeUUIDlist(val, 2)
+        if sdid in [ScanEntry.INCOMPLETE_32B_SERVICES, ScanEntry.COMPLETE_32B_SERVICES]:
+            return self._decodeUUIDlist(val, 4)
+        if sdid in [ScanEntry.INCOMPLETE_128B_SERVICES, ScanEntry.COMPLETE_128B_SERVICES]:
+            return self._decodeUUIDlist(val, 16)
+        return val
+
+    def getValueText(self, sdid):
+        val = self.getValue(sdid)
+        if val is None:
+            return None
+        if sdid in [ScanEntry.SHORT_LOCAL_NAME, ScanEntry.COMPLETE_LOCAL_NAME]:
+            return val
+        if isinstance(val, list):
+            return ",".join(str(v) for v in val)
+        return binascii.b2a_hex(val).decode("ascii")
+
+    def getScanData(self):
+        """Return list of tuples [(tag, description, value)]"""
+        return [
+            (sdid, self.getDescription(sdid), self.getValueText(sdid))
+            for sdid in self.scanData.keys()  # pylint: disable=consider-iterating-dictionary
+        ]
+
+    def update(self, resp) -> bool:
+        addrType = self.addrTypes.get(resp["type"][0], None)
+        if (self.addrType is not None) and (addrType != self.addrType):
+            raise BTLEInternalError(f"Address type changed during scan, for address {self.addr}")
+        self.addrType = addrType
+        self.rssi = -resp["rssi"][0]
+        self.connectable = (resp["flag"][0] & 0x4) == 0
+        data = resp.get("d", [""])[0]
+        self.rawData = data
+
+        # Note: bluez is notifying devices twice: once with advertisement data,
+        # then with scan response data. Also, the device may update the
+        # advertisement or scan data
+        isNewData = False
+        while len(data) >= 2:
+            sdlen, sdid = struct.unpack_from("<BB", data)
+            val = data[2 : sdlen + 1]
+            if (sdid not in self.scanData) or (val != self.scanData[sdid]):
+                isNewData = True
+            self.scanData[sdid] = val
+            data = data[sdlen + 1 :]
+
+        self.updateCount += 1
+        return isNewData
+
+
+class Service:
+    def __init__(self, *args) -> None:
+        (self.peripheral, uuidVal, self.hndStart, self.hndEnd) = args
+        self.uuid = UUID(uuidVal)
+        self.chars = None
+        self.descs = None
+
+    def getCharacteristics(self, forUUID=None):
+        if not self.chars:  # Unset, or empty
+            self.chars = (
+                []
+                if self.hndEnd <= self.hndStart
+                else self.peripheral.getCharacteristics(self.hndStart, self.hndEnd)
+            )
+        if forUUID is not None:
+            u = UUID(forUUID)
+            return [ch for ch in self.chars if ch.uuid == u]
+        return self.chars
+
+    def getDescriptors(self, forUUID=None) -> list:
+        if not self.descs:
+            # Grab all descriptors in our range, except for the service
+            # declaration descriptor
+            all_descs = self.peripheral.getDescriptors(self.hndStart + 1, self.hndEnd)
+            # Filter out the descriptors for the characteristic properties
+            # Note that this does not filter out characteristic value descriptors
+            self.descs = [desc for desc in all_descs if desc.uuid != 0x2803]
+        if forUUID is not None:
+            u = UUID(forUUID)
+            return [desc for desc in self.descs if desc.uuid == u]
+        return self.descs
+
+    def __str__(self) -> str:
+        return (
+            f"Service <uuid={self.uuid.getCommonName()} "
+            f"handleStart={self.hndStart} "
+            f"handleEnd={self.hndEnd}>"
+        )
+
+
+class UUID:
+    def __init__(self, val: Any, commonName: str = "") -> None:
+        """Initialisation
+        We accept: 32-digit hex strings, with and without '-' characters,
+        4 to 8 digit hex strings, and integers
+        """
+        if isinstance(val, int):
+            if (val < 0) or (val > 0xFFFFFFFF):
+                raise ValueError("(btle.py) Short form UUIDs must be in range 0..0xFFFFFFFF")
+            val = f"{val:04X}"
+        elif isinstance(val, self.__class__):
+            val = str(val)
+        else:
+            val = str(val)  # Do our best
+
+        val = val.replace("-", "")
+        if len(val) <= 8:  # Short form
+            val = ("0" * (8 - len(val))) + val + "00001000800000805F9B34FB"
+
+        self.binVal: bytes = binascii.a2b_hex(val.encode("utf-8"))
+        if len(self.binVal) != 16:
+            raise ValueError(
+                f"(btle.py) UUID must be 16 bytes, got '{val}' (len={len(self.binVal)})"
+            )
+        self.commonName: str = commonName
+
+    def __str__(self) -> str:
+        s = binascii.b2a_hex(self.binVal).decode("utf-8")
+        return "-".join([s[0:8], s[8:12], s[12:16], s[16:20], s[20:32]])
+
+    def __eq__(self, other: Any) -> bool:
+        return self.binVal == UUID(other).binVal
+
+    def __hash__(self) -> int:
+        return hash(self.binVal)
+
+    def getCommonName(self) -> str:
+        s = AssignedNumbers.getCommonName(self)
+        if s:
+            return s
+        s = str(self)
+        if s.endswith("-0000-1000-8000-00805f9b34fb"):
+            s = s[0:8]
+            if s.startswith("0000"):
+                s = s[4:]
+        return s
+
+
+# Bluepy3Helper and derived classes below
 class Bluepy3Helper:
     def __init__(self) -> None:
         self._helper = None
@@ -751,149 +897,6 @@ class Peripheral(Bluepy3Helper):
         self.disconnect()
 
 
-class ScanEntry:
-    addrTypes: dict[int, str] = {1: ADDR_TYPE_PUBLIC, 2: ADDR_TYPE_RANDOM}
-
-    FLAGS: int = 0x01
-    INCOMPLETE_16B_SERVICES: int = 0x02
-    COMPLETE_16B_SERVICES: int = 0x03
-    INCOMPLETE_32B_SERVICES: int = 0x04
-    COMPLETE_32B_SERVICES: int = 0x05
-    INCOMPLETE_128B_SERVICES: int = 0x06
-    COMPLETE_128B_SERVICES: int = 0x07
-    SHORT_LOCAL_NAME: int = 0x08
-    COMPLETE_LOCAL_NAME: int = 0x09
-    TX_POWER: int = 0x0A
-    SERVICE_SOLICITATION_16B: int = 0x14
-    SERVICE_SOLICITATION_32B: int = 0x1F
-    SERVICE_SOLICITATION_128B: int = 0x15
-    SERVICE_DATA_16B: int = 0x16
-    SERVICE_DATA_32B: int = 0x20
-    SERVICE_DATA_128B: int = 0x21
-    PUBLIC_TARGET_ADDRESS: int = 0x17
-    RANDOM_TARGET_ADDRESS: int = 0x18
-    APPEARANCE: int = 0x19
-    ADVERTISING_INTERVAL: int = 0x1A
-    MANUFACTURER: int = 0xFF
-
-    dataTags: dict[int, str] = {
-        FLAGS: "Flags",
-        INCOMPLETE_16B_SERVICES: "Incomplete 16b Services",
-        COMPLETE_16B_SERVICES: "Complete 16b Services",
-        INCOMPLETE_32B_SERVICES: "Incomplete 32b Services",
-        COMPLETE_32B_SERVICES: "Complete 32b Services",
-        INCOMPLETE_128B_SERVICES: "Incomplete 128b Services",
-        COMPLETE_128B_SERVICES: "Complete 128b Services",
-        SHORT_LOCAL_NAME: "Short Local Name",
-        COMPLETE_LOCAL_NAME: "Complete Local Name",
-        TX_POWER: "Tx Power",
-        SERVICE_SOLICITATION_16B: "16b Service Solicitation",
-        SERVICE_SOLICITATION_32B: "32b Service Solicitation",
-        SERVICE_SOLICITATION_128B: "128b Service Solicitation",
-        SERVICE_DATA_16B: "16b Service Data",
-        SERVICE_DATA_32B: "32b Service Data",
-        SERVICE_DATA_128B: "128b Service Data",
-        PUBLIC_TARGET_ADDRESS: "Public Target Address",
-        RANDOM_TARGET_ADDRESS: "Random Target Address",
-        APPEARANCE: "Appearance",
-        ADVERTISING_INTERVAL: "Advertising Interval",
-        MANUFACTURER: "Manufacturer",
-    }
-
-    def __init__(self, addr, iface) -> None:
-        self.addr = addr
-        self.iface = iface
-        self.addrType = None
-        self.rssi = None
-        self.connectable = False
-        self.rawData = None
-        self.scanData = {}
-        self.updateCount = 0
-
-    def _decodeUUID(self, val, nbytes):
-        if len(val) < nbytes:
-            return None
-        bval = bytearray(val)
-        rs = ""
-        # Bytes are little-endian; convert to big-endian string
-        for i in range(nbytes):
-            rs = f"{bval[i]:02X}{rs}"
-        return UUID(rs)
-
-    def _decodeUUIDlist(self, val, nbytes):
-        result = []
-        for i in range(0, len(val), nbytes):
-            if len(val) >= (i + nbytes):
-                result.append(self._decodeUUID(val[i : i + nbytes], nbytes))
-        return result
-
-    def getDescription(self, sdid) -> str:
-        return self.dataTags.get(sdid, hex(sdid))
-
-    def getValue(self, sdid):
-        val = self.scanData.get(sdid, None)
-        if val is None:
-            return None
-        if sdid in [ScanEntry.SHORT_LOCAL_NAME, ScanEntry.COMPLETE_LOCAL_NAME]:
-            try:
-                # Beware! Vol 3 Part C 18.3 doesn't give an encoding. Other references
-                # to 'local name' (e.g. vol 3 E, 6.23) suggest it's UTF-8 but in practice
-                # devices sometimes have garbage here. See #259, #275, #292.
-                return val.decode("utf-8")
-            except UnicodeDecodeError:
-                bbval = bytearray(val)
-                return "".join([(chr(x) if x in range(32, 127) else "?") for x in bbval])
-        if sdid in [ScanEntry.INCOMPLETE_16B_SERVICES, ScanEntry.COMPLETE_16B_SERVICES]:
-            return self._decodeUUIDlist(val, 2)
-        if sdid in [ScanEntry.INCOMPLETE_32B_SERVICES, ScanEntry.COMPLETE_32B_SERVICES]:
-            return self._decodeUUIDlist(val, 4)
-        if sdid in [ScanEntry.INCOMPLETE_128B_SERVICES, ScanEntry.COMPLETE_128B_SERVICES]:
-            return self._decodeUUIDlist(val, 16)
-        return val
-
-    def getValueText(self, sdid):
-        val = self.getValue(sdid)
-        if val is None:
-            return None
-        if sdid in [ScanEntry.SHORT_LOCAL_NAME, ScanEntry.COMPLETE_LOCAL_NAME]:
-            return val
-        if isinstance(val, list):
-            return ",".join(str(v) for v in val)
-        return binascii.b2a_hex(val).decode("ascii")
-
-    def getScanData(self):
-        """Return list of tuples [(tag, description, value)]"""
-        return [
-            (sdid, self.getDescription(sdid), self.getValueText(sdid))
-            for sdid in self.scanData.keys()  # pylint: disable=consider-iterating-dictionary
-        ]
-
-    def update(self, resp) -> bool:
-        addrType = self.addrTypes.get(resp["type"][0], None)
-        if (self.addrType is not None) and (addrType != self.addrType):
-            raise BTLEInternalError(f"Address type changed during scan, for address {self.addr}")
-        self.addrType = addrType
-        self.rssi = -resp["rssi"][0]
-        self.connectable = (resp["flag"][0] & 0x4) == 0
-        data = resp.get("d", [""])[0]
-        self.rawData = data
-
-        # Note: bluez is notifying devices twice: once with advertisement data,
-        # then with scan response data. Also, the device may update the
-        # advertisement or scan data
-        isNewData = False
-        while len(data) >= 2:
-            sdlen, sdid = struct.unpack_from("<BB", data)
-            val = data[2 : sdlen + 1]
-            if (sdid not in self.scanData) or (val != self.scanData[sdid]):
-                isNewData = True
-            self.scanData[sdid] = val
-            data = data[sdlen + 1 :]
-
-        self.updateCount += 1
-        return isNewData
-
-
 class Scanner(Bluepy3Helper):
     def __init__(self, iface=0) -> None:
         Bluepy3Helper.__init__(self)
@@ -972,13 +975,6 @@ class Scanner(Bluepy3Helper):
         return self.getDevices()
 
 
-def capitaliseName(descr: str) -> str:
-    words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
-    capWords = [words[0].lower()]
-    capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
-    return "".join(capWords)
-
-
 class _UUIDNameMap:
     # Constructor sets self.currentTimeService, self.txPower, and so on
     # from names.
@@ -993,6 +989,13 @@ class _UUIDNameMap:
         if uuid in self.idMap:
             return self.idMap[uuid].commonName
         return ""
+
+
+def capitaliseName(descr: str) -> str:
+    words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
+    capWords = [words[0].lower()]
+    capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
+    return "".join(capWords)
 
 
 def get_json_uuid():
