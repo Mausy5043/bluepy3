@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# type: ignore
 """
 Fetch UUIDs for GATT characteristics, declarations, descriptors, formats, services and
 units from bluetooth.com and store them in uuids.json for later use by `btle.py`
@@ -63,13 +63,11 @@ def get_table_rows(html=None):
     tables = soup.find_all("table")
     if DEBUG:
         print(tables)
-    biggest_table = max(tables, key=len, default=0)
+    biggest_table: int = max(tables, key=len, default=0)
 
     # service_table=soup.find("table",
     #                         attrs={"summary":"Documents This library contains Services."})
     try:
-        assert biggest_table
-
         for row in biggest_table.find_all(
             "tr"
         ):  # noqa : "Cannot find reference 'find_all' in 'Sized | int'"
@@ -286,7 +284,7 @@ class Definitions:
             self._formats = list(get_formats())
         return self._formats
 
-    def data(self):
+    def data(self) -> dict[str, list[tuple[int, str, str]]]:
         """
         Makes tables like this:
         number, name, common name.
@@ -307,7 +305,7 @@ class Definitions:
             "unit_UUIDs": [(row["Number"], row["cname"], row["Name"]) for row in self.units],
         }
 
-    def data_debug(self):
+    def data_debug(self) -> dict[str, list[tuple[int, str, str]]]:
         """FOR DEVBUGGING ONLY
         Makes tables like this:
         number, name, common name.
