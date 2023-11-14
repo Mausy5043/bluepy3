@@ -12,7 +12,7 @@ import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, Optional, TextIO
+from typing import Any, Generator, Optional, TextIO
 
 
 def preexec_function() -> None:
@@ -1009,7 +1009,7 @@ def capitaliseName(descr: str) -> str:
     return "".join(capWords)
 
 
-def get_json_uuid():
+def get_json_uuid() -> Generator[UUID, Any, None]:
     uuid_entry = list[int, str, str]
     # an entry in the uuid_list is a list containing an `int`` and two `str`
     # example: [10082, 'day', 'time (day)']
