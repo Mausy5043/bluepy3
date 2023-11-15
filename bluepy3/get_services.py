@@ -10,8 +10,8 @@ Therefore, the archived webpages are used from archive.com
 
 import errno
 import os
-import requests
 import tempfile
+import requests
 
 from bs4 import BeautifulSoup  # pyright: ignore reportMissingImports
 
