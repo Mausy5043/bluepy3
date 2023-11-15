@@ -21,18 +21,18 @@ def preexec_function() -> None:
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
-Debugging = False
-script_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-helperExe = os.path.join(script_path, "bluepy3-helper")
+Debugging: bool = False
+script_path: str = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+helperExe: str = os.path.join(script_path, "bluepy3-helper")
 
-SEC_LEVEL_LOW = "low"
-SEC_LEVEL_MEDIUM = "medium"
-SEC_LEVEL_HIGH = "high"
+SEC_LEVEL_LOW: str = "low"
+SEC_LEVEL_MEDIUM: str = "medium"
+SEC_LEVEL_HIGH: str = "high"
 
-ADDR_TYPE_PUBLIC = "public"
-ADDR_TYPE_RANDOM = "random"
+ADDR_TYPE_PUBLIC: str = "public"
+ADDR_TYPE_RANDOM: str = "random"
 
-BTLE_TIMEOUT = 32.1
+BTLE_TIMEOUT: float = 32.1
 
 
 def DBG(*args) -> None:
