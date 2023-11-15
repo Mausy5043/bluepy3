@@ -35,7 +35,7 @@ ADDR_TYPE_RANDOM = "random"
 BTLE_TIMEOUT = 32.1
 
 
-def DBG(*args) -> None:  # type: ignore
+def DBG(*args) -> None:
     if Debugging:
         msg: str = " ".join([str(a) for a in args])
         print(f"{msg}")
@@ -45,7 +45,7 @@ def DBG(*args) -> None:  # type: ignore
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message: str, resp_dict: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = None) -> None:
         self.message: str = message
 
         # optional messages from bluepy3-helper
@@ -75,27 +75,27 @@ class BTLEException(Exception):
 
 
 class BTLEInternalError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectTimeout(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEManagementError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEGattError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, str]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
@@ -254,12 +254,12 @@ class ScanEntry:
     def __init__(self, addr, iface) -> None:
         self.addr = addr
         self.iface = iface
-        self.addrType = None
-        self.rssi = None
-        self.connectable = False
+        self.addrType: str = ""
+        self.rssi: float = 0.0
+        self.connectable: bool = False
         self.rawData = None
-        self.scanData = {}
-        self.updateCount = 0
+        self.scanData: dict = {}
+        self.updateCount: int = 0
 
     def _decodeUUID(self, val, nbytes):
         if len(val) < nbytes:
@@ -319,9 +319,9 @@ class ScanEntry:
             return ",".join(str(v) for v in val)
         return binascii.b2a_hex(val).decode("ascii")
 
-    def update(self, resp) -> bool:
-        addrType = self.addrTypes.get(resp["type"][0], None)
-        if (self.addrType is not None) and (addrType != self.addrType):
+    def update(self, resp: dict[str, list[Any]]) -> bool:
+        addrType: str = self.addrTypes.get(resp["type"][0], "")
+        if self.addrType and (addrType != self.addrType):
             raise BTLEInternalError(f"Address type changed during scan, for address {self.addr}")
         self.addrType = addrType
         self.rssi = -resp["rssi"][0]
@@ -349,8 +349,8 @@ class Service:
     def __init__(self, *args) -> None:
         (self.peripheral, uuidVal, self.hndStart, self.hndEnd) = args
         self.uuid = UUID(uuidVal)
-        self.chars = None
-        self.descs = None
+        self.chars: list[Any] = []
+        self.descs: list[Any] = []
 
     def __str__(self) -> str:
         return (
@@ -359,19 +359,19 @@ class Service:
             f"handleEnd={self.hndEnd}>"
         )
 
-    def getCharacteristics(self, forUUID=None):
+    def getCharacteristics(self, forUUID: Any = ""):
         if not self.chars:  # Unset, or empty
             self.chars = (
                 []
                 if self.hndEnd <= self.hndStart
                 else self.peripheral.getCharacteristics(self.hndStart, self.hndEnd)
             )
-        if forUUID is not None:
+        if forUUID:
             u = UUID(forUUID)
             return [ch for ch in self.chars if ch.uuid == u]
         return self.chars
 
-    def getDescriptors(self, forUUID=None) -> list:
+    def getDescriptors(self, forUUID=None) -> list[Any]:
         if not self.descs:
             # Grab all descriptors in our range, except for the service
             # declaration descriptor
@@ -436,16 +436,16 @@ class UUID:
 # Bluepy3Helper and derived classes below
 class Bluepy3Helper:
     def __init__(self) -> None:
-        self._helper: subprocess.Popen = None
-        self._lineq: Queue = None
-        self._stderr: TextIO = None
+        self._helper: subprocess.Popen = None  # type: ignore[assignment]
+        self._lineq: Queue = None  # type: ignore[assignment]
+        self._stderr: TextIO = None  # type: ignore[assignment]
         self._mtu: int = 0
         self.delegate = DefaultDelegate()
         self._aita: int = 0
 
     def _mgmtCmd(self, cmd) -> None:
         self._writeCmd(cmd + "\n")
-        rsp: dict[str, str] = self._waitResp("mgmt")
+        rsp: dict[str, list[Any]] = self._waitResp(["mgmt"])
         if rsp["code"][0] != "success":
             self._stopHelper()
             raise BTLEManagementError(f"Failed to execute management command '{cmd}'", rsp)
@@ -453,7 +453,7 @@ class Bluepy3Helper:
     def _readToQueue(self) -> None:
         """Thread to read lines from stdout and insert in queue."""
         while self._helper:
-            line = self._helper.stdout.readline()
+            line = self._helper.stdout.readline()  # type:ignore[union-attr]
             if not line:  # EOF
                 break
             self._lineq.put(line)
@@ -486,16 +486,18 @@ class Bluepy3Helper:
     def _stopHelper(self) -> None:
         if self._helper is not None:
             DBG(f"    -btle- Stopping {helperExe}")
-            self._helper.stdin.write("quit\n")
-            self._helper.stdin.flush()
+            self._helper.stdin.write("quit\n")  # type:ignore[union-attr]
+            self._helper.stdin.flush()  # type:ignore[union-attr]
             self._helper.wait()
-            self._helper = None
-            self._aita = None
+            self._helper = None  # type: ignore[assignment]
+            self._aita = 0
         if self._stderr is not None:
             self._stderr.close()
-            self._stderr = None
+            self._stderr = None  # type: ignore[assignment]
 
-    def _waitResp(self, wantType: str, timeout: float = BTLE_TIMEOUT) -> dict[str, str]:
+    def _waitResp(
+        self, wantType: list[str], timeout: float = BTLE_TIMEOUT
+    ) -> dict[str, list[Any]]:
         while True:
             if self._helper.poll() is not None:
                 raise BTLEInternalError("Helper exited")
@@ -503,7 +505,7 @@ class Bluepy3Helper:
                 rv = self._lineq.get(timeout=timeout)
             except Empty:
                 DBG("*** -btle- Select timeout")
-                return None
+                return {}
             dehex_rv: str = (
                 repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
             )
@@ -557,11 +559,12 @@ class Bluepy3Helper:
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call connect()?)")
         DBG(f"    -btle- Sent:   {cmd}")
-        self._helper.stdin.write(cmd)
-        self._helper.stdin.flush()
+        self._helper.stdin.write(cmd)  # type:ignore[union-attr]
+        self._helper.stdin.flush()  # type:ignore[union-attr]
 
     @staticmethod
     def parseResp(line: str) -> dict[str, list[Any]]:
+        val: Any
         resp: dict[str, list] = {}
         for item in line.rstrip().split("\x1e"):
             (tag, tval) = item.split("=")
@@ -573,7 +576,7 @@ class Bluepy3Helper:
             elif tval[0] == "h":
                 val = int(tval[1:], 16)
             elif tval[0] == "b":
-                val: str = binascii.a2b_hex(tval[1:].encode("utf-8"))
+                val = binascii.a2b_hex(tval[1:].encode("utf-8"))
             else:
                 raise BTLEInternalError(f"Cannot understand response value {repr(tval)}")
             if tag not in resp:
@@ -582,7 +585,7 @@ class Bluepy3Helper:
                 resp[tag].append(val)
         return resp
 
-    def status(self) -> dict[str, str]:
+    def status(self) -> dict[str, list[Any]]:
         self._writeCmd("stat\n")
         return self._waitResp(["stat"])
 
@@ -595,7 +598,7 @@ class Peripheral(Bluepy3Helper):
     # fmt: off
     def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface: str = "", timeout: float = BTLE_TIMEOUT) -> None:
         Bluepy3Helper.__init__(self)
-        self._serviceMap = {}  # Indexed by UUID
+        self._serviceMap: dict = {}  # Indexed by UUID
         self.addr: str = addr
         self.addrType: str = addrType
         self.iface: str = iface
@@ -617,17 +620,17 @@ class Peripheral(Bluepy3Helper):
 
     def _getIncludedServices(
         self, startHnd: int = 1, endHnd: int = 0xFFFF
-    ) -> dict[str, str] | None:
+    ) -> dict[str, list[Any]]:
         self._writeCmd(f"incl {startHnd:X} {endHnd:X}\n")
-        return self._getResp("find")
+        return self._getResp(["find"])
 
-    def _getResp(self, wantType: str, timeout: float = BTLE_TIMEOUT) -> dict[str, str] | None:
-        if isinstance(wantType, list) is not True:
-            wantType = [wantType]
+    def _getResp(
+        self, wantType: list[str], timeout: float = BTLE_TIMEOUT
+    ) -> dict[str, list[Any]]:
         while True:
-            resp = self._waitResp(wantType + ["ntfy", "ind"], timeout)
+            resp: dict[str, list[Any]] = self._waitResp(wantType + ["ntfy", "ind"], timeout)
             if resp is None:
-                return None
+                return {}
 
             respType = resp["rsp"][0]
             if respType in ["ntfy", "ind"]:
@@ -639,12 +642,10 @@ class Peripheral(Bluepy3Helper):
                 continue
             return resp
 
-    def _readCharacteristicByUUID(
-        self, uuid, startHnd: int, endHnd: int
-    ) -> dict[str, str] | None:
+    def _readCharacteristicByUUID(self, uuid, startHnd: int, endHnd: int) -> dict[str, list[Any]]:
         # Not used at present
         self._writeCmd(f"rdu {UUID(uuid)} {startHnd:X} {endHnd:X}\n")
-        return self._getResp("rd")
+        return self._getResp(["rd"])
 
     # keep this with connect()
     def _connect(
@@ -665,7 +666,7 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
-            rsp = self._getResp("stat", timeout)
+            rsp = self._getResp(["stat"], timeout)
             timeout_exception = BTLEConnectTimeout(
                 f"Timed out while trying to connect to peripheral {addr}, "
                 f"addr type: {addrType}, interface {iface}, timeout={timeout}",
@@ -674,7 +675,7 @@ class Peripheral(Bluepy3Helper):
             if rsp is None:
                 raise timeout_exception
             while rsp and rsp["state"][0] == "tryconn":
-                rsp = self._getResp("stat", timeout)
+                rsp = self._getResp(["stat"], timeout)
             if rsp is not None and rsp["state"][0] == "conn":
                 DBG("    -btle- Succesfully connected.")
                 # successful
@@ -706,15 +707,15 @@ class Peripheral(Bluepy3Helper):
         self.setDelegate(None)
 
         self._writeCmd("disc\n")
-        self._getResp("stat")
+        self._getResp(["stat"])
         self._stopHelper()
 
     def discoverServices(self) -> dict:
         self._writeCmd("svcs\n")
-        rsp = self._getResp("find")
-        starts = rsp["hstart"]
-        ends = rsp["hend"]
-        uuids = rsp["uuid"]
+        rsp: dict[str, list[Any]] = self._getResp(["find"])
+        starts: list[Any] = rsp["hstart"]
+        ends: list[Any] = rsp["hend"]
+        uuids: list[Any] = rsp["uuid"]
         nSvcs: int = len(uuids)
         assert len(starts) == nSvcs and len(ends) == nSvcs
         self._serviceMap = {}
@@ -724,12 +725,12 @@ class Peripheral(Bluepy3Helper):
 
     def getCharacteristics(
         self, startHnd: int = 1, endHnd: int = 0xFFFF, uuid=None, timeout: float = BTLE_TIMEOUT
-    ) -> list[Characteristic]:
+    ) -> list[Any]:
         cmd: str = f"char {startHnd:X} {endHnd:X}"
         if uuid:
             cmd += f" {UUID(uuid)}"
         self._writeCmd(cmd + "\n")
-        rsp = self._getResp("find", timeout)
+        rsp: dict[str, list[Any]] = self._getResp(["find"], timeout)
         timeout_exception = BTLEConnectTimeout(
             f"Timed out while trying to get characteristics from peripheral {self.addr}, "
             f"addr type: {self.addrType}",
@@ -743,22 +744,22 @@ class Peripheral(Bluepy3Helper):
             for i in range(nChars)
         ]
 
-    def readCharacteristic(self, handle):
+    def readCharacteristic(self, handle) -> Any:
         self._writeCmd(f"rd {handle:X}\n")
-        resp = self._getResp("rd")
+        resp: dict[str, list[Any]] = self._getResp(["rd"])
         return resp["d"][0]
 
     def writeCharacteristic(
         self, handle, val, withResponse=False, timeout=BTLE_TIMEOUT
-    ) -> dict[str, str] | None:
+    ) -> dict[str, list[Any]]:
         # Without response, a value too long for one packet will be truncated,
         # but with response, it will be sent as a queued write
         cmd = "wrr" if withResponse else "wr"
         bval: str = binascii.b2a_hex(val).decode("utf-8")
         self._writeCmd(f"{cmd} {handle:X} {bval}\n")
-        return self._getResp("wr", timeout)
+        return self._getResp(["wr"], timeout)
 
-    def getDescriptors(self, startHnd=1, endHnd=0xFFFF):
+    def getDescriptors(self, startHnd=1, endHnd=0xFFFF) -> list[Any]:
         self._writeCmd(f"desc {startHnd:X} {endHnd:X}\n")
         # Historical note:
         # Certain Bluetooth LE devices are not capable of sending back all
@@ -768,22 +769,22 @@ class Peripheral(Bluepy3Helper):
         # In bluez 5.25 and later, gatt_discover_desc() in attrib/gatt.c does the retry
         # so bluetooth_helper always returns a full list.
         # This was broken in earlier versions.
-        resp = self._getResp("desc")
-        ndesc = len(resp["hnd"])
+        resp: dict[str, list[Any]] = self._getResp(["desc"])
+        ndesc: int = len(resp["hnd"])
         return [Descriptor(self, resp["uuid"][i], resp["hnd"][i]) for i in range(ndesc)]
 
     def setDelegate(self, delegate_):  # same as withDelegate(), deprecated
         return self.withDelegate(delegate_)
 
     def getLocalOOB(self, iface=None):
-        cmd = ""
+        cmd: str = ""
         if self._helper is None:
             self._startHelper(iface)
         self.iface = iface
         self._writeCmd("local_oob\n")
         if iface is not None:
             cmd += " hci" + str(iface)
-        resp = self._getResp("oob")
+        resp: dict[str, list[Any]] = self._getResp(["oob"])
         if resp is not None:
             data = resp.get("d", [""])[0]
             if data is None:
@@ -836,7 +837,7 @@ class Peripheral(Bluepy3Helper):
 
     def setMTU(self, mtu):
         self._writeCmd(f"mtu {mtu}\n")
-        return self._getResp("stat")
+        return self._getResp(["stat"])
 
     # keep this with setRemoteOOB()
     def _setRemoteOOB(self, address, address_type, oob_data, iface=None) -> None:
@@ -870,7 +871,7 @@ class Peripheral(Bluepy3Helper):
         if self._serviceMap is not None and uuid in self._serviceMap:
             return self._serviceMap[uuid]
         self._writeCmd(f"svcs {uuid}\n")
-        rsp = self._getResp("find")
+        rsp = self._getResp(["find"])
         if "hstart" not in rsp:
             raise BTLEGattError(f"Service {uuid.getCommonName()} not found", rsp)
         svc = Service(self, uuid, rsp["hstart"][0], rsp["hend"][0])
@@ -884,12 +885,12 @@ class Peripheral(Bluepy3Helper):
         return self.services
 
     def getState(self) -> str:
-        status: dict[str, str] = self.status()
-        return status["state"][0]
+        status: dict[str, list[Any]] = self.status()
+        return str(status["state"][0])
 
-    def setSecurityLevel(self, level) -> dict[str, str] | None:
+    def setSecurityLevel(self, level) -> dict[str, list[Any]]:
         self._writeCmd(f"secu {level}\n")
-        return self._getResp("stat")
+        return self._getResp(["stat"])
 
     def pair(self) -> None:
         self._mgmtCmd("pair")
@@ -935,7 +936,7 @@ class Scanner(Bluepy3Helper):
                     break
             else:
                 remain = None
-            resp = self._waitResp(["scan", "stat"], remain)
+            resp: dict[str, list[Any]] = self._waitResp(["scan", "stat"], remain)
             if resp is None:
                 break
 
@@ -971,13 +972,13 @@ class Scanner(Bluepy3Helper):
         self._startHelper(iface=self.iface)
         self._mgmtCmd("le on")
         self._writeCmd(self._cmd() + "\n")
-        rsp = self._waitResp("mgmt")
+        rsp = self._waitResp(["mgmt"])
         if rsp["code"][0] == "success":
             return
         # Sometimes previous scan still ongoing
         if rsp["code"][0] == "busy":
             self._mgmtCmd(self._cmd() + "end")
-            rsp = self._waitResp("stat")
+            rsp = self._waitResp(["stat"])
             assert rsp["state"][0] == "disc"
             self._mgmtCmd(self._cmd())
 
@@ -998,7 +999,7 @@ class _UUIDNameMap:
 
     def getCommonName(self, uuid) -> str:
         if uuid in self.idMap:
-            return self.idMap[uuid].commonName
+            return str(self.idMap[uuid].commonName)
         return ""
 
 
@@ -1010,7 +1011,7 @@ def capitaliseName(descr: str) -> str:
 
 
 def get_json_uuid() -> Generator[UUID, Any, None]:
-    uuid_entry = list[int, str, str]
+    uuid_entry = list[int, str, str]  # type: ignore[type-arg]
     # an entry in the uuid_list is a list containing an `int`` and two `str`
     # example: [10082, 'day', 'time (day)']
     uuid_list = list[uuid_entry]
@@ -1035,7 +1036,7 @@ AssignedNumbers = _UUIDNameMap(get_json_uuid())
 
 if __name__ == "__main__":
     Debugging = True
-    print(AssignedNumbers.device_name)
+    print(AssignedNumbers.device_name)  # type: ignore
     if len(sys.argv) < 2:
         sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
