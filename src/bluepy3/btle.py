@@ -1042,7 +1042,7 @@ if not os.path.isfile(HELPER_PATH):
 
 if __name__ == "__main__":
     Debugging = True
-    print(AssignedNumbers.device_name)  # type: ignore
+    print(AssignedNumbers.device_name)  # type: ignore  # contents is created dynamically
     if len(sys.argv) < 2:
         sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
