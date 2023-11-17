@@ -1,17 +1,22 @@
 # pyproject.toml
 
 # Hatchling  https://packaging.python.org/en/latest/key_projects/#hatch
+#            https://hatch.pypa.io/latest/config/metadata/
+# PEP 621    https://peps.python.org/pep-0621/
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "bluepy3"
-description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
 version = "1.13.15"  # latest/current distribution version
 #version = "1.12.1"  # latest test version
-dependencies = []
+description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
+readme = "README.md"
+requires-python = ">=3.8"
 license = "MIT"
+# license-files = { paths = ["LICENSE"] }
 authors = [
     { name="Mausy5043" },
 ]
@@ -22,8 +27,6 @@ keywords = [
     "Bluetooth Low Energy",
     "Raspberry Pi",
 ]
-readme = "README.md"
-requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
@@ -34,25 +37,25 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Topic :: Home Automation"
 ]
-# packages = [
-#         {include = "bluepy3-helper"},
-#         {include = "uuids.json"},
-#         {include = "bluepy3-helper.c"},
-#         {include = "config.*.h"},
-#         {include = "version.h"},
-#         {include = "Makefile"},
-#         ]
-include = [
-        {path = "bluepy3-helper"},
-        {path = "uuids.json"},
-        {path = "bluepy3-helper.c"},
-        {path = "config.*.h"},
-        {path = "version.h"},
-        {path = "Makefile"},
-        ]
+dependencies = []
 
-[tool.poetry.scripts]
-my_package_cli = 'bluepy3.blescan:main'
+[tool.hatch.build]
+include = [
+    "BUILDING.md",
+    "environment.yml",
+    "requirements.txt",
+    "tox.ini",
+    "src/bluepy3/*.py",
+    "src/bluepy3/bluepy3-helper.c",
+    "src/bluepy3/config.*.h",
+    "src/bluepy3/Makefile",
+    "src/bluepy3/py.typed",
+    "src/bluepy3/uuids.json",
+    "src/bluepy3/version.h",
+]
+
+[project.scripts]
+blescan = 'bluepy3.blescan:main'
 
 [project.urls]
 "Homepage" = "https://github.com/Mausy5043/bluepy3"
