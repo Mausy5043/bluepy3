@@ -1,0 +1,59 @@
+# pyproject.toml
+
+# Hatchling  https://packaging.python.org/en/latest/key_projects/#hatch
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bluepy3"
+description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
+version = "1.13.15"  # latest/current distribution version
+#version = "1.12.1"  # latest test version
+dependencies = []
+license = "MIT"
+authors = [
+    { name="Mausy5043" },
+]
+keywords = [
+    "Bluetooth",
+    "Bluetooth Smart",
+    "BLE",
+    "Bluetooth Low Energy",
+    "Raspberry Pi",
+]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Home Automation"
+]
+# packages = [
+#         {include = "bluepy3-helper"},
+#         {include = "uuids.json"},
+#         {include = "bluepy3-helper.c"},
+#         {include = "config.*.h"},
+#         {include = "version.h"},
+#         {include = "Makefile"},
+#         ]
+include = [
+        {path = "bluepy3-helper"},
+        {path = "uuids.json"},
+        {path = "bluepy3-helper.c"},
+        {path = "config.*.h"},
+        {path = "version.h"},
+        {path = "Makefile"},
+        ]
+
+[tool.poetry.scripts]
+my_package_cli = 'bluepy3.blescan:main'
+
+[project.urls]
+"Homepage" = "https://github.com/Mausy5043/bluepy3"
+"Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
