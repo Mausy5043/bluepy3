@@ -1034,6 +1034,7 @@ def get_json_uuid() -> Generator[UUID, Any, None]:
 def make_helper() -> None:
     pass
 
+
 AssignedNumbers = _UUIDNameMap(get_json_uuid())
 
 if not os.path.isfile(HELPER_PATH):
