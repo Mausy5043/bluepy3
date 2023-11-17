@@ -116,9 +116,6 @@ celerybeat-schedule
 .project
 .pydevproject
 
-# mkdocs documentation
-/site
-
 # mypy
 .mypy_cache/
 .dmypy.json
