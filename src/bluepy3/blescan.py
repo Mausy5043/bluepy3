@@ -11,12 +11,12 @@ except ImportError:
     import btle
 
 if os.getenv("C", "1") == "0":
-    ANSI_RED = ""
-    ANSI_GREEN = ""
-    ANSI_YELLOW = ""
-    ANSI_CYAN = ""
-    ANSI_WHITE = ""
-    ANSI_OFF = ""
+    ANSI_RED: str = ""
+    ANSI_GREEN: str = ""
+    ANSI_YELLOW: str = ""
+    ANSI_CYAN: str = ""
+    ANSI_WHITE: str = ""
+    ANSI_OFF: str = ""
 else:
     ANSI_CSI = "\033["
     ANSI_RED = ANSI_CSI + "31m"
@@ -27,7 +27,7 @@ else:
     ANSI_OFF = ANSI_CSI + "0m"
 
 
-def dump_services(dev) -> None:
+def dump_services(dev: btle.Peripheral) -> None:
     services = sorted(dev.services, key=lambda k: k.hndStart)
     for s in services:
         print(f"\t{s.hndStart:04X}: {s}")
