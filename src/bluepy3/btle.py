@@ -14,13 +14,6 @@ from queue import Queue, Empty
 from threading import Thread
 from typing import Any, Generator, Optional, TextIO
 
-
-def preexec_function() -> None:
-    # Ignore the SIGINT signal by setting the handler to the standard
-    # signal handler SIG_IGN.
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-
-
 Debugging: bool = False
 SCRIPT_PATH: str = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 HELPER_PATH: str = os.path.join(SCRIPT_PATH, "bluepy3-helper")
@@ -33,6 +26,12 @@ ADDR_TYPE_PUBLIC: str = "public"
 ADDR_TYPE_RANDOM: str = "random"
 
 BTLE_TIMEOUT: float = 32.1
+
+
+def preexec_function() -> None:
+    # Ignore the SIGINT signal by setting the handler to the standard
+    # signal handler SIG_IGN.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 def DBG(*args) -> None:
