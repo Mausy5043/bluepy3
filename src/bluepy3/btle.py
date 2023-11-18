@@ -1030,14 +1030,18 @@ def get_json_uuid() -> Generator[UUID, Any, None]:
             yield UUID(number, name)
 
 
-def make_helper() -> None:
-    pass
-
-
 AssignedNumbers = _UUIDNameMap(get_json_uuid())
 
+# If the executable `bluepy3-helper` does not exist we `make` it here first.
+# This is normally only executed on the very first time `btle` is imported by
+# the client.
 if not os.path.isfile(HELPER_PATH):
-    make_helper()
+    try:
+        from . import helpermaker as hm
+    except ImportError:
+        import helpermaker as hm
+    hm.make_helper(version="installed")
+
 
 if __name__ == "__main__":
     Debugging = True
