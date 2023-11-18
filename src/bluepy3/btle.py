@@ -7,7 +7,7 @@ import json
 import os
 import signal
 import struct
-import subprocess
+import subprocess  # nosec: B404
 import sys
 import time
 from queue import Queue, Empty
@@ -17,6 +17,16 @@ from typing import Any, Generator, Optional, TextIO
 Debugging: bool = False
 SCRIPT_PATH: str = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 HELPER_PATH: str = os.path.join(SCRIPT_PATH, "bluepy3-helper")
+
+# If the executable `bluepy3-helper` does not exist we `make` it here first.
+# This is normally only executed on the very first time `btle` is imported by
+# the client.
+if not os.path.isfile(HELPER_PATH):
+    try:
+        from . import helpermaker
+    except ImportError:
+        import helpermaker  # type: ignore
+    helpermaker.make_helper(version="installed")
 
 SEC_LEVEL_LOW: str = "low"
 SEC_LEVEL_MEDIUM: str = "medium"
@@ -470,7 +480,7 @@ class Bluepy3Helper:
                 args.append(str(iface))
             #
             # pylint: disable-next=consider-using-with, disable-next=W1509  # FIXME: should not be using preexec_fn
-            self._helper = subprocess.Popen(
+            self._helper = subprocess.Popen(  # nosec B603
                 args,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
@@ -1031,16 +1041,6 @@ def get_json_uuid() -> Generator[UUID, Any, None]:
 
 
 AssignedNumbers = _UUIDNameMap(get_json_uuid())
-
-# If the executable `bluepy3-helper` does not exist we `make` it here first.
-# This is normally only executed on the very first time `btle` is imported by
-# the client.
-if not os.path.isfile(HELPER_PATH):
-    try:
-        from . import helpermaker as hm
-    except ImportError:
-        import helpermaker as hm
-    hm.make_helper(version="installed")
 
 
 if __name__ == "__main__":
