@@ -3,13 +3,12 @@
 """Make the bluepy3-helper binary executable on demand."""
 
 import os
-import platform
+
+# import platform
 import shlex
-import subprocess
+import subprocess  # nosec: B404
 import sys
 
-from setuptools import setup
-from setuptools.command.build_py import build_py
 
 VERSION: str = "1.13.13"  # latest version for testing
 # VERSION: str = "1.12.1"  # latest version for production
@@ -19,7 +18,26 @@ BLUEZ_VERSION: str = "(unknown)"
 
 
 def make_helper(version: str = "installed") -> None:
-    print(version)
+    bt_version: str = version
+    if bt_version == "installed":
+        bt_version = get_btctl_version()
+    print(bt_version)
+
+
+def get_btctl_version() -> str:
+    # bluetoothctl version
+    args: list[str] = ["bluetoothctl", "version"]
+    try:
+        _exit_code = (
+            subprocess.check_output(
+                args, shell=False, encoding="utf-8", timeout=5.0
+            )  # nosec B603
+            .strip("\n")
+            .strip("'")
+        ).split()
+    except FileNotFoundError:
+        return "not installed"
+    return f"{_exit_code[1]}"
 
 
 def build() -> None:
@@ -38,8 +56,9 @@ def build() -> None:
             verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
             print(f"\nexecute {cmd}")
-            # pylint: disable-next=unused-variable
-            msgs = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)  # noqa
+            msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
+                shlex.split(cmd), stderr=subprocess.STDOUT
+            )  # nosec: B603
         print("\n\n*** Finished pre-install ***\n\n")
     except subprocess.CalledProcessError as e:
         print(f"Command was {repr(cmd)} in {os.getcwd()}")
