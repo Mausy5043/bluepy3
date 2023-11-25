@@ -18,7 +18,7 @@ if os.getenv("C", "1") == "0":
     ANSI_WHITE: str = ""
     ANSI_OFF: str = ""
 else:
-    ANSI_CSI = "\033["
+    ANSI_CSI: str = "\033["
     ANSI_RED = ANSI_CSI + "31m"
     ANSI_GREEN = ANSI_CSI + "32m"
     ANSI_YELLOW = ANSI_CSI + "33m"
