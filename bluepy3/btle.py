@@ -973,13 +973,6 @@ class Scanner(Bluepy3Helper):
         return self.getDevices()
 
 
-def capitaliseName(descr):
-    words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
-    capWords = [words[0].lower()]
-    capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
-    return "".join(capWords)
-
-
 class _UUIDNameMap:
     # Constructor sets self.currentTimeService, self.txPower, and so on
     # from names.
@@ -995,6 +988,13 @@ class _UUIDNameMap:
         if uuid in self.idMap:
             return self.idMap[uuid].commonName
         return None
+
+
+def capitaliseName(descr):
+    words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
+    capWords = [words[0].lower()]
+    capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
+    return "".join(capWords)
 
 
 def get_json_uuid():
