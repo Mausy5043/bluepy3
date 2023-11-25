@@ -1,3 +1,2 @@
-#!/usr/bin/env python3
-
-# placeholder
+# Instruct type checkers to look for inline type annotations in this package.
+# See PEP 561.
