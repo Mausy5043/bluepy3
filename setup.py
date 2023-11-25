@@ -12,11 +12,11 @@ import sys
 from setuptools import setup
 from setuptools.command.build_py import build_py
 
-VERSION: str = "1.13.13"  # latest version for testing
-# VERSION: str = "1.12.1"  # latest version for production
-MAKEFILE: str = "bluepy3/Makefile"
-VERSION_FILE: str = "bluepy3/version.h"
-BLUEZ_VERSION: str = "(unknown)"
+VERSION = "1.15.3"  # latest version for testing
+# VERSION = "1.12.1"  # latest version for production
+MAKEFILE = "bluepy3/Makefile"
+VERSION_FILE = "bluepy3/version.h"
+BLUEZ_VERSION = "(unknown)"
 
 
 def pre_install() -> None:

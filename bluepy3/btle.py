@@ -967,25 +967,6 @@ class Scanner(Bluepy3Helper):
         self.stop()
         return self.getDevices()
 
-    def start(self, passive: bool = False) -> None:
-        self.passive = passive
-        self._startHelper(iface=self.iface)
-        self._mgmtCmd("le on")
-        self._writeCmd(self._cmd() + "\n")
-        rsp = self._waitResp(["mgmt"])
-        if rsp["code"][0] == "success":
-            return
-        # Sometimes previous scan still ongoing
-        if rsp["code"][0] == "busy":
-            self._mgmtCmd(self._cmd() + "end")
-            rsp = self._waitResp(["stat"])
-            assert rsp["state"][0] == "disc"
-            self._mgmtCmd(self._cmd())
-
-    def stop(self) -> None:
-        self._mgmtCmd(self._cmd() + "end")
-        self._stopHelper()
-
 
 class _UUIDNameMap:
     # Constructor sets self.currentTimeService, self.txPower, and so on
@@ -999,30 +980,18 @@ class _UUIDNameMap:
 
     def getCommonName(self, uuid) -> str:
         if uuid in self.idMap:
-            return str(self.idMap[uuid].commonName)
-        return ""
+            return self.idMap[uuid].commonName
+        return None
 
 
-def capitaliseName(descr: str) -> str:
+def capitaliseName(descr):
     words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
     capWords = [words[0].lower()]
     capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
     return "".join(capWords)
 
 
-def get_json_uuid() -> Generator[UUID, Any, None]:
-    uuid_entry = list[int, str, str]  # type: ignore[type-arg]
-    # an entry in the uuid_list is a list containing an `int`` and two `str`
-    # example: [10082, 'day', 'time (day)']
-    uuid_list = list[uuid_entry]
-    # a list of `uuid_entry`s
-    json_content = dict[str, uuid_list]
-    # a dict containing the `uuid_lists`s. The key is the name of each list as a `str`
-    _v: uuid_entry
-    number: int
-    cname: str
-    name: str
-
+def get_json_uuid():
     with open(os.path.join(script_path, "uuids.json"), "rb") as fp:
         _uuid_data: json_content = json.loads(fp.read().decode("utf-8"))
     for _, _v in _uuid_data.items():
