@@ -993,7 +993,7 @@ def capitaliseName(descr):
 
 def get_json_uuid():
     with open(os.path.join(script_path, "uuids.json"), "rb") as fp:
-        _uuid_data: json_content = json.loads(fp.read().decode("utf-8"))
+        _uuid_data = json.loads(fp.read().decode("utf-8"))
     for _, _v in _uuid_data.items():
         for number, cname, name in _v:
             yield UUID(number, cname)
