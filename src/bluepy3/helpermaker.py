@@ -4,28 +4,36 @@
 
 import os
 
-# import platform
+import platform
 import shlex
 import subprocess  # nosec: B404
 import sys
+import tomli
 
+# We distinguish between three versions:
+# VERSION
+#   bluepy3 package (stored in pyproject.toml)
+# BLUEZ_VERSION
+#   the version of BlueZ (https://github.com/bluez/bluez) against which
+#   the bluepy3-helper.c will be compiled. By default this will be the
+#   version of bluetooth that is installed. This is discovered using
+#   `bluetoothctl --version` and can be overriden by the user/client by
+#   calling: make_helper(version="x.xx"), where "x.xx" is the required
+#   version (str).
+# BUILD_VERSION
+#   the version that `bluepy3-helper` will get during the build.
 
-VERSION: str = "1.13.13"  # latest version for testing
-# VERSION: str = "1.12.1"  # latest version for production
-MAKEFILE: str = "bluepy3/Makefile"
-VERSION_FILE: str = "bluepy3/version.h"
-BLUEZ_VERSION: str = "(unknown)"
+_sep = "/"
 
-
-def make_helper(version: str = "installed") -> None:
-    bt_version: str = version
-    if bt_version == "installed":
-        bt_version = get_btctl_version()
-    print(bt_version)
+HERE: str = _sep.join(__file__.split(_sep)[:-1])
+APP_ROOT: str = os.path.abspath(os.path.join(HERE, "../.."))
+MAKEFILE: str = f"{APP_ROOT}/src/bluepy3/Makefile"
+VERSION_H: str = f"{APP_ROOT}/src/bluepy3/version.h"
+PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
 
 
 def get_btctl_version() -> str:
-    # bluetoothctl version
+    """Return the bluetooth version (only on Linux)."""
     args: list[str] = ["bluetoothctl", "version"]
     try:
         _exit_code = (
@@ -40,36 +48,66 @@ def get_btctl_version() -> str:
     return f"{_exit_code[1]}"
 
 
+def get_project_version() -> str:
+    """Lookup the project version in pyproject.toml."""
+    with open(PYPROJECT_TOML, mode="rb") as _fp:
+        TOML_CONTENTS = tomli.load(_fp)
+    return TOML_CONTENTS["project"]["version"]
+
+
+VERSION: str = get_project_version()
+BLUEZ_VERSION: str = get_btctl_version()
+BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
+
+
 def build() -> None:
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
-    global BLUEZ_VERSION  # noqa  # pylint: disable=global-statement
     cmd: str = ""
-    try:
-        print("\n\n*** Executing pre-install ***\n")
-        print(f"Working dir is {os.getcwd()}")
-        with open(MAKEFILE, "r", encoding="utf-8") as makefile:
-            lines: list[str] = makefile.readlines()
-            for line in lines:
-                if line.startswith("BLUEZ_VERSION"):
-                    BLUEZ_VERSION = line.split("=")[1].strip()
-        with open(VERSION_FILE, "w", encoding="utf-8") as verfile:
-            verfile.write(f'#define VERSION_STRING "{VERSION}-{BLUEZ_VERSION}"\n')
+    # create the version.h containing the BUILD_VERSION
+    with open(VERSION_H, "w", encoding="utf-8") as verfile:
+        verfile.write(f'#define VERSION_STRING "{BUILD_VERSION}"\n')
+
+    # read the Makefile
+    with open(MAKEFILE, "r", encoding="utf-8") as makefile:
+        lines: list[str] = makefile.readlines()
+    # write the Makefile while inserting the desired BLUEZ_VERSION
+    with open(MAKEFILE, "w", encoding="utf-8") as makefile:
+        for line in lines:
+            if line.startswith("BLUEZ_VERSION"):
+                line = f"BLUEZ_VERSION={BLUEZ_VERSION}\n"
+            makefile.write(line)
+    if platform.system() == "Linux":
+        # Windows and macOS aere not supported
+        print("\n\n*** Building bluepy3-helper\n")
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
-            print(f"\nexecute {cmd}")
-            msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
-                shlex.split(cmd), stderr=subprocess.STDOUT
-            )  # nosec: B603
-        print("\n\n*** Finished pre-install ***\n\n")
-    except subprocess.CalledProcessError as e:
-        print(f"Command was {repr(cmd)} in {os.getcwd()}")
-        print(f"Return code was {e.returncode}")
-        err_out: str = e.output.decode("utf-8")
-        print(f"Output was:\n{err_out}")
-        print(
-            f"\nFailed to compile bluepy3-helper version {VERSION}-{BLUEZ_VERSION}."
-            f" Exiting install.\n"
-        )
-        sys.exit(1)
+            print(f"\n    Execute {cmd}")
+            try:
+                msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
+                    shlex.split(cmd), stderr=subprocess.STDOUT
+                )  # nosec: B603
+            except subprocess.CalledProcessError as e:
+                print(f"Command was {repr(cmd)} in {os.getcwd()}")
+                print(f"Return code was {e.returncode}")
+                err_out: str = e.output.decode("utf-8")
+                print(f"Output was:\n{err_out}")
+                print(
+                    f"\nFailed to compile bluepy3-helper version {BUILD_VERSION}."
+                    f"\nExiting install.\n"
+                )
+                sys.exit(1)
+        print(f"    Returned message: {str(msgs)}")
+    else:
+        print("\n\n*** Skipping build of bluepy3-helper")
+        print("*** Windows and macOS are not supported")
+    print("\n\n*** Finished post-install\n\n")
+
+
+def make_helper(version: str = "installed") -> None:
+    global BUILD_VERSION
+    if version != "installed":
+        BUILD_VERSION = f"{VERSION}-{version}"
+    print(BUILD_VERSION)
+    print(f"Working dir is {HERE}")
 
 
 if __name__ == "__main__":
