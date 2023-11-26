@@ -52,7 +52,7 @@ def get_project_version() -> str:
     """Lookup the project version in pyproject.toml."""
     with open(PYPROJECT_TOML, mode="rb") as _fp:
         TOML_CONTENTS = tomli.load(_fp)
-    return TOML_CONTENTS["project"]["version"]
+    return str(TOML_CONTENTS["project"]["version"])
 
 
 VERSION: str = get_project_version()
@@ -81,6 +81,7 @@ def build() -> None:
         print("\n\n*** Building bluepy3-helper\n")
         for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
             print(f"\n    Execute {cmd}")
+            msgs: bytes = b''
             try:
                 msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
                     shlex.split(cmd), stderr=subprocess.STDOUT
@@ -95,7 +96,7 @@ def build() -> None:
                     f"\nExiting install.\n"
                 )
                 sys.exit(1)
-        print(f"    Returned message: {str(msgs)}")
+            print(f"    Returned message: {msgs.decode(encoding='utf-8')}")
     else:
         print("\n\n*** Skipping build of bluepy3-helper")
         print("*** Windows and macOS are not supported")
