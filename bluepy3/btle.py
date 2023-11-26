@@ -631,8 +631,10 @@ class Peripheral(Bluepy3Helper):
             resp: dict[str, list[Any]] = self._waitResp(wantType + ["ntfy", "ind"], timeout)
             if resp is None:
                 return {}
-
-            respType = resp["rsp"][0]
+            try:
+                respType = resp["rsp"][0]
+            except KeyError:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
             if respType in ["ntfy", "ind"]:
                 hnd = resp["hnd"][0]
                 data = resp["d"][0]
