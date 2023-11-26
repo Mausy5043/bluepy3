@@ -44,9 +44,10 @@ dependencies = []
 
 [tool.hatch.build]
 include = [
-    "README.md",
-    "LICENSE",
     "environment.yml",
+    "LICENSE",
+    "pyproject.toml",
+    "README.md",
     "requirements.txt",     # not currently present.
     "tox.ini",
     "src/bluepy3/*.py",
