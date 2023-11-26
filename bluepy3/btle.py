@@ -70,7 +70,7 @@ class BTLEException(Exception):
             if self.emsg:
                 msg = f"{msg}error: {self.emsg}"
             msg = f"{msg})"
-        msg = f"(btle) {self.msg}"
+        msg = f"(btle) {msg}"
         return msg
 
 
