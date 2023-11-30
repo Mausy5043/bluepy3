@@ -7,7 +7,7 @@
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
-###### ATTENTION: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below looks terrible. Visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file. 
+###### ATTENTION: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below may look terrible. In that case, visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file.
 
 ## Requirements
 
@@ -17,17 +17,17 @@ Development of this package is done in Python 3.9. The package is considered for
 
 The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 w/ Python 3.9.* AND with Debian GNU Linux 12 /w Python 3.11.*.
 
-The code needs an executable `bluepy3-helper` which is compiled from C source automatically 
+The code needs an executable `bluepy3-helper` which is compiled from C source automatically
 if you use the recommended pip installation method (see below). Otherwise,
 you can rebuild it using the Makefile in the `bluepy3` directory.
 
-The `bluepy3` package comes installed with lists of compatible UUIDs in `uuids.json`. 
+The `bluepy3` package comes installed with lists of compatible UUIDs in `uuids.json`.
 If, for whatever reason, you want to rebuild those lists, then the Python3 modules
 `bs4`, `requests` and `lxml` need to be installed.
 ```(python3)
 python3 -m pip install bs4 lxml requests
 ```
-Then find where the bluepy3 package is installed and rebuild `uuids.json` thus: 
+Then find where the bluepy3 package is installed and rebuild `uuids.json` thus:
 ```(bash)
 cd some_path_name/site-packages/bluepy3/
 make uuids.json
@@ -52,7 +52,7 @@ It may be considered to have command-line tools from BlueZ available for debuggi
 
 ## Troubleshooting
 
-Make sure the user is part of the `bluetooth` group.   
+Make sure the user is part of the `bluetooth` group.
 Use `hciconfig` to confirm that the device actually exists. This should output something like:
 ```
 hci0:    Type: Primary  Bus: UART
@@ -69,18 +69,18 @@ For documentation you are referred to [the documentation that comes with `bluepy
 
 ## Contributing
 
-Your assistance to improve this package is greatly appreciated.  
+Your assistance to improve this package is greatly appreciated.
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-## License  
+## License
 
 See [LICENSE](LICENSE)
 
 ## Acknowledgements
 
-This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy) and uses code 
-by the [BlueZ project](http://www.bluez.org/) (not a https site) and the more 
+This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy) and uses code
+by the [BlueZ project](http://www.bluez.org/) (not a https site) and the more
 up-to-date [BlueZ on GitHub](https://github.com/bluez/bluez)
 
-Original source code can be found at:   
+Original source code can be found at:
 >  https://github.com/IanHarvey/bluepy
