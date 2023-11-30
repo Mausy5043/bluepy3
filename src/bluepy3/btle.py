@@ -7,7 +7,7 @@ import json
 import os
 import signal
 import struct
-import subprocess
+import subprocess  # nosec: B404
 import sys
 import time
 from queue import Queue, Empty
@@ -15,15 +15,19 @@ from threading import Thread
 from typing import Any, Generator, Optional, TextIO
 
 
-def preexec_function() -> None:
-    # Ignore the SIGINT signal by setting the handler to the standard
-    # signal handler SIG_IGN.
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-
-
 Debugging = False
-script_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-helperExe = os.path.join(script_path, "bluepy3-helper")
+SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+HELPER_PATH = os.path.join(SCRIPT_PATH, "bluepy3-helper")
+
+# If the executable `bluepy3-helper` does not exist we `make` it here first.
+# This is normally only executed on the very first time `btle` is imported by
+# the client.
+if not os.path.isfile(HELPER_PATH):
+    try:
+        from . import helpermaker
+    except ImportError:
+        import helpermaker  # type: ignore
+    helpermaker.make_helper(version="installed")
 
 SEC_LEVEL_LOW = "low"
 SEC_LEVEL_MEDIUM = "medium"
@@ -33,6 +37,12 @@ ADDR_TYPE_PUBLIC = "public"
 ADDR_TYPE_RANDOM = "random"
 
 BTLE_TIMEOUT = 32.1
+
+def preexec_function() -> None:
+    # Ignore the SIGINT signal by setting the handler to the standard
+    # signal handler SIG_IGN.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
 
 
 def DBG(*args) -> None:
@@ -460,13 +470,13 @@ class Bluepy3Helper:
 
     def _startHelper(self, iface=None) -> None:
         if self._helper is None:
-            DBG(f"    -btle- Running {helperExe}")
+            DBG(f"    -btle- Running {HELPER_PATH}")
             self._aita = 0
             self._lineq = Queue()
             self._mtu = 0
             # pylint: disable-next=consider-using-with
             self._stderr = open(os.devnull, "w")  # pylint: disable=unspecified-encoding
-            args: list[str] = [helperExe]
+            args: list[str] = [HELPER_PATH]
             if iface is not None:
                 args.append(str(iface))
             #
@@ -485,7 +495,7 @@ class Bluepy3Helper:
 
     def _stopHelper(self) -> None:
         if self._helper is not None:
-            DBG(f"    -btle- Stopping {helperExe}")
+            DBG(f"    -btle- Stopping {HELPER_PATH}")
             self._helper.stdin.write("quit\n")  # type:ignore[union-attr]
             self._helper.stdin.flush()  # type:ignore[union-attr]
             self._helper.wait()
@@ -994,7 +1004,7 @@ def capitaliseName(descr):
 
 
 def get_json_uuid():
-    with open(os.path.join(script_path, "uuids.json"), "rb") as fp:
+    with open(os.path.join(SCRIPT_PATH, "uuids.json"), "rb") as fp:
         _uuid_data = json.loads(fp.read().decode("utf-8"))
     for _, _v in _uuid_data.items():
         for number, cname, name in _v:
@@ -1011,8 +1021,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
-    # if not os.path.isfile(helperExe):
-    #     raise ImportError(f"(btle.py) Cannot find required executable '{helperExe}'")
+    # if not os.path.isfile(HELPER_PATH):
+    #     raise ImportError(f"(btle.py) Cannot find required executable '{HELPER_PATH}'")
 
     my_device_address: str = sys.argv[1]
     if len(sys.argv) == 3:
