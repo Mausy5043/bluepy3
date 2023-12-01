@@ -1004,6 +1004,8 @@ def capitaliseName(descr):
 
 
 def get_json_uuid():
+    # an entry in the uuid_list is a list containing an `int`` and two `str`
+    # example: [10082, 'day', 'time (day)']
     with open(os.path.join(SCRIPT_PATH, "uuids.json"), "rb") as fp:
         _uuid_data = json.loads(fp.read().decode("utf-8"))
     for _, _v in _uuid_data.items():
@@ -1012,7 +1014,7 @@ def get_json_uuid():
             yield UUID(number, name)
 
 
-AssignedNumbers = _UUIDNameMap(get_json_uuid())
+AssignedNumbers = _UUIDNameMap(get_json_uuid())    # contents is created dynamically
 
 
 if __name__ == "__main__":
