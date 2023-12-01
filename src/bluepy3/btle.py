@@ -979,6 +979,25 @@ class Scanner(Bluepy3Helper):
         self.stop()
         return self.getDevices()
 
+    def start(self, passive: bool = False) -> None:
+        self.passive = passive
+        self._startHelper(iface=self.iface)
+        self._mgmtCmd("le on")
+        self._writeCmd(self._cmd() + "\n")
+        rsp = self._waitResp(["mgmt"])
+        if rsp["code"][0] == "success":
+            return
+        # Sometimes previous scan still ongoing
+        if rsp["code"][0] == "busy":
+            self._mgmtCmd(self._cmd() + "end")
+            rsp = self._waitResp(["stat"])
+            assert rsp["state"][0] == "disc"
+            self._mgmtCmd(self._cmd())
+
+    def stop(self) -> None:
+        self._mgmtCmd(self._cmd() + "end")
+        self._stopHelper()
+
 
 class _UUIDNameMap:
     # Constructor sets self.currentTimeService, self.txPower, and so on
