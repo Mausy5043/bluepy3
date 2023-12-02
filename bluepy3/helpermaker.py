@@ -73,7 +73,7 @@ def get_helper_version() -> str:
     try:
         # bluepy3_helper will print its version and then return an error
         # because 'version' is not a valid parameter value.
-        _exit_code_list: list[str] = (
+        _: list[str] = (
             subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
             .strip("\n")
             .strip("'")
