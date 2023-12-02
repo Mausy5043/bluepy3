@@ -64,6 +64,7 @@ def get_project_version() -> str:
     return _pv
 
 
+# fmt: off
 def get_helper_version() -> str:
     """Look up the version of the helper binary, if installed."""
     _exit_code = "not installed."
@@ -81,6 +82,7 @@ def get_helper_version() -> str:
         print("Helper executable not found")
         pass
     return _exit_code
+# fmt: on
 
 
 VERSION: str = get_project_version()
