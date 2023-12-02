@@ -32,7 +32,7 @@ HERE: str = _sep.join(__file__.split(_sep)[:-1])
 APP_ROOT: str = HERE
 MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
-PYPROJECT_TOML: str = f"{APP_ROOT}/../pyproject.toml"
+PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
 
 
 def get_btctl_version() -> str:
