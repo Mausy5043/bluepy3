@@ -26,7 +26,7 @@ if not os.path.isfile(HELPER_PATH):
     try:
         from . import helpermaker
     except ImportError:
-        import helpermaker  # type: ignore
+        from bluepy3 import helpermaker
     helpermaker.make_helper(version="installed")
 
 SEC_LEVEL_LOW = "low"
