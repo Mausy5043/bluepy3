@@ -6,6 +6,7 @@ channels:
 
 dependencies:
   - python=3.10
+  - tomli
   - pip
   # Not on conda channels:
   - pip:
