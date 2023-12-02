@@ -53,14 +53,41 @@ def get_btctl_version() -> str:
 
 def get_project_version() -> str:
     """Lookup the project version in pyproject.toml."""
-    with open(PYPROJECT_TOML, mode="rb") as _fp:
-        TOML_CONTENTS = tl.load(_fp)
-    return str(TOML_CONTENTS["project"]["version"])
+    _pv = "pyproject.toml not found."
+    try:
+        with open(PYPROJECT_TOML, mode="rb") as _fp:
+            TOML_CONTENTS = tl.load(_fp)
+            _pv = str(TOML_CONTENTS["project"]["version"])
+    except FileNotFoundError:
+        pass
+    return _pv
 
+
+def get_helper_version() -> str:
+    # return "not installed."
+    _exit_code = "not installed."
+    helper = f"{APP_ROOT}/bluepy3-helper"
+    args = [helper, "version"]
+    try:
+        _exit_code = (
+            subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
+            .strip("\n")
+            .strip("'")
+        )
+    except subprocess.CalledProcessError as exc:
+        pass
+    except FileNotFoundError:
+        pass
+    return _exit_code
 
 VERSION: str = get_project_version()
 BLUEZ_VERSION: str = get_btctl_version()
 BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
+HELPER_VERSION: str = get_helper_version()
+print(APP_ROOT)
+print(f"Package version        : {VERSION}")
+print(f"bluetoothctl version   : {BLUEZ_VERSION}")
+print(f"bluepy3-helper version : {HELPER_VERSION}")
 
 
 def build() -> None:
@@ -110,7 +137,7 @@ def make_helper(version: str = "installed") -> None:
     global BUILD_VERSION
     if version == "installed":
         BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
-    if version is not "installed":
+    if version != "installed":
         BUILD_VERSION = f"{VERSION}-{version}"
     print(BUILD_VERSION)
     print(f"Working dir is {HERE}")
@@ -118,4 +145,5 @@ def make_helper(version: str = "installed") -> None:
 
 
 if __name__ == "__main__":
-    make_helper()
+    # make_helper()
+    pass
