@@ -8,6 +8,7 @@ import platform
 import shlex
 import subprocess  # nosec: B404
 import sys
+
 try:
     import tomllib as tl
 except ModuleNotFoundError:
@@ -75,11 +76,12 @@ def get_helper_version() -> str:
             .strip("'")
         ).split()
     except subprocess.CalledProcessError as exc:
-        _exit_code = str(exc.output.split('\n')[0])
+        _exit_code = str(exc.output.split("\n")[0])
     except FileNotFoundError:
         print("Helper executable not found")
         pass
     return _exit_code
+
 
 VERSION: str = get_project_version()
 BLUEZ_VERSION: str = get_btctl_version()
@@ -112,7 +114,7 @@ def build() -> None:
         print("\n\n*** Building bluepy3-helper\n")
         for cmd in [f"make -C {APP_ROOT} clean", f"make -C {APP_ROOT} -j1"]:
             print(f"\n    Execute {cmd}")
-            msgs: bytes = b''
+            msgs: bytes = b""
             try:
                 msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
                     shlex.split(cmd), stderr=subprocess.STDOUT

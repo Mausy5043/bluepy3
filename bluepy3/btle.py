@@ -46,11 +46,11 @@ ADDR_TYPE_RANDOM = "random"
 
 BTLE_TIMEOUT = 32.1
 
+
 def preexec_function() -> None:
     # Ignore the SIGINT signal by setting the handler to the standard
     # signal handler SIG_IGN.
     signal.signal(signal.SIGINT, signal.SIG_IGN)
-
 
 
 def DBG(*args) -> None:
@@ -1048,7 +1048,7 @@ def get_json_uuid():
             yield UUID(number, name)
 
 
-AssignedNumbers = _UUIDNameMap(get_json_uuid())    # contents is created dynamically
+AssignedNumbers = _UUIDNameMap(get_json_uuid())  # contents is created dynamically
 
 
 if __name__ == "__main__":
