@@ -8,7 +8,10 @@ import platform
 import shlex
 import subprocess  # nosec: B404
 import sys
-import tomli
+try:
+    import tomllib as tl
+except ModuleNotFoundError:
+    import tomli as tl
 
 # We distinguish between three versions:
 # VERSION
@@ -26,10 +29,10 @@ import tomli
 _sep = "/"
 
 HERE: str = _sep.join(__file__.split(_sep)[:-1])
-APP_ROOT: str = os.path.abspath(os.path.join(HERE, "../.."))
-MAKEFILE: str = f"{APP_ROOT}/src/bluepy3/Makefile"
-VERSION_H: str = f"{APP_ROOT}/src/bluepy3/version.h"
-PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
+APP_ROOT: str = HERE
+MAKEFILE: str = f"{APP_ROOT}/Makefile"
+VERSION_H: str = f"{APP_ROOT}/version.h"
+PYPROJECT_TOML: str = f"{APP_ROOT}/../pyproject.toml"
 
 
 def get_btctl_version() -> str:
@@ -51,7 +54,7 @@ def get_btctl_version() -> str:
 def get_project_version() -> str:
     """Lookup the project version in pyproject.toml."""
     with open(PYPROJECT_TOML, mode="rb") as _fp:
-        TOML_CONTENTS = tomli.load(_fp)
+        TOML_CONTENTS = tl.load(_fp)
     return str(TOML_CONTENTS["project"]["version"])
 
 
