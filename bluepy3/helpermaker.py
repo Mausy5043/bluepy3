@@ -138,7 +138,7 @@ def build() -> None:
 
 
 def make_helper(version: str = "installed") -> None:
-    global BUILD_VERSION
+    global BUILD_VERSION  # pylint: disable=global-statement
     if version == "installed":
         BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
     if version != "installed":
