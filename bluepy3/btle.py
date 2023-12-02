@@ -542,7 +542,10 @@ class Bluepy3Helper:
                     self._stopHelper()
                     raise BTLEInternalError("Device keeps repeating itself. Giving up.", resp)
 
-            respType: str = resp["rsp"][0]
+            try:
+                respType = resp["rsp"][0]
+            except KeyError:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
 
             # always check for MTU updates
             if "mtu" in resp and len(resp["mtu"]) > 0:
@@ -960,7 +963,11 @@ class Scanner(Bluepy3Helper):
             if resp is None:
                 break
 
-            respType = resp["rsp"][0]
+            try:
+                respType = resp["rsp"][0]
+            except KeyError:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+
             if respType == "stat":
                 # if scan ended, restart it
                 if resp["state"][0] == "disc":
