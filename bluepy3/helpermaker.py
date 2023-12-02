@@ -12,7 +12,7 @@ import sys
 try:
     import tomllib as tl
 except ModuleNotFoundError:
-    import tomli as tl
+    import tomli as tl  # type: ignore[no-redef]
 
 # We distinguish between three versions:
 # VERSION
