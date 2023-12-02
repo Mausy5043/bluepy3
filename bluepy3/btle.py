@@ -650,7 +650,7 @@ class Peripheral(Bluepy3Helper):
     ) -> dict[str, list[Any]]:
         while True:
             resp: dict[str, list[Any]] = self._waitResp(wantType + ["ntfy", "ind"], timeout)
-            if resp is None:
+            if not resp:
                 return {}
             try:
                 respType = resp["rsp"][0]
@@ -960,7 +960,7 @@ class Scanner(Bluepy3Helper):
             else:
                 remain = None
             resp: dict[str, list[Any]] = self._waitResp(["scan", "stat"], remain)
-            if resp is None:
+            if not resp:
                 break
 
             try:
