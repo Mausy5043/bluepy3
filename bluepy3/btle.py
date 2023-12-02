@@ -19,10 +19,18 @@ Debugging = False
 SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 HELPER_PATH = os.path.join(SCRIPT_PATH, "bluepy3-helper")
 
-# If the executable `bluepy3-helper` does not exist we `make` it here first.
+# If the executable `bluepy3-helper` does not exist
+# or the source file is newer than the bin we `make` it here first.
 # This is normally only executed on the very first time `btle` is imported by
 # the client.
+_make_helper: bool = False
+_f: float = 0.0
 if not os.path.isfile(HELPER_PATH):
+    _make_helper = True
+else:
+    _f = os.path.getmtime(f"{HELPER_PATH}")
+_c: float = os.path.getmtime(f"{HELPER_PATH}.c")
+if (_c > _f) or _make_helper:
     try:
         from . import helpermaker
     except ImportError:
