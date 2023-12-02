@@ -68,10 +68,12 @@ def get_project_version() -> str:
 def get_helper_version() -> str:
     """Look up the version of the helper binary, if installed."""
     _exit_code = "not installed."
-    helper = f"{APP_ROOT}/bluepy3-helper"
-    args = [helper, "version"]
+    helper: str = f"{APP_ROOT}/bluepy3-helper"
+    args: list[str] = [helper, "version"]
     try:
-        _exit_code = (
+        # bluepy3_helper will print its version and then return an error
+        # because 'version' is not a valid parameter value.
+        _exit_code_list: list[str] = (
             subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
             .strip("\n")
             .strip("'")
