@@ -64,7 +64,7 @@ def get_project_version() -> str:
 
 
 def get_helper_version() -> str:
-    # return "not installed."
+    """Look up the version of the helper binary, if installed."""
     _exit_code = "not installed."
     helper = f"{APP_ROOT}/bluepy3-helper"
     args = [helper, "version"]
@@ -75,8 +75,10 @@ def get_helper_version() -> str:
             .strip("'")
         )
     except subprocess.CalledProcessError as exc:
+        print("subprocess")
         pass
     except FileNotFoundError:
+        print("file not found")
         pass
     return _exit_code
 
