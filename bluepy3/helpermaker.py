@@ -73,10 +73,9 @@ def get_helper_version() -> str:
             subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
             .strip("\n")
             .strip("'")
-        )
+        ).split()
     except subprocess.CalledProcessError as exc:
-        print("subprocess")
-        pass
+        _exit_code = str(exc.output.split('\n')[0])
     except FileNotFoundError:
         print("file not found")
         pass
@@ -86,10 +85,10 @@ VERSION: str = get_project_version()
 BLUEZ_VERSION: str = get_btctl_version()
 BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
 HELPER_VERSION: str = get_helper_version()
-print(APP_ROOT)
-print(f"Package version        : {VERSION}")
-print(f"bluetoothctl version   : {BLUEZ_VERSION}")
-print(f"bluepy3-helper version : {HELPER_VERSION}")
+# print(APP_ROOT)
+# print(f"Package version        : {VERSION}")
+# print(f"bluetoothctl version   : {BLUEZ_VERSION}")
+# print(f"bluepy3-helper version : {HELPER_VERSION}")
 
 
 def build() -> None:
@@ -141,11 +140,10 @@ def make_helper(version: str = "installed") -> None:
         BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
     if version != "installed":
         BUILD_VERSION = f"{VERSION}-{version}"
-    print(BUILD_VERSION)
-    print(f"Working dir is {HERE}")
+    print(f"Building helper version {BUILD_VERSION} in {HERE}")
     build()
 
 
 if __name__ == "__main__":
-    # make_helper()
+    make_helper()
     pass
