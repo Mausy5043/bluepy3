@@ -80,7 +80,6 @@ def get_helper_version() -> str:
         _exit_code = str(exc.output.split("\n")[0])
     except FileNotFoundError:
         print("Helper executable not found")
-        pass
     return _exit_code
 # fmt: on
 
@@ -150,4 +149,3 @@ def make_helper(version: str = "installed") -> None:
 
 if __name__ == "__main__":
     make_helper()
-    pass
