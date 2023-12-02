@@ -82,7 +82,7 @@ def build() -> None:
     if platform.system() == "Linux":
         # Windows and macOS aere not supported
         print("\n\n*** Building bluepy3-helper\n")
-        for cmd in ["make -dC bluepy3 clean", "make -dC bluepy3 -j1"]:
+        for cmd in [f"make -C {APP_ROOT} clean", f"make -C {APP_ROOT} -j1"]:
             print(f"\n    Execute {cmd}")
             msgs: bytes = b''
             try:
@@ -108,10 +108,13 @@ def build() -> None:
 
 def make_helper(version: str = "installed") -> None:
     global BUILD_VERSION
-    if version != "installed":
+    if version == "installed":
+        BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
+    if version is not "installed":
         BUILD_VERSION = f"{VERSION}-{version}"
     print(BUILD_VERSION)
     print(f"Working dir is {HERE}")
+    build()
 
 
 if __name__ == "__main__":
