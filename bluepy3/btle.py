@@ -522,7 +522,7 @@ class Bluepy3Helper:
             try:
                 rv = self._lineq.get(timeout=timeout)
             except Empty:
-                DBG("*** -btle- Select timeout")
+                DBG(f"*** -btle- Select timeout (current: {timeout})")
                 return {}
             dehex_rv: str = (
                 repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
@@ -689,24 +689,24 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
-            rsp = self._getResp(["stat"], timeout)
-            timeout_exception = BTLEConnectTimeout(
+            rsp: dict[str, list[Any]] = self._getResp(["stat"], timeout)
+            _timeout_exception = BTLEConnectTimeout(
                 f"Timed out while trying to connect to peripheral {addr}, "
                 f"addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
-            if rsp is None:
-                raise timeout_exception
+            if not rsp:
+                raise _timeout_exception
             while rsp and rsp["state"][0] == "tryconn":
                 rsp = self._getResp(["stat"], timeout)
-            if rsp is not None and rsp["state"][0] == "conn":
+            if rsp and rsp["state"][0] == "conn":
                 DBG("    -btle- Succesfully connected.")
                 # successful
                 self.retries = 0
-            if rsp is None or rsp["state"][0] != "conn":
+            if not rsp or rsp["state"][0] != "conn":
                 self._stopHelper()
-                if rsp is None:
-                    raise timeout_exception
+                if not rsp:
+                    raise _timeout_exception
                 DBG(f"*** -btle-  Failed to connect. ({self.retries})")
                 time.sleep(0.5 * (max_retries - self.retries))
                 if self.retries <= 1:
