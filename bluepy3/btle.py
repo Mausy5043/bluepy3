@@ -63,7 +63,7 @@ def DBG(*args) -> None:
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = {}}) -> None:
         self.message: str = message
 
         # optional messages from bluepy3-helper
@@ -93,27 +93,27 @@ class BTLEException(Exception):
 
 
 class BTLEInternalError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectTimeout(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEManagementError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEGattError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
@@ -759,7 +759,7 @@ class Peripheral(Bluepy3Helper):
             f"addr type: {self.addrType}",
             rsp,
         )
-        if rsp is None:
+        if not rsp:
             raise timeout_exception
         nChars = len(rsp["hnd"])
         return [
