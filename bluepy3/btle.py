@@ -63,7 +63,7 @@ def DBG(*args) -> None:
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = {}}) -> None:
+    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = {}) -> None:
         self.message: str = message
 
         # optional messages from bluepy3-helper
