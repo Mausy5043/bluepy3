@@ -26,10 +26,12 @@ HELPER_PATH = os.path.join(SCRIPT_PATH, "bluepy3-helper")
 _make_helper: bool = False
 _f: float = 0.0
 if not os.path.isfile(HELPER_PATH):
+    # bluepy3-helper is not there
     _make_helper = True
 else:
     _f = os.path.getmtime(f"{HELPER_PATH}")
 _c: float = os.path.getmtime(f"{HELPER_PATH}.c")
+# bluepy3-helper is older than source or non-existant
 if (_c > _f) or _make_helper:
     try:
         from . import helpermaker
