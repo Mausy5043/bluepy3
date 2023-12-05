@@ -1,4 +1,5 @@
 # When making changes to this file update requirements.txt also !!
+# Usage: conda -v env update -n bluepy3 --file environment.yml
 
 channels:
   - conda-forge
