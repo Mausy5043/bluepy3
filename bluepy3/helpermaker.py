@@ -90,10 +90,6 @@ VERSION: str = get_project_version()
 BLUEZ_VERSION: str = get_btctl_version()
 BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
 HELPER_VERSION: str = get_helper_version()
-# print(APP_ROOT)
-# print(f"Package version        : {VERSION}")
-# print(f"bluetoothctl version   : {BLUEZ_VERSION}")
-# print(f"bluepy3-helper version : {HELPER_VERSION}")
 
 
 def build() -> None:
@@ -150,4 +146,8 @@ def make_helper(version: str = "installed") -> None:
 
 
 if __name__ == "__main__":
+    print(f"Executing from here    : {APP_ROOT}")
+    print(f"Package version        : {VERSION}")
+    print(f"bluetoothctl version   : {BLUEZ_VERSION}")
+    print(f"bluepy3-helper version : {HELPER_VERSION}")
     make_helper()
