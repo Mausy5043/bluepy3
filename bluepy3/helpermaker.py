@@ -8,9 +8,11 @@ import platform
 import shlex
 import subprocess  # nosec: B404
 import sys
+import logging
+import logging.handlers
 
 try:
-    import tomllib as tl
+    import tomllib as tl    # type: ignore
 except ModuleNotFoundError:
     import tomli as tl  # type: ignore[no-redef]
 
@@ -35,6 +37,15 @@ MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
 PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
 
+# Configure the logging module
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(module)s.%(funcName)s [%(levelname)s] - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.handlers.SysLogHandler(address='/dev/log', facility=logging.handlers.SysLogHandler.LOG_DAEMON)]
+)
+
+_LOGGER = logging.getLogger(__name__)
 
 def get_btctl_version() -> str:
     """Return the bluetooth version (only on Linux)."""
@@ -110,29 +121,29 @@ def build() -> None:
             makefile.write(line)
     if platform.system() == "Linux":
         # Windows and macOS aere not supported
-        print("\n\n*** Building bluepy3-helper\n")
+        _LOGGER.info("*** Building bluepy3-helper")
         for cmd in [f"make -C {APP_ROOT} clean", f"make -C {APP_ROOT} -j1"]:
-            print(f"\n    Execute {cmd}")
+            _LOGGER.info(f"Execute {cmd}")
             msgs: bytes = b""
             try:
                 msgs = subprocess.check_output(  # noqa: F841  # pylint: disable=unused-variable
                     shlex.split(cmd), stderr=subprocess.STDOUT
                 )  # nosec: B603
             except subprocess.CalledProcessError as e:
-                print(f"Command was {repr(cmd)} in {os.getcwd()}")
-                print(f"Return code was {e.returncode}")
+                _LOGGER.error(f"Command was:\n    {repr(cmd)} in {os.getcwd()}")
+                _LOGGER.error(f"Return code was\n    {e.returncode}")
                 err_out: str = e.output.decode("utf-8")
-                print(f"Output was:\n{err_out}")
-                print(
-                    f"\nFailed to compile bluepy3-helper version {BUILD_VERSION}."
-                    f"\nExiting install.\n"
+                _LOGGER.error(f"Output was:\n    {err_out}")
+                _LOGGER.info(
+                    f"Failed to compile bluepy3-helper version {BUILD_VERSION}."
+                    f"Exiting install."
                 )
                 sys.exit(1)
-            print(f"    Returned message: {msgs.decode(encoding='utf-8')}")
+            _LOGGER.info(f"    Returned message: {msgs.decode(encoding='utf-8')}")
     else:
-        print("\n\n*** Skipping build of bluepy3-helper")
-        print("*** Windows and macOS are not supported")
-    print("\n\n*** Finished post-install\n\n")
+        _LOGGER.warning("*** Skipping build of bluepy3-helper")
+        _LOGGER.warning("*** Windows and macOS are not supported")
+    _LOGGER.info("*** Finished post-install")
 
 
 def make_helper(version: str = "installed") -> None:
@@ -141,7 +152,7 @@ def make_helper(version: str = "installed") -> None:
         BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
     if version != "installed":
         BUILD_VERSION = f"{VERSION}-{version}"
-    print(f"Building helper version {BUILD_VERSION} in {HERE}")
+    _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
     build()
 
 
