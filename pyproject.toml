@@ -1,0 +1,75 @@
+# pyproject.toml
+
+# Hatchling  https://packaging.python.org/en/latest/key_projects/#hatch
+#            https://hatch.pypa.io/latest/config/metadata/
+# PEP 621    https://peps.python.org/pep-0621/
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bluepy3"
+#version = "1.12.1"  # latest/current distribution version
+version = "1.17.24"  # latest test version
+description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+# license-files = { paths = ["LICENSE"] }
+authors = [
+    { name="Mausy5043" },
+]
+keywords = [
+    "Bluetooth",
+    "Bluetooth Smart",
+    "BLE",
+    "Bluetooth Low Energy",
+    "Raspberry Pi",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: C",
+    "Topic :: Home Automation"
+]
+dependencies = [
+    "tomli",
+]
+
+
+[tool.hatch.build]
+include = [
+    # "environment.yml",
+    # "LICENSE",
+    # "pyproject.toml",
+    # "README.md",
+    # "requirements.txt",
+    # "tox.ini",
+    "bluepy3/*.py",
+    "bluepy3/bluepy3-helper",   # built during install
+    "bluepy3/bluepy3-helper.c",
+    "bluepy3/config.*.h",
+    "bluepy3/Makefile",
+    "bluepy3/py.typed",
+    "bluepy3/uuids.json",
+    "bluepy3/version.h",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"./pyproject.toml" = "bluepy3/pyproject.toml"
+
+[project.scripts]
+blescan = 'bluepy3.blescan:main'
+helpermaker = 'bluepy3.helpermaker:main'
+
+
+[project.urls]
+"Homepage" = "https://github.com/Mausy5043/bluepy3"
+"Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"

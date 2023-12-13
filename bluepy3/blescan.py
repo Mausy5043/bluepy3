@@ -5,7 +5,10 @@ import binascii
 import os
 import sys
 
-from . import btle
+try:
+    from . import btle
+except ImportError:
+    import btle
 
 if os.getenv("C", "1") == "0":
     ANSI_RED = ""

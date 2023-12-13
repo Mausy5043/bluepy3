@@ -7,7 +7,7 @@ import json
 import os
 import signal
 import struct
-import subprocess
+import subprocess  # nosec: B404
 import sys
 import time
 from queue import Queue, Empty
@@ -15,15 +15,29 @@ from threading import Thread
 from typing import Any, Generator, Optional, TextIO
 
 
-def preexec_function() -> None:
-    # Ignore the SIGINT signal by setting the handler to the standard
-    # signal handler SIG_IGN.
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-
-
 Debugging = False
-script_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-helperExe = os.path.join(script_path, "bluepy3-helper")
+SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
+HELPER_PATH = os.path.join(SCRIPT_PATH, "bluepy3-helper")
+
+# If the executable `bluepy3-helper` does not exist
+# or the source file is newer than the bin we `make` it here first.
+# This is normally only executed on the very first time `btle` is imported by
+# the client.
+_make_helper: bool = False
+_f: float = 0.0
+if not os.path.isfile(HELPER_PATH):
+    # bluepy3-helper is not there
+    _make_helper = True
+else:
+    _f = os.path.getmtime(f"{HELPER_PATH}")
+_c: float = os.path.getmtime(f"{HELPER_PATH}.c")
+# bluepy3-helper is older than source or non-existant
+if (_c > _f) or _make_helper:
+    try:
+        from . import helpermaker
+    except ImportError:
+        from bluepy3 import helpermaker
+    helpermaker.make_helper(version="installed")
 
 SEC_LEVEL_LOW = "low"
 SEC_LEVEL_MEDIUM = "medium"
@@ -33,6 +47,12 @@ ADDR_TYPE_PUBLIC = "public"
 ADDR_TYPE_RANDOM = "random"
 
 BTLE_TIMEOUT = 32.1
+
+
+def preexec_function() -> None:
+    # Ignore the SIGINT signal by setting the handler to the standard
+    # signal handler SIG_IGN.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 def DBG(*args) -> None:
@@ -45,7 +65,7 @@ def DBG(*args) -> None:
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = {}) -> None:
         self.message: str = message
 
         # optional messages from bluepy3-helper
@@ -75,27 +95,27 @@ class BTLEException(Exception):
 
 
 class BTLEInternalError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectTimeout(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEManagementError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEGattError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = None) -> None:
+    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
@@ -460,13 +480,13 @@ class Bluepy3Helper:
 
     def _startHelper(self, iface=None) -> None:
         if self._helper is None:
-            DBG(f"    -btle- Running {helperExe}")
+            DBG(f"    -btle- Running {HELPER_PATH}")
             self._aita = 0
             self._lineq = Queue()
             self._mtu = 0
             # pylint: disable-next=consider-using-with
             self._stderr = open(os.devnull, "w")  # pylint: disable=unspecified-encoding
-            args: list[str] = [helperExe]
+            args: list[str] = [HELPER_PATH]
             if iface is not None:
                 args.append(str(iface))
             #
@@ -485,7 +505,7 @@ class Bluepy3Helper:
 
     def _stopHelper(self) -> None:
         if self._helper is not None:
-            DBG(f"    -btle- Stopping {helperExe}")
+            DBG(f"    -btle- Stopping {HELPER_PATH}")
             self._helper.stdin.write("quit\n")  # type:ignore[union-attr]
             self._helper.stdin.flush()  # type:ignore[union-attr]
             self._helper.wait()
@@ -504,7 +524,7 @@ class Bluepy3Helper:
             try:
                 rv = self._lineq.get(timeout=timeout)
             except Empty:
-                DBG("*** -btle- Select timeout")
+                DBG(f"*** -btle- Select timeout (current: {timeout})")
                 return {}
             dehex_rv: str = (
                 repr(rv).replace("\\x1e", "; ").replace("\\n", "").replace("'", "").strip('"')
@@ -524,7 +544,10 @@ class Bluepy3Helper:
                     self._stopHelper()
                     raise BTLEInternalError("Device keeps repeating itself. Giving up.", resp)
 
-            respType: str = resp["rsp"][0]
+            try:
+                respType = resp["rsp"][0]
+            except KeyError:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
 
             # always check for MTU updates
             if "mtu" in resp and len(resp["mtu"]) > 0:
@@ -629,7 +652,7 @@ class Peripheral(Bluepy3Helper):
     ) -> dict[str, list[Any]]:
         while True:
             resp: dict[str, list[Any]] = self._waitResp(wantType + ["ntfy", "ind"], timeout)
-            if resp is None:
+            if not resp:
                 return {}
             try:
                 respType = resp["rsp"][0]
@@ -668,24 +691,24 @@ class Peripheral(Bluepy3Helper):
                 self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
-            rsp = self._getResp(["stat"], timeout)
-            timeout_exception = BTLEConnectTimeout(
+            rsp: dict[str, list[Any]] = self._getResp(["stat"], timeout)
+            _timeout_exception = BTLEConnectTimeout(
                 f"Timed out while trying to connect to peripheral {addr}, "
                 f"addr type: {addrType}, interface {iface}, timeout={timeout}",
                 rsp,
             )
-            if rsp is None:
-                raise timeout_exception
+            if not rsp:
+                raise _timeout_exception
             while rsp and rsp["state"][0] == "tryconn":
                 rsp = self._getResp(["stat"], timeout)
-            if rsp is not None and rsp["state"][0] == "conn":
+            if rsp and rsp["state"][0] == "conn":
                 DBG("    -btle- Succesfully connected.")
                 # successful
                 self.retries = 0
-            if rsp is None or rsp["state"][0] != "conn":
+            if not rsp or rsp["state"][0] != "conn":
                 self._stopHelper()
-                if rsp is None:
-                    raise timeout_exception
+                if not rsp:
+                    raise _timeout_exception
                 DBG(f"*** -btle-  Failed to connect. ({self.retries})")
                 time.sleep(0.5 * (max_retries - self.retries))
                 if self.retries <= 1:
@@ -738,7 +761,7 @@ class Peripheral(Bluepy3Helper):
             f"addr type: {self.addrType}",
             rsp,
         )
-        if rsp is None:
+        if not rsp:
             raise timeout_exception
         nChars = len(rsp["hnd"])
         return [
@@ -939,10 +962,14 @@ class Scanner(Bluepy3Helper):
             else:
                 remain = None
             resp: dict[str, list[Any]] = self._waitResp(["scan", "stat"], remain)
-            if resp is None:
+            if not resp:
                 break
 
-            respType = resp["rsp"][0]
+            try:
+                respType = resp["rsp"][0]
+            except KeyError:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+
             if respType == "stat":
                 # if scan ended, restart it
                 if resp["state"][0] == "disc":
@@ -969,6 +996,25 @@ class Scanner(Bluepy3Helper):
         self.stop()
         return self.getDevices()
 
+    def start(self, passive: bool = False) -> None:
+        self.passive = passive
+        self._startHelper(iface=self.iface)
+        self._mgmtCmd("le on")
+        self._writeCmd(self._cmd() + "\n")
+        rsp = self._waitResp(["mgmt"])
+        if rsp["code"][0] == "success":
+            return
+        # Sometimes previous scan still ongoing
+        if rsp["code"][0] == "busy":
+            self._mgmtCmd(self._cmd() + "end")
+            rsp = self._waitResp(["stat"])
+            assert rsp["state"][0] == "disc"
+            self._mgmtCmd(self._cmd())
+
+    def stop(self) -> None:
+        self._mgmtCmd(self._cmd() + "end")
+        self._stopHelper()
+
 
 class _UUIDNameMap:
     # Constructor sets self.currentTimeService, self.txPower, and so on
@@ -994,7 +1040,9 @@ def capitaliseName(descr):
 
 
 def get_json_uuid():
-    with open(os.path.join(script_path, "uuids.json"), "rb") as fp:
+    # an entry in the uuid_list is a list containing an `int`` and two `str`
+    # example: [10082, 'day', 'time (day)']
+    with open(os.path.join(SCRIPT_PATH, "uuids.json"), "rb") as fp:
         _uuid_data = json.loads(fp.read().decode("utf-8"))
     for _, _v in _uuid_data.items():
         for number, cname, name in _v:
@@ -1002,7 +1050,7 @@ def get_json_uuid():
             yield UUID(number, name)
 
 
-AssignedNumbers = _UUIDNameMap(get_json_uuid())
+AssignedNumbers = _UUIDNameMap(get_json_uuid())  # contents is created dynamically
 
 
 if __name__ == "__main__":
@@ -1011,8 +1059,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit(f"Usage:\n  {sys.argv[0]} <mac-address> [random]")
 
-    # if not os.path.isfile(helperExe):
-    #     raise ImportError(f"(btle.py) Cannot find required executable '{helperExe}'")
+    # if not os.path.isfile(HELPER_PATH):
+    #     raise ImportError(f"(btle.py) Cannot find required executable '{HELPER_PATH}'")
 
     my_device_address: str = sys.argv[1]
     if len(sys.argv) == 3:
