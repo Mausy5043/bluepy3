@@ -92,7 +92,7 @@ def get_helper_version() -> str:
     except subprocess.CalledProcessError as exc:
         _exit_code = str(exc.output.split("\n")[0])
     except FileNotFoundError:
-        print("Helper executable not found")
+        _LOGGER.info("Helper executable not found")
     return _exit_code
 # fmt: on
 
@@ -119,8 +119,8 @@ def build() -> None:
             if line.startswith("BLUEZ_VERSION"):
                 line = f"BLUEZ_VERSION={BLUEZ_VERSION}\n"
             makefile.write(line)
-    if platform.system() == "Linux":
-        # Windows and macOS aere not supported
+    if platform.system().lower() == "linux":
+        # Windows and macOS are not supported
         _LOGGER.info("*** Building bluepy3-helper")
         for cmd in [f"make -C {APP_ROOT} clean", f"make -C {APP_ROOT} -j1"]:
             _LOGGER.info(f"Execute {cmd}")
