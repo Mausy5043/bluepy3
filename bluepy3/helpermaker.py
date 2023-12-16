@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-"""Make the bluepy3-helper binary executable on demand."""
+"""Make the bluepy3-helper binary executable on demand.
+
+Usage:
+    import this module then call the function `make_helper(version="x.xx")` or
+    execute `helpermaker --version x.xx` from the CLI
+"""
 
 import os
 
@@ -18,14 +23,16 @@ except ModuleNotFoundError:
 
 # We distinguish between three versions:
 # VERSION
-#   bluepy3 package (stored in pyproject.toml)
+#   bluepy3 package (read from pyproject.toml)
 # BLUEZ_VERSION
 #   the version of BlueZ (https://github.com/bluez/bluez) against which
 #   the bluepy3-helper.c will be compiled. By default this will be the
 #   version of bluetooth that is installed. This is discovered using
 #   `bluetoothctl --version` and can be overriden by the user/client by
-#   calling: make_helper(version="x.xx"), where "x.xx" is the required
-#   version (str).
+#   calling:
+#       - `make_helper(version="x.xx")` from a Python script or
+#       - `helpermaker --version x.xx` from the CLI
+#   where "x.xx" is the required version (str).
 # BUILD_VERSION
 #   the version that `bluepy3-helper` will get during the build.
 
