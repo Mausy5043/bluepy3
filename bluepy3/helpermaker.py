@@ -72,7 +72,7 @@ def get_btctl_version() -> str:
         ).split()
     except FileNotFoundError:
         return "not installed"
-    return f"{_exit_code}"
+    return f"{_exit_code[1]}"
 
 
 def get_project_version() -> str:
