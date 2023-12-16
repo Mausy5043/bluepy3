@@ -65,8 +65,10 @@ def DBG(*args) -> None:
 class BTLEException(Exception):
     """Base class for all Bluepy exceptions"""
 
-    def __init__(self, message: str, resp_dict: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, resp_dict = None) -> None:
         self.message: str = message
+        if resp_dict == None:
+            resp_dict = {}
 
         # optional messages from bluepy3-helper
         self.estat = None
@@ -95,27 +97,27 @@ class BTLEException(Exception):
 
 
 class BTLEInternalError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, rsp = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, rsp = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEConnectTimeout(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, rsp = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEManagementError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, rsp = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
 class BTLEGattError(BTLEException):
-    def __init__(self, message: str, rsp: Optional[dict[str, list[Any]]] = {}) -> None:
+    def __init__(self, message: str, rsp = None) -> None:
         BTLEException.__init__(self, message, rsp)
 
 
