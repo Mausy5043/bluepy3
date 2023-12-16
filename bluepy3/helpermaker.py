@@ -170,10 +170,12 @@ def build_helper() -> None:
 
 
 def make_helper(build: str = "installed") -> None:
+    global BLUEZ_VERSION  # pylint: disable=global-statement
     global BUILD_VERSION  # pylint: disable=global-statement
     if build == "installed":
         build = BLUEZ_VERSION
     if build in SUPPORTED_BUILDS:
+        BLUEZ_VERSION = build
         BUILD_VERSION = f"{VERSION}-{build}"
         _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
         build_helper()
