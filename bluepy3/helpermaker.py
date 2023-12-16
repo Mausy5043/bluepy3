@@ -176,7 +176,7 @@ def make_helper(build: str = "installed") -> None:
     if build in SUPPORTED_BUILDS:
         BUILD_VERSION = f"{VERSION}-{build}"
         _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
-        # build_helper()
+        build_helper()
     else:
         _LOGGER.error(f"Version {build} is not supported.")
         raise RuntimeError(f"Version {build} is not supported.\nSupported versions are: {SUPPORTED_BUILDS}")
