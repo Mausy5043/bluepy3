@@ -158,12 +158,12 @@ def build() -> None:
     _LOGGER.info("*** Finished post-install")
 
 
-def make_helper(version: str = "installed") -> None:
+def make_helper(build: str = "installed") -> None:
     global BUILD_VERSION  # pylint: disable=global-statement
-    if version == "installed":
+    if build == "installed":
         BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
-    if version != "installed":
-        BUILD_VERSION = f"{VERSION}-{version}"
+    if build != "installed":
+        BUILD_VERSION = f"{VERSION}-{build}"
     _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
     build()
 
@@ -171,7 +171,7 @@ def make_helper(version: str = "installed") -> None:
 def main() -> None:
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
-    parser.add_argument("--version", type=str, help="valid version of BlueZ against which to compile the binary e.g. 5.47 (default: installed)", default="installed")
+    parser.add_argument("-b", --build", type=str, help="valid version of BlueZ against which to compile the binary e.g. 5.47 (default: installed)", default="installed")
     OPTION = parser.parse_args()
     # fmt: on
     print(f"Executing from here    : {APP_ROOT}")
