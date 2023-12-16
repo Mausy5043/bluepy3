@@ -162,11 +162,11 @@ def build_helper() -> None:
                     f"Exiting install."
                 )
                 sys.exit(1)
-            _LOGGER.info(f"    Returned message: {msgs.decode(encoding='utf-8')}")
+            _LOGGER.info(f"Returned message:\n{msgs.decode(encoding='utf-8')}")
     else:
         _LOGGER.warning("*** Skipping build of bluepy3-helper")
         _LOGGER.warning("*** Windows and macOS are not supported")
-    _LOGGER.info("*** Finished post-install")
+    _LOGGER.info("*** Finished building bluepy3-helper")
 
 
 def make_helper(build: str = "installed") -> None:
@@ -181,7 +181,9 @@ def make_helper(build: str = "installed") -> None:
         build_helper()
     else:
         _LOGGER.error(f"Version {build} is not supported.")
-        raise RuntimeError(f"Version {build} is not supported.\nSupported versions are: {SUPPORTED_BUILDS}")
+        raise RuntimeError(
+            f"Version {build} is not supported.\nSupported versions are: {SUPPORTED_BUILDS}"
+        )
 
 
 def main() -> None:
