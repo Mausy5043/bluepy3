@@ -7,17 +7,15 @@ Usage:
     execute `helpermaker --version x.xx` from the CLI
 """
 
+import logging.handlers
 import os
-
 import platform
 import shlex
 import subprocess  # nosec: B404
 import sys
-import logging
-import logging.handlers
 
 try:
-    import tomllib as tl    # type: ignore
+    import tomllib as tl  # type: ignore
 except ModuleNotFoundError:
     import tomli as tl  # type: ignore[no-redef]
 
@@ -49,10 +47,15 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(module)s.%(funcName)s [%(levelname)s] - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[logging.handlers.SysLogHandler(address='/dev/log', facility=logging.handlers.SysLogHandler.LOG_DAEMON)]
+    handlers=[
+        logging.handlers.SysLogHandler(
+            address="/dev/log", facility=logging.handlers.SysLogHandler.LOG_DAEMON
+        )
+    ],
 )
 
 _LOGGER = logging.getLogger(__name__)
+
 
 def get_btctl_version() -> str:
     """Return the bluetooth version (only on Linux)."""
