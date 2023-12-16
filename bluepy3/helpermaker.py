@@ -7,6 +7,7 @@ Usage:
     execute `helpermaker --version x.xx` from the CLI
 """
 
+import argparse
 import logging.handlers
 import os
 import platform
@@ -41,6 +42,7 @@ APP_ROOT: str = HERE
 MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
 PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
+OPTION = None
 
 # Configure the logging module
 logging.basicConfig(
@@ -167,12 +169,19 @@ def make_helper(version: str = "installed") -> None:
 
 
 def main() -> None:
+    # fmt: off
+    parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
+    parser.add_argument("--version", type=str, help="valid version of BlueZ against which to comile the binary e.g. 5.47 (default: current version)", default="installed")
+    OPTION = parser.parse_args()
+    # fmt: on
     print(f"Executing from here    : {APP_ROOT}")
     print(f"Package version        : {VERSION}")
     print(f"bluetoothctl version   : {BLUEZ_VERSION}")
     print(f"bluepy3-helper version : {HELPER_VERSION}")
-    make_helper()
+    print(f"Requested to build     : {OPTION.version}")
+    make_helper(OPTION.version)
 
 
 if __name__ == "__main__":
+
     main()
