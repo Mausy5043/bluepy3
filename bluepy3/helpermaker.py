@@ -18,7 +18,7 @@ import sys
 try:
     import tomllib as tl  # type: ignore
 except ModuleNotFoundError:
-    import tomli as tl  # type: ignore[no-redef]
+    import tomli as tl
 
 # We distinguish between three versions:
 # VERSION
@@ -42,7 +42,6 @@ APP_ROOT: str = HERE
 MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
 PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
-OPTION = None
 
 # Configure the logging module
 logging.basicConfig(
