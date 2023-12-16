@@ -171,7 +171,7 @@ def make_helper(version: str = "installed") -> None:
 def main() -> None:
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
-    parser.add_argument("--version", type=str, help="valid version of BlueZ against which to comile the binary e.g. 5.47 (default: current version)", default="installed")
+    parser.add_argument("--version", type=str, help="valid version of BlueZ against which to compile the binary e.g. 5.47 (default: installed)", default="installed")
     OPTION = parser.parse_args()
     # fmt: on
     print(f"Executing from here    : {APP_ROOT}")
