@@ -72,8 +72,7 @@ def get_btctl_version() -> str:
         ).split()
     except FileNotFoundError:
         return "not installed"
-    _result = _exit_code[1].replace("# ", "")
-    return f"{_result}"
+    return f"{_exit_code}"
 
 
 def get_project_version() -> str:
@@ -91,7 +90,7 @@ def get_project_version() -> str:
 # fmt: off
 def get_helper_version() -> str:
     """Look up the version of the helper binary, if installed."""
-    _exit_code = "not installed."
+    _exit_code: str = "not installed."
     helper: str = f"{APP_ROOT}/bluepy3-helper"
     args: list[str] = [helper, "version"]
     try:
@@ -104,6 +103,7 @@ def get_helper_version() -> str:
         ).split()
     except subprocess.CalledProcessError as exc:
         _exit_code = str(exc.output.split("\n")[0])
+        _exit_code = _exit_code[1].replace("# ", "")
     except FileNotFoundError:
         _LOGGER.info("Helper executable not found")
     return _exit_code
