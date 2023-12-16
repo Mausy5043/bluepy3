@@ -103,7 +103,7 @@ def get_helper_version() -> str:
         ).split()
     except subprocess.CalledProcessError as exc:
         _exit_code = str(exc.output.split("\n")[0])
-        _exit_code = _exit_code[1].replace("# ", "")
+        _exit_code = _exit_code.replace("# ", "")
     except FileNotFoundError:
         _LOGGER.info("Helper executable not found")
     return _exit_code
