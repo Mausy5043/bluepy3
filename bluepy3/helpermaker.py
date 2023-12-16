@@ -110,10 +110,20 @@ def get_helper_version() -> str:
 # fmt: on
 
 
+def get_builds() -> list[str]:
+    _dir: list[str] = sorted(os.listdir(HERE))
+    _config: list[str] = []
+    for _file in _dir:
+        if _file[0:7] == "config." and _file[-2:] == ".h":
+            _config.append(_file[7:-2])
+    return _config
+
+
 VERSION: str = get_project_version()
 BLUEZ_VERSION: str = get_btctl_version()
 BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
 HELPER_VERSION: str = get_helper_version()
+SUPPORTED_BUILDS: list[str] = get_builds()
 
 
 def build_helper() -> None:
@@ -162,15 +172,14 @@ def build_helper() -> None:
 def make_helper(build: str = "installed") -> None:
     global BUILD_VERSION  # pylint: disable=global-statement
     if build == "installed":
-        BUILD_VERSION = f"{VERSION}-{BLUEZ_VERSION}"
-    if build != "installed":
+        build = BLUEZ_VERSION
+    if build in SUPPORTED_BUILDS:
         BUILD_VERSION = f"{VERSION}-{build}"
-    _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
-    build_helper()
-
-
-def list_builds() -> None:
-    print(os.listdir())
+        _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
+        # build_helper()
+    else:
+        _LOGGER.error(f"Version {build} is not supported.")
+        raise RuntimeError(f"Version {build} is not supported.\nSupported versions are: {SUPPORTED_BUILDS}")
 
 
 def main() -> None:
@@ -185,9 +194,9 @@ def main() -> None:
     print(f"Package version        : {VERSION}")
     print(f"bluetoothctl version   : {BLUEZ_VERSION}")
     print(f"bluepy3-helper version : {HELPER_VERSION}")
-    print(f"Requested to build     : {OPTION.version}")
+    print(f"Requested to build     : {OPTION.build}")
     if OPTION.list:
-        list_builds()
+        print(f"\nSupported versions of BlueZ are: {SUPPORTED_BUILDS}\n")
     make_helper(OPTION.build)
 
 
