@@ -72,7 +72,8 @@ def get_btctl_version() -> str:
         ).split()
     except FileNotFoundError:
         return "not installed"
-    return f"{_exit_code[1].replace("# ","")}"
+    _result = _exit_code[1].replace("# ", "")
+    return f"{_result}"
 
 
 def get_project_version() -> str:
@@ -115,7 +116,7 @@ BUILD_VERSION: str = f"{VERSION}-{BLUEZ_VERSION}"
 HELPER_VERSION: str = get_helper_version()
 
 
-def build() -> None:
+def build_helper() -> None:
     """Do the custom compiling of the bluepy3-helper executable from the makefile"""
     cmd: str = ""
     # create the version.h containing the BUILD_VERSION
@@ -165,7 +166,11 @@ def make_helper(build: str = "installed") -> None:
     if build != "installed":
         BUILD_VERSION = f"{VERSION}-{build}"
     _LOGGER.info(f"Building helper version {BUILD_VERSION} in {HERE}")
-    build()
+    build_helper()
+
+
+def list_builds() -> None:
+    print(os.listdir())
 
 
 def main() -> None:
@@ -181,9 +186,10 @@ def main() -> None:
     print(f"bluetoothctl version   : {BLUEZ_VERSION}")
     print(f"bluepy3-helper version : {HELPER_VERSION}")
     print(f"Requested to build     : {OPTION.version}")
-    make_helper(OPTION.version)
+    if OPTION.list:
+        list_builds()
+    make_helper(OPTION.build)
 
 
 if __name__ == "__main__":
-
     main()
