@@ -156,9 +156,13 @@ def make_helper(version: str = "installed") -> None:
     build()
 
 
-if __name__ == "__main__":
+def main() -> None:
     print(f"Executing from here    : {APP_ROOT}")
     print(f"Package version        : {VERSION}")
     print(f"bluetoothctl version   : {BLUEZ_VERSION}")
     print(f"bluepy3-helper version : {HELPER_VERSION}")
     make_helper()
+
+
+if __name__ == "__main__":
+    main()
