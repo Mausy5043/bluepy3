@@ -154,7 +154,6 @@ def main() -> None:
         devices = scanner.scan(arg.timeout)
     except btle.BTLEConnectError:
         print(ANSI_RED + "        Oops! Connection lost." + ANSI_OFF)
-        pass
 
     if arg.discover:
         print(ANSI_RED + "Discovering services..." + ANSI_OFF)
