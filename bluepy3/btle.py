@@ -1034,7 +1034,7 @@ class _UUIDNameMap:
         return None
 
 
-def capitaliseName(descr):
+def capitaliseName(descr) -> str:
     words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
     capWords = [words[0].lower()]
     capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]
