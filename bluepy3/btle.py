@@ -67,7 +67,7 @@ class BTLEException(Exception):
 
     def __init__(self, message: str, resp_dict=None) -> None:
         self.message: str = message
-        if resp_dict == None:
+        if resp_dict is None:
             resp_dict = {}
 
         # optional messages from bluepy3-helper
