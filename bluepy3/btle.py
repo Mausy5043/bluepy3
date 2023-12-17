@@ -1031,7 +1031,7 @@ class _UUIDNameMap:
     def getCommonName(self, uuid) -> str:
         if uuid in self.idMap:
             return self.idMap[uuid].commonName
-        return None
+        return ""
 
 
 def capitaliseName(descr) -> str:
