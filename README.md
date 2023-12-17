@@ -7,19 +7,16 @@
 
 This is a Python3 library to allow communication with Bluetooth Low Energy devices on Linux.
 
-###### ATTENTION: If you are reading this on [PyPi](https://pypi.org/project/bluepy3/) then note that the formatting below may look terrible. In that case, visit the project's homepage to read the correctly formatted [README.md](https://github.com/Mausy5043/bluepy3#readme) file.
-
 ## Requirements
 
 Please be aware that this is not a beginners tool. Some experience with Linux CLI, Python3 and BT/BLE is expected.
 
-Development of this package is done in Python 3.9. The package is considered forwards compatible at least upto Python 3.11 and probably also beyond. Backwards compatibility is not guaranteed; if it works on Python 3.7 or before consider yourself lucky. [Python versions that are end-of-life](https://devguide.python.org/versions/) are not supported.
+Development of this package is done in Python 3.11. The package is considered forwards compatible at least upto Python 3.12 and probably also beyond. Backwards compatibility is not guaranteed; if it works on Python 3.9 or before consider yourself lucky. [Python versions that are end-of-life](https://devguide.python.org/versions/) are not supported.
 
 The package has been extensively tested on a Raspberry Pi 3 Model B+ (aarch64) with Debian GNU Linux 11 w/ Python 3.9.* AND with Debian GNU Linux 12 /w Python 3.11.*.
 
 The code needs an executable `bluepy3-helper` which is compiled from C source automatically
-if you use the recommended pip installation method (see below). Otherwise,
-you can rebuild it using the Makefile in the `bluepy3` directory.
+when first used (see below).
 
 The `bluepy3` package comes installed with lists of compatible UUIDs in `uuids.json`.
 If, for whatever reason, you want to rebuild those lists, then the Python3 modules
@@ -48,6 +45,8 @@ sudo hcitool lescan
 ```
 This should list the (compatible) Bluetooth devices in range.
 
+Upon the first `import` of `bluepy3.btle` the required binary is compiled. This requires the download of the BlueZ source (20MB) to `/tmp` (don't worry this is done automatically). The default behaviour is to compile against the version of the BlueZ source that matches the version of the installed `bluetoothctl`. The user may override this by forcing compilation against any of the supported source trees by running `helpermaker --build <version>`.
+
 It may be considered to have command-line tools from BlueZ available for debugging.
 
 ## Troubleshooting
@@ -65,7 +64,7 @@ Use `hciconfig [hci0] up` to activate the BT device if the above returns an erro
 
 ## Documentation
 
-For documentation you are referred to [the documentation that comes with `bluepy`](http://ianharvey.github.io/bluepy-doc/).
+For documentation you are referred to [the documentation that comes with `bluepy`](http://ianharvey.github.io/bluepy-doc/). Be warned though that as development of `bluepy3` advances some of the documentation may be off a bit.
 
 ## Contributing
 
@@ -81,6 +80,3 @@ See [LICENSE](LICENSE)
 This work builds on previous work by [Ian Harvey](https://github.com/IanHarvey/bluepy) and uses code
 by the [BlueZ project](http://www.bluez.org/) (not a https site) and the more
 up-to-date [BlueZ on GitHub](https://github.com/bluez/bluez)
-
-Original source code can be found at:
->  https://github.com/IanHarvey/bluepy
