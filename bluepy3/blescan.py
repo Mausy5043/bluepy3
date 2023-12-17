@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-
+# type: ignore
 import argparse
 import binascii
 import os
 import sys
 
-from . import btle
+try:
+    from . import btle
+except ImportError:
+    import btle
 
 if os.getenv("C", "1") == "0":
     ANSI_RED = ""
@@ -24,7 +27,7 @@ else:
     ANSI_OFF = ANSI_CSI + "0m"
 
 
-def dump_services(dev):
+def dump_services(dev) -> None:
     services = sorted(dev.services, key=lambda k: k.hndStart)
     for s in services:
         print(f"\t{s.hndStart:04X}: {s}")
@@ -59,11 +62,11 @@ def dump_services(dev):
 
 
 class ScanPrint(btle.DefaultDelegate):
-    def __init__(self, opts):
+    def __init__(self, opts) -> None:
         btle.DefaultDelegate.__init__(self)
         self.opts = opts
 
-    def handleDiscovery(self, dev, isNewDev, isNewData):
+    def handleDiscovery(self, scanEntry, isNewDev, isNewData) -> None:
         if isNewDev:
             status = "new"
         elif isNewData:
@@ -75,26 +78,27 @@ class ScanPrint(btle.DefaultDelegate):
                 return
             status = "old"
 
-        if dev.rssi < self.opts.sensitivity:
+        if scanEntry.rssi < self.opts.sensitivity:
             return
         dev_connectable = "(not connectable)"
-        if dev.connectable:
+        if scanEntry.connectable:
             dev_connectable = ""
         print(
-            f"    Device ({status}): {ANSI_WHITE}{dev.addr}{ANSI_OFF} ({dev.addrType}),"
-            f" {dev.rssi} dBm {dev_connectable}"
+            f"    Device ({status}): {ANSI_WHITE}{scanEntry.addr}{ANSI_OFF}"
+            f" ({scanEntry.addrType}),"
+            f" {scanEntry.rssi} dBm {dev_connectable}"
         )
-        for sdid, desc, val in dev.getScanData():
+        for sdid, desc, val in scanEntry.getScanData():
             if sdid in [8, 9]:
                 print(f"\t{desc}: '{ANSI_CYAN}{val}{ANSI_OFF}'")
             else:
                 print(f"\t{desc}: <{val}>")
-        if not dev.scanData:
+        if not scanEntry.scanData:
             print("\t(no data)")
         print()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-i",
@@ -146,7 +150,10 @@ def main():
     scanner = btle.Scanner(arg.hci).withDelegate(ScanPrint(arg))
 
     print(ANSI_RED + "Scanning for devices..." + ANSI_OFF)
-    devices = scanner.scan(arg.timeout)
+    try:
+        devices = scanner.scan(arg.timeout)
+    except btle.BTLEConnectError:
+        print(ANSI_RED + "        Oops! Connection lost." + ANSI_OFF)
 
     if arg.discover:
         print(ANSI_RED + "Discovering services..." + ANSI_OFF)
@@ -160,7 +167,7 @@ def main():
                 dev = btle.Peripheral(d)
                 dump_services(dev)
                 dev.disconnect()
-            except:
+            except Exception:
                 print(ANSI_RED + "        Oops! Device doesn't want to talk to us." + ANSI_OFF)
             print()
 
