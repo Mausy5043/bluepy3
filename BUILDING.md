@@ -14,7 +14,7 @@ To test changes the package may be built and uploaded to [test.pypi.org](test.py
 Preferably changes are done on a separate branch.
 
 1.  Make the necessary changes against the `devel` branch
-1.  In `./setup.py` change the versionnumber.
+1.  In `./pyproject.toml` change the versionnumber.
     -  For testing we change the MINOR version to the next **odd** value.
     -  The first PATCH version always starts on x.y.1 and increases by +1 with every new build.
     -  Builds with the same versionnumber can't be uploaded to PyPi, so it's not like we have a choice.
@@ -32,7 +32,7 @@ To distribute a new production version the package must be built and uploaded to
 1.  Make the necessary changes...
     -  Merges from a separate branch are considered MINOR changes.
     -  Fixes etc. may be committed directly to the `latest` branch as a new PATCH version.
-1.  In `./setup.py` change the versionnumber.
+1.  In `./pyproject.toml` change the versionnumber.
     -  For merges we change the MINOR version to the next **even** value.
     -  The first PATCH version always starts on x.y.1 and increases by +1 with every new build.
     -  Builds with the same versionnumber can't be uploaded to PyPi, so it's not like we have a choice.
