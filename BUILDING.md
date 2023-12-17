@@ -30,7 +30,7 @@ Preferably changes are done on a separate branch.
 To distribute a new production version the package must be built and uploaded to [pypi.org](pypi.org)
 
 1.  Make the necessary changes...
-    -  Merges from a separate branch are considered MINOR changes.
+    -  Merges (via PR) from a separate branch are considered MINOR changes.
     -  Fixes etc. may be committed directly to the `latest` branch as a new PATCH version.
 2.  In `./pyproject.toml` change the versionnumber.
     -  For merges we change the MINOR version to the next **even** value.
@@ -41,12 +41,11 @@ To distribute a new production version the package must be built and uploaded to
 5.  Test the changes by installing the distribution package on a computer near you. *NOTE: You may have to try twice or wait a couple of minutes for the download to become available from PyPi.*
 6.  Rinse and repeat...
 7.  Execute `git commit -a; git push` to commit the changes.
-8.  After succesfull testing of the distribution package create a new tag on the `latest` branch.
+8.  After succesfull testing of the distribution package create a new tag and release on the `latest` branch.
 
 ## Support for a (new) version of BlueZ
 
-By default versions 5.47, 5.50, 5.60, 5.66, 5.68, 5.70 of the BlueZ stack are supported. To add support for a new version of
-the stack and compile the `bluepy3-helper.c` against it the following must be changed:
+By default versions 5.47, 5.50, 5.60, 5.66, 5.68, 5.70 of the BlueZ stack are supported. To add support for a new version of the stack and compile the `bluepy3-helper.c` against it the following must be changed:
 
 1.  Create a new branch for testing as detailed above.
 2.  Create a copy of the `./bluepy3/config.<version>.h`; where *\<version\>* is the version tagname of the [bluez stack](https://github.com/bluez/bluez) to be used.
