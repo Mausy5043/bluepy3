@@ -10,8 +10,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bluepy3"
-version = "2.2.1"  # latest/current distribution version
-# version = "2.1.23"  # latest test version
+# version = "2.2.1"  # latest/current distribution version
+# version = "2.3.1"  # latest test version
 description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -46,12 +46,6 @@ dependencies = [
 
 [tool.hatch.build]
 include = [
-    # "environment.yml",
-    # "LICENSE",
-    # "pyproject.toml",
-    # "README.md",
-    # "requirements.txt",
-    # "tox.ini",
     "bluepy3/*.py",
     "bluepy3/bluepy3-helper",   # built during install
     "bluepy3/bluepy3-helper.c",
