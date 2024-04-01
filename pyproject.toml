@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bluepy3"
-version = "2.4.1"  # latest/current distribution version
+version = "2.4.2"  # latest/current distribution version
 # version = "2.3.4"  # latest test version
 description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
 readme = "README.md"
@@ -28,7 +28,7 @@ keywords = [
     "Raspberry Pi",
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
     "Operating System :: POSIX :: Linux",
@@ -36,6 +36,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: C",
     "Topic :: Home Automation"
 ]
