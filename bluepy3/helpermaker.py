@@ -38,6 +38,7 @@ except ModuleNotFoundError:
 _sep = "/"
 
 HERE: str = _sep.join(__file__.split(_sep)[:-1])
+CONFIG_DIR: str = f"{HERE}/config"
 APP_ROOT: str = HERE
 MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
@@ -110,7 +111,7 @@ def get_helper_version() -> str:
 
 
 def get_builds() -> list[str]:
-    _dir: list[str] = sorted(os.listdir(HERE))
+    _dir: list[str] = sorted(os.listdir(CONFIG_DIR))
     _config: list[str] = []
     for _file in _dir:
         if _file[0:7] == "config." and _file[-2:] == ".h":
