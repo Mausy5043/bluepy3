@@ -1,5 +1,6 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
+/* file inserted by bluepy3 helpermaker */
 
 /* Directory for the Android daemon storage files */
 #define ANDROID_STORAGEDIR "/var/lib/bluetooth/android"
