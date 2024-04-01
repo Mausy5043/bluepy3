@@ -37,7 +37,7 @@ bluepy3-helper: $(LOCAL_SRCS) $(IMPORT_SRCS)
 
 $(IMPORT_SRCS):
 	git -c advice.detachedHead=false clone --depth 1 --branch $(BLUEZ_VERSION) https://github.com/bluez/bluez.git $(BLUEZ_PATH)
-	cp ./config.$(BLUEZ_VERSION).h $(BLUEZ_PATH)/config.h
+	cp ./config/config.$(BLUEZ_VERSION).h $(BLUEZ_PATH)/config.h
 	touch $(IMPORT_SRCS)
 
 GET_SERVICES=get_services.py
