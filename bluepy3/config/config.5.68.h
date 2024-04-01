@@ -1,5 +1,6 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
+/* file inserted by bluepy3 helpermaker */
 
 /* Directory for the Android daemon storage files */
 #define ANDROID_STORAGEDIR "/var/lib/bluetooth/android"
@@ -72,7 +73,7 @@
 #define PACKAGE_NAME "bluez"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "bluez 5.66"
+#define PACKAGE_STRING "bluez 5.68"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "bluez"
@@ -81,7 +82,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "5.66"
+#define PACKAGE_VERSION "5.68"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -116,7 +117,7 @@
 
 
 /* Version number of package */
-#define VERSION "5.66"
+#define VERSION "5.68"
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */

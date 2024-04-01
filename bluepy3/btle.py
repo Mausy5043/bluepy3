@@ -67,7 +67,7 @@ class BTLEException(Exception):
 
     def __init__(self, message: str, resp_dict=None) -> None:
         self.message: str = message
-        if resp_dict == None:
+        if resp_dict is None:
             resp_dict = {}
 
         # optional messages from bluepy3-helper
@@ -1030,11 +1030,11 @@ class _UUIDNameMap:
 
     def getCommonName(self, uuid) -> str:
         if uuid in self.idMap:
-            return self.idMap[uuid].commonName
-        return None
+            return str(self.idMap[uuid].commonName)
+        return ""
 
 
-def capitaliseName(descr):
+def capitaliseName(descr) -> str:
     words = descr.replace("(", " ").replace(")", " ").replace("-", " ").split(" ")
     capWords = [words[0].lower()]
     capWords += [w[0:1].upper() + w[1:].lower() for w in words[1:]]

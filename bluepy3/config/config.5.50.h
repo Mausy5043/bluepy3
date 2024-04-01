@@ -1,5 +1,6 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
+/* file inserted by bluepy3 helpermaker */
 
 /* Directory for the Android daemon storage files */
 #define ANDROID_STORAGEDIR "/var/lib/bluetooth/android"
@@ -72,7 +73,7 @@
 #define PACKAGE_NAME "bluez"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "bluez 5.47"
+#define PACKAGE_STRING "bluez 5.50"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "bluez"
@@ -81,7 +82,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "5.47"
+#define PACKAGE_VERSION "5.50"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -93,10 +94,14 @@
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
+
 /* Enable GNU extensions on systems that have them.  */
+/* Extensions are enabled in each individual source file
+   ref:   https://github.com/bluez/bluez/commit/261948090e9073514ac4b5f64c8715cf0a71eafa
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE 1
 #endif
+*/
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
 # define _POSIX_PTHREAD_SEMANTICS 1
@@ -112,7 +117,7 @@
 
 
 /* Version number of package */
-#define VERSION "5.47"
+#define VERSION "5.50"
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */
