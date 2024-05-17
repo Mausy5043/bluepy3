@@ -962,7 +962,7 @@ class Scanner(Bluepy3Helper):
                 if remain <= 0.0:
                     break
             else:
-                remain = None
+                remain = 0.0
             resp: dict[str, list[Any]] = self._waitResp(["scan", "stat"], remain)
             if not resp:
                 break
