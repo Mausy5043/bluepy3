@@ -12,7 +12,7 @@ import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, Generator, Optional, TextIO
+from typing import Any, TextIO
 
 
 Debugging = False
