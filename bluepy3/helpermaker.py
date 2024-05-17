@@ -140,7 +140,7 @@ def build_helper() -> None:
     with open(MAKEFILE, "w", encoding="utf-8") as makefile:
         for line in lines:
             if line.startswith("BLUEZ_VERSION"):
-                line: str = f"BLUEZ_VERSION={BLUEZ_VERSION}\n"
+                line = f"BLUEZ_VERSION={BLUEZ_VERSION}\n"
             makefile.write(line)
     if platform.system().lower() == "linux":
         # Windows and macOS are not supported
