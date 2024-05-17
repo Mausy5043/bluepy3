@@ -548,8 +548,8 @@ class Bluepy3Helper:
 
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
 
             # always check for MTU updates
             if "mtu" in resp and len(resp["mtu"]) > 0:
@@ -658,8 +658,8 @@ class Peripheral(Bluepy3Helper):
                 return {}
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
             if respType in ["ntfy", "ind"]:
                 hnd = resp["hnd"][0]
                 data = resp["d"][0]
@@ -958,7 +958,7 @@ class Scanner(Bluepy3Helper):
         start = time.time()
         while True:
             if timeout:
-                remain = start + timeout - time.time()
+                remain: float = start + timeout - time.time()
                 if remain <= 0.0:
                     break
             else:
@@ -969,8 +969,8 @@ class Scanner(Bluepy3Helper):
 
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
 
             if respType == "stat":
                 # if scan ended, restart it
