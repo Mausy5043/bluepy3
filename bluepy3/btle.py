@@ -12,7 +12,7 @@ import sys
 import time
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, TextIO
+from typing import Any, Generator, TextIO
 
 
 Debugging = False
@@ -1041,7 +1041,7 @@ def capitaliseName(descr) -> str:
     return "".join(capWords)
 
 
-def get_json_uuid():
+def get_json_uuid() -> Generator:
     # an entry in the uuid_list is a list containing an `int`` and two `str`
     # example: [10082, 'day', 'time (day)']
     with open(os.path.join(SCRIPT_PATH, "uuids.json"), "rb") as fp:
