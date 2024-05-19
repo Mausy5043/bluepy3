@@ -952,7 +952,7 @@ class Scanner(Bluepy3Helper):
     def getDevices(self):
         return list(self.scanned.values())
 
-    def process(self, timeout=10.0) -> None:
+    def process(self, timeout=BTLE_TIMEOUT) -> None:
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call start()?)")
         start = time.time()
@@ -991,7 +991,7 @@ class Scanner(Bluepy3Helper):
             else:
                 raise BTLEInternalError(f"Unexpected response: {respType}", resp)
 
-    def scan(self, timeout=10, passive=False):
+    def scan(self, timeout=BTLE_TIMEOUT, passive=False):
         self.clear()
         self.start(passive=passive)
         self.process(timeout)
