@@ -10,9 +10,10 @@ import struct
 import subprocess  # nosec: B404
 import sys
 import time
+
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, Generator, Optional, TextIO
+from typing import Any, Generator, Self, TextIO, Union
 
 
 Debugging = False
@@ -283,17 +284,17 @@ class ScanEntry:
         self.scanData: dict = {}
         self.updateCount: int = 0
 
-    def _decodeUUID(self, val, nbytes):
+    def _decodeUUID(self, val, nbytes: int):
         if len(val) < nbytes:
             return None
         bval = bytearray(val)
-        rs = ""
+        rs: str = ""
         # Bytes are little-endian; convert to big-endian string
         for i in range(nbytes):
             rs = f"{bval[i]:02X}{rs}"
         return UUID(rs)
 
-    def _decodeUUIDlist(self, val, nbytes):
+    def _decodeUUIDlist(self, val, nbytes: int):
         result = []
         for i in range(0, len(val), nbytes):
             if len(val) >= (i + nbytes):
@@ -333,8 +334,8 @@ class ScanEntry:
 
     def getValueText(self, sdid):
         val = self.getValue(sdid)
-        if val is None:
-            return None
+        if not val:
+            return ""
         if sdid in [ScanEntry.SHORT_LOCAL_NAME, ScanEntry.COMPLETE_LOCAL_NAME]:
             return val
         if isinstance(val, list):
@@ -548,8 +549,8 @@ class Bluepy3Helper:
 
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
 
             # always check for MTU updates
             if "mtu" in resp and len(resp["mtu"]) > 0:
@@ -614,7 +615,7 @@ class Bluepy3Helper:
         self._writeCmd("stat\n")
         return self._waitResp(["stat"])
 
-    def withDelegate(self, delegate_: DefaultDelegate):
+    def withDelegate(self, delegate_: DefaultDelegate) -> Self:
         self.delegate = delegate_
         return self
 
@@ -658,8 +659,8 @@ class Peripheral(Bluepy3Helper):
                 return {}
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
             if respType in ["ntfy", "ind"]:
                 hnd = resp["hnd"][0]
                 data = resp["d"][0]
@@ -800,7 +801,7 @@ class Peripheral(Bluepy3Helper):
         ndesc: int = len(resp["hnd"])
         return [Descriptor(self, resp["uuid"][i], resp["hnd"][i]) for i in range(ndesc)]
 
-    def setDelegate(self, delegate_):  # same as withDelegate(), deprecated
+    def setDelegate(self, delegate_) -> Self:  # same as withDelegate(), deprecated
         return self.withDelegate(delegate_)
 
     def getLocalOOB(self, iface=None):
@@ -949,28 +950,28 @@ class Scanner(Bluepy3Helper):
     def clear(self) -> None:
         self.scanned = {}
 
-    def getDevices(self):
+    def getDevices(self) -> list:
         return list(self.scanned.values())
 
-    def process(self, timeout=10.0) -> None:
+    def process(self, timeout=BTLE_TIMEOUT) -> None:
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call start()?)")
         start = time.time()
         while True:
             if timeout:
-                remain = start + timeout - time.time()
+                remain: float = start + timeout - time.time()
                 if remain <= 0.0:
                     break
             else:
-                remain = None
+                remain = 0.0
             resp: dict[str, list[Any]] = self._waitResp(["scan", "stat"], remain)
             if not resp:
                 break
 
             try:
                 respType = resp["rsp"][0]
-            except KeyError:
-                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp)
+            except KeyError as her:
+                raise BTLEInternalError("Unexpected absence of response 'rsp'", resp) from her
 
             if respType == "stat":
                 # if scan ended, restart it
@@ -991,7 +992,7 @@ class Scanner(Bluepy3Helper):
             else:
                 raise BTLEInternalError(f"Unexpected response: {respType}", resp)
 
-    def scan(self, timeout=10, passive=False):
+    def scan(self, timeout=BTLE_TIMEOUT, passive=False) -> list:
         self.clear()
         self.start(passive=passive)
         self.process(timeout)
@@ -1041,7 +1042,7 @@ def capitaliseName(descr) -> str:
     return "".join(capWords)
 
 
-def get_json_uuid():
+def get_json_uuid() -> Generator:
     # an entry in the uuid_list is a list containing an `int`` and two `str`
     # example: [10082, 'day', 'time (day)']
     with open(os.path.join(SCRIPT_PATH, "uuids.json"), "rb") as fp:
