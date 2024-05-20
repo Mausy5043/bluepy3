@@ -10,6 +10,7 @@ import struct
 import subprocess  # nosec: B404
 import sys
 import time
+
 from queue import Queue, Empty
 from threading import Thread
 from typing import Any, Generator, Self, TextIO, Union
