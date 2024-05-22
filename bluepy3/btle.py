@@ -441,11 +441,11 @@ class UUID:
         return hash(self.binVal)
 
     def __str__(self) -> str:
-        s = binascii.b2a_hex(self.binVal).decode("utf-8")
+        s: str = binascii.b2a_hex(self.binVal).decode("utf-8")
         return "-".join([s[0:8], s[8:12], s[12:16], s[16:20], s[20:32]])
 
     def getCommonName(self) -> str:
-        s = AssignedNumbers.getCommonName(self)
+        s: str = AssignedNumbers.getCommonName(self)
         if s:
             return s
         s = str(self)
@@ -622,12 +622,12 @@ class Bluepy3Helper:
 
 class Peripheral(Bluepy3Helper):
     # fmt: off
-    def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface: str = "", timeout: float = BTLE_TIMEOUT) -> None:
+    def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface = None, timeout: float = BTLE_TIMEOUT) -> None:
         Bluepy3Helper.__init__(self)
         self._serviceMap: dict = {}  # Indexed by UUID
         self.addr: str = addr
         self.addrType: str = addrType
-        self.iface: str = iface
+        self.iface = iface
 
         if isinstance(addr, ScanEntry):
             self._connect(addr.addr, addr.addrType, addr.iface, timeout)
@@ -677,7 +677,7 @@ class Peripheral(Bluepy3Helper):
 
     # keep this with connect()
     def _connect(
-        self, addr: str, addrType=ADDR_TYPE_PUBLIC, iface="", timeout=BTLE_TIMEOUT
+        self, addr: str, addrType=ADDR_TYPE_PUBLIC, iface=None, timeout=BTLE_TIMEOUT
     ) -> None:
         max_retries = 5
         if len(addr.split(":")) != 6:
@@ -690,7 +690,7 @@ class Peripheral(Bluepy3Helper):
             self.addr = addr
             self.addrType = addrType
             self.iface = iface
-            if iface:
+            if iface is not None:
                 self._writeCmd(f"conn {addr} {addrType} hci{str(iface)}\n")
             else:
                 self._writeCmd(f"conn {addr} {addrType}\n")
@@ -709,7 +709,7 @@ class Peripheral(Bluepy3Helper):
                 # successful
                 self.retries = 0
             if not rsp or rsp["state"][0] != "conn":
-                self._stopHelper()
+                self._stopHelper()  # todo: should this be disconnect() ?
                 if not rsp:
                     raise _timeout_exception
                 DBG(f"*** -btle-  Failed to connect. ({self.retries})")
@@ -1071,7 +1071,7 @@ if __name__ == "__main__":
     else:
         my_address_type = ADDR_TYPE_PUBLIC
     print(f"Connecting to: {my_device_address}, address type: {my_address_type}")
-    conn = Peripheral(my_device_address, my_address_type)
+    conn = Peripheral(my_device_address)
     try:
         for service in conn.services:
             print(f"{str(service)}:")
