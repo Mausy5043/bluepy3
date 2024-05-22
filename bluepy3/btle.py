@@ -584,7 +584,7 @@ class Bluepy3Helper:
     def _writeCmd(self, cmd) -> None:
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call connect()?)")
-        DBG(f"    -btle- Sent:   {cmd}")
+        DBG(f"    -btle- Sent:   {cmd.strip('\n')}")
         self._helper.stdin.write(cmd)  # type:ignore[union-attr]
         self._helper.stdin.flush()  # type:ignore[union-attr]
 
@@ -622,7 +622,7 @@ class Bluepy3Helper:
 
 class Peripheral(Bluepy3Helper):
     # fmt: off
-    def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface = None, timeout: float = BTLE_TIMEOUT) -> None:
+    def __init__(self, addr: str = "", addrType: str = ADDR_TYPE_PUBLIC, iface=None, timeout: float = BTLE_TIMEOUT) -> None:
         Bluepy3Helper.__init__(self)
         self._serviceMap: dict = {}  # Indexed by UUID
         self.addr: str = addr
@@ -712,9 +712,10 @@ class Peripheral(Bluepy3Helper):
                 self._stopHelper()  # todo: should this be disconnect() ?
                 if not rsp:
                     raise _timeout_exception
-                DBG(f"*** -btle-  Failed to connect. ({self.retries})")
+                DBG(f"*** -btle-  Failed to connect. ({self.retries})\n")
                 time.sleep(0.5 * (max_retries - self.retries))
                 if self.retries <= 1:
+                    # TODO: disconnect here to prevent stale connections
                     raise BTLEConnectError(
                         f"Failed to connect to peripheral {addr}, "
                         f"addr type: {addrType}, interface {iface}, timeout={timeout}",
