@@ -584,7 +584,7 @@ class Bluepy3Helper:
     def _writeCmd(self, cmd) -> None:
         if self._helper is None:
             raise BTLEInternalError("Helper not started (did you call connect()?)")
-        DBG(f"    -btle- Sent:   {cmd.strip('\n')}")
+        DBG(f"    -btle- Sent:   {cmd.strip()}")
         self._helper.stdin.write(cmd)  # type:ignore[union-attr]
         self._helper.stdin.flush()  # type:ignore[union-attr]
 
