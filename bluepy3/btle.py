@@ -464,7 +464,6 @@ class Bluepy3Helper:
         self._stderr: TextIO = None  # type: ignore[assignment]
         self._mtu: int = 0
         self.delegate = DefaultDelegate()
-        self._aita: int = 0
 
     def _mgmtCmd(self, cmd) -> None:
         self._writeCmd(cmd + "\n")
@@ -484,7 +483,6 @@ class Bluepy3Helper:
     def _startHelper(self, iface=None) -> None:
         if self._helper is None:
             DBG(f"    -btle- Running {HELPER_PATH}")
-            self._aita = 0
             self._lineq = Queue()
             self._mtu = 0
             # pylint: disable-next=consider-using-with
@@ -513,7 +511,6 @@ class Bluepy3Helper:
             self._helper.stdin.flush()  # type:ignore[union-attr]
             self._helper.wait()
             self._helper = None  # type: ignore[assignment]
-            self._aita = 0
         if self._stderr is not None:
             self._stderr.close()
             self._stderr = None  # type: ignore[assignment]
@@ -539,13 +536,6 @@ class Bluepy3Helper:
             resp: dict[str, list[Any]] = Bluepy3Helper.parseResp(rv)
             if "rsp" not in resp:
                 raise BTLEInternalError("No response type indicator", resp)
-
-            # sometimes devices just keep sending `ntfy`
-            if "ntfy" in repr(rv):
-                self._aita += 1
-                if self._aita > 3:
-                    self._stopHelper()
-                    raise BTLEInternalError("Device keeps repeating itself. Giving up.", resp)
 
             try:
                 respType = resp["rsp"][0]
