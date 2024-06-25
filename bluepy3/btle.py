@@ -923,7 +923,13 @@ class Peripheral(Bluepy3Helper):
         return self._getResp(["stat"])
 
     def pair(self) -> None:
-        self._mgmtCmd("pair")
+        self._writeCmd("pair\n")
+        resp = self._getResp(["mgmt"])
+        if resp["code"][0] != "success":
+            raise BTLEManagementError("Pair failed.")
+        addr = ":".join([f"{b:02X}" for b in resp["addr"][0]])
+        addr_type = resp["type"][0]
+        return addr, addr_type
 
     @property
     def services(self) -> list:

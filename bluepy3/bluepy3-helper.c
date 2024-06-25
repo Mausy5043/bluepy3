@@ -1488,6 +1488,8 @@ static void cmd_pairable(int argcp, char **argvp)
 static void pair_device_complete(uint8_t status, uint16_t length,
                     const void *param, void *user_data)
 {
+    const struct mgmt_addr_info * rp = param;
+
     if (status != MGMT_STATUS_SUCCESS) {
         DBG("status returned error : %s (0x%02x)",
                 mgmt_errstr(status), status);
@@ -1495,7 +1497,10 @@ static void pair_device_complete(uint8_t status, uint16_t length,
         return;
     }
 
-    resp_mgmt(err_SUCCESS);
+    resp_begin(rsp_MGMT);
+    send_sym(tag_ERRCODE, err_SUCCESS);
+    send_addr(rp);
+    resp_end();
 }
 
 static void cmd_pair(int argcp, char **argvp)
