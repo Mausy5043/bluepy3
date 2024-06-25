@@ -937,6 +937,10 @@ class Peripheral(Bluepy3Helper):
             self._serviceMap = self.discoverServices()
         return list(self._serviceMap.values())
 
+    def setBondable(self, enable) -> None:
+        mode = "on" if enable else "off"
+        self._mgmtCmd(f"pairable {mode}")
+
     def unpair(self) -> None:
         self._mgmtCmd("unpair")
 
