@@ -23,6 +23,7 @@ When you want to make changes, the best way to do that is by creating a [feature
  * All pull requests must be made against (the current state of) the `devel` branch. So, make sure, that at the time of the PR-creation *your* version of the branch is up-to-date with the current state of the [`devel` branch](https://github.com/Mausy5043/bluepy3/tree/devel) to prevent merge conflicts.
  * The PR should consist of atomic commits. We prefer many smaller commits as opposed to one large commit that has lots of unrelated changes.
  * Each commit should have a clear message saying what has changed. Use the second line of the commit message to provide context (e.g. why was this changed?)
+ * To prevent merge blocking you are required to [sign all commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
 
 ### Formatting and Coding Style
  * We use [`black`](https://pypi.org/project/black/). Code style formatting of all commits must adhere to `black --line-length 98`.
