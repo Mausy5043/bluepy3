@@ -1620,14 +1620,12 @@ static gboolean hci_monitor_cb(GIOChannel *chan, GIOCondition cond, gpointer use
               DBG("Ignoring EVT_LE_ADVERTISING_REPORT subevent %02x", meta->subevent);
               return TRUE;
           }  // switch (meta->subevent)
-
         }  // case EVT_LE_META_EVENT
         break;
         default:
           DBG("Ignoring event %02x", eh->evt);
           return TRUE;
       }  // switch(eh->evt)
-
     }  // case HCI_EVENT_PKT
     break;
 
