@@ -111,61 +111,56 @@ static enum state {
   STATE_SCANNING = 3,
 } conn_state;
 
+static const char *tag_RESPONSE = "rsp";
+static const char *tag_ERRCODE = "code";
+static const char *tag_ERRSTAT = "estat";
+static const char *tag_ERRMSG = "emsg";
+static const char *tag_HANDLE = "hnd";
+static const char *tag_UUID = "uuid";
+static const char *tag_DATA = "d";
+static const char *tag_CONNSTATE = "state";
+static const char *tag_SEC_LEVEL = "sec";
+static const char *tag_MTU = "mtu";
+static const char *tag_DEVICE = "dst";
+static const char *tag_RANGE_START = "hstart";
+static const char *tag_RANGE_END = "hend";
+static const char *tag_PROPERTIES = "props";
+static const char *tag_VALUE_HANDLE = "vhnd";
+static const char *tag_ADDR = "addr";
+static const char *tag_TYPE = "type";
+static const char *tag_RSSI = "rssi";
+static const char *tag_FLAG = "flag";
 
-static const char
-  *tag_RESPONSE  = "rsp",
-  *tag_ERRCODE   = "code",
-  *tag_ERRSTAT   = "estat",
-  *tag_ERRMSG    = "emsg",
-  *tag_HANDLE    = "hnd",
-  *tag_UUID      = "uuid",
-  *tag_DATA      = "d",
-  *tag_CONNSTATE = "state",
-  *tag_SEC_LEVEL = "sec",
-  *tag_MTU       = "mtu",
-  *tag_DEVICE    = "dst",
-  *tag_RANGE_START = "hstart",
-  *tag_RANGE_END = "hend",
-  *tag_PROPERTIES= "props",
-  *tag_VALUE_HANDLE = "vhnd",
-  *tag_ADDR       = "addr",
-  *tag_TYPE       = "type",
-  *tag_RSSI       = "rssi",
-  *tag_FLAG       = "flag";
+static const char *rsp_ERROR = "err";
+static const char *rsp_STATUS = "stat";
+static const char *rsp_NOTIFY = "ntfy";
+static const char *rsp_IND = "ind";
+static const char *rsp_DISCOVERY = "find";
+static const char *rsp_DESCRIPTORS = "desc";
+static const char *rsp_READ = "rd";
+static const char *rsp_WRITE = "wr";
+static const char *rsp_MGMT = "mgmt";
+static const char *rsp_SCAN = "scan";
+static const char *rsp_OOB = "oob";
 
-static const char
-  *rsp_ERROR     = "err",
-  *rsp_STATUS    = "stat",
-  *rsp_NOTIFY    = "ntfy",
-  *rsp_IND       = "ind",
-  *rsp_DISCOVERY = "find",
-  *rsp_DESCRIPTORS = "desc",
-  *rsp_READ      = "rd",
-  *rsp_WRITE     = "wr",
-  *rsp_MGMT      = "mgmt",
-  *rsp_SCAN      = "scan",
-  *rsp_OOB       = "oob";
+static const char *err_CONN_FAIL = "connfail";
+static const char *err_ATT_ERR = "atterr";   /* Use for ATT error codes */
+static const char *err_MGMT_ERR = "mgmterr"; /* Use for Mgmt socket error codes */
+static const char *err_DECODING = "decodeerr";
+static const char *err_SEND_FAIL = "sendfail";
+static const char *err_CALL_FAIL = "callfail";
+static const char *err_NOT_FOUND = "notfound";
+static const char *err_BAD_CMD = "badcmd";
+static const char *err_BAD_PARAM = "badparam";
+static const char *err_BAD_STATE = "badstate";
+static const char *err_BUSY = "busy";
+static const char *err_NO_MGMT = "nomgmt";
+static const char *err_SUCCESS = "success";
 
-static const char
-  *err_CONN_FAIL = "connfail",
-  *err_ATT_ERR   = "atterr",   /* Use for ATT error codes */
-  *err_MGMT_ERR  = "mgmterr",  /* Use for Mgmt socket error codes */
-  *err_DECODING  = "decodeerr",
-  *err_SEND_FAIL = "sendfail",
-  *err_CALL_FAIL = "callfail",
-  *err_NOT_FOUND = "notfound",
-  *err_BAD_CMD   = "badcmd",
-  *err_BAD_PARAM = "badparam",
-  *err_BAD_STATE = "badstate",
-  *err_BUSY      = "busy",
-  *err_NO_MGMT   = "nomgmt",
-  *err_SUCCESS   = "success";
-
-static const char
-  *st_DISCONNECTED = "disc",
-  *st_CONNECTING   = "tryconn",
-  *st_CONNECTED    = "conn",
-  *st_SCANNING    = "scan";
+static const char *st_DISCONNECTED = "disc";
+static const char *st_CONNECTING = "tryconn";
+static const char *st_CONNECTED = "conn";
+static const char *st_SCANNING = "scan";
 
 // delimits fields in response message
 #define RESP_DELIM "\x1e"
