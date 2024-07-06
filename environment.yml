@@ -7,6 +7,8 @@ channels:
 
 dependencies:
   - python=3.11
+  - clang-format
+  - cpplint
   - tomli
   - pip
   # Not on conda channels:
