@@ -519,8 +519,11 @@ static void connect_cb(GIOChannel *io, GError *err, gpointer user_data) {
     printf("# Can't detect MTU, using default");
     g_error_free(gerr);
     mtu = ATT_DEFAULT_LE_MTU;
-  } else if (cid == ATT_CID)
-    mtu = ATT_DEFAULT_LE_MTU;
+  } else {
+    if (cid == ATT_CID) {
+      mtu = ATT_DEFAULT_LE_MTU;
+    }
+  }
 
   attrib = g_attrib_new(iochannel, mtu, false);
 
@@ -767,8 +770,9 @@ static void cmd_connect(int argcp, char **argvp) {
   if (iochannel == NULL) {
     set_state(STATE_DISCONNECTED);
     g_error_free(gerr);
-  } else
+  } else {
     g_io_add_watch(iochannel, G_IO_HUP | G_IO_NVAL, channel_watcher, NULL);
+  }
 }
 
 static void cmd_disconnect(int argcp, char **argvp) {
@@ -889,8 +893,9 @@ static void cmd_char_desc(int argcp, char **argvp) {
       resp_error(err_BAD_PARAM);
       return;
     }
-  } else
+  } else {
     start = 0x0001;
+  }
 
   if (argcp > 2) {
     end = strtohandle(argvp[2]);
@@ -898,8 +903,9 @@ static void cmd_char_desc(int argcp, char **argvp) {
       resp_error(err_BAD_PARAM);
       return;
     }
-  } else
+  } else {
     end = 0xffff;
+  }
 
   gatt_discover_desc(attrib, start, end, NULL, char_desc_cb, NULL);
 }
@@ -1015,9 +1021,9 @@ static void cmd_char_write_common(int argcp, char **argvp, int with_response) {
     plen = 0;
   }
 
-  if (with_response)
+  if (with_response) {
     gatt_write_char(attrib, handle, value, plen, char_write_req_cb, NULL);
-  else {
+  } else {
     gatt_write_cmd(attrib, handle, value, plen, NULL, NULL);
     resp_begin(rsp_WRITE);
     resp_end();
@@ -1041,15 +1047,20 @@ static void cmd_sec_level(int argcp, char **argvp) {
     return;
   }
 
-  if (strcasecmp(argvp[1], "medium") == 0)
+  // TODO: why is this not a switch/case construct?
+  if (strcasecmp(argvp[1], "medium") == 0) {
     sec_level = BT_IO_SEC_MEDIUM;
-  else if (strcasecmp(argvp[1], "high") == 0)
-    sec_level = BT_IO_SEC_HIGH;
-  else if (strcasecmp(argvp[1], "low") == 0)
-    sec_level = BT_IO_SEC_LOW;
-  else {
-    resp_error(err_BAD_PARAM);
-    return;
+  } else {
+    if (strcasecmp(argvp[1], "high") == 0) {
+      sec_level = BT_IO_SEC_HIGH;
+    } else {
+      if (strcasecmp(argvp[1], "low") == 0) {
+        sec_level = BT_IO_SEC_LOW;
+      } else {
+        resp_error(err_BAD_PARAM);
+        return;
+      }
+    }
   }
 
   g_free(opt_sec_level);
@@ -1283,9 +1294,11 @@ static void cmd_add_oob(int argcp, char **argvp) {
       C256 = argvp[6];
       R256 = argvp[8];
     }
-  } else if ((!memcmp(argvp[3], "C_256", 5)) && (!memcmp(argvp[5], "R_256", 5))) {
-    C256 = argvp[4];
-    R256 = argvp[6];
+  } else {
+    if ((!memcmp(argvp[3], "C_256", 5)) && (!memcmp(argvp[5], "R_256", 5))) {
+      C256 = argvp[4];
+      R256 = argvp[6];
+    }
   }
 
   if (!add_remote_oob_data(0, &bdaddr, addr_type, C192, R192, C256, R256)) {
@@ -1584,8 +1597,8 @@ static gboolean hci_monitor_cb(GIOChannel *chan, GIOCondition cond, gpointer use
                   addr.type = 0;
               }
               addr.bdaddr = ev->bdaddr;
-              // DBG("Device found: %02X:%02X:%02X:%02X:%02X:%02X type=%X length=%d data[0]=0x%02x
-              // rssi=0x%02x",
+              // DBG("Device found: %02X:%02X:%02X:%02X:%02X:%02X type=%X length=%d
+              // data[0]=0x%02x rssi=0x%02x",
               //     val[5], val[4], val[3], val[2], val[1], val[0],
               //     ev->bdaddr_type, ev->length, ev->data[0], ev->data[ev->length]);
               if (0) {
