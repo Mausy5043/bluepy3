@@ -912,7 +912,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(f"secu {level}\n")
         return self._getResp(["stat"])
 
-    def pair(self) -> None:
+    def pair(self) -> tuple[str, Any]:
         self._writeCmd("pair\n")
         resp = self._getResp(["mgmt"])
         if resp["code"][0] != "success":
