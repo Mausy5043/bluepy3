@@ -44,7 +44,6 @@ dependencies = [
     "tomli",
 ]
 
-
 [tool.hatch.build]
 include = [
     "bluepy3/*.py",
@@ -64,7 +63,10 @@ include = [
 blescan = 'bluepy3.blescan:main'
 helpermaker = 'bluepy3.helpermaker:main'
 
-
 [project.urls]
 "Homepage" = "https://github.com/Mausy5043/bluepy3"
 "Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
+
+[tool.black]
+line-length = 98
+target-version = ["py39", "py310", "py311", "py312"]
