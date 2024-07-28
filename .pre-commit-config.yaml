@@ -1,11 +1,21 @@
 # These checks must pass before you may commit changes
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.6.0
     hooks:
+    -   id: check-case-conflict
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-toml
     -   id: check-yaml
     -   id: end-of-file-fixer
+    -   id: mixed-line-ending
+    -   id: pretty-format-json
+        args: [--autofix]
+    -   id: requirements-txt-fixer
     -   id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
 -   repo: https://github.com/psf/black
     rev: 24.4.2
     hooks:
