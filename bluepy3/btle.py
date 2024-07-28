@@ -13,7 +13,7 @@ import time
 
 from queue import Queue, Empty
 from threading import Thread
-from typing import Any, Generator, Self, TextIO, Union
+from typing import Any, Generator, Self, TextIO
 
 
 Debugging = False
@@ -699,12 +699,12 @@ class Peripheral(Bluepy3Helper):
                 # successful
                 self.retries = 0
             if not rsp or rsp["state"][0] != "conn":
-                self._stopHelper()  # todo: should this be disconnect() ?
+                self._stopHelper()
                 if not rsp:
                     raise _timeout_exception
                 DBG(f"*** -btle-  Failed to connect. ({self.retries})\n")
                 time.sleep(0.5 * (max_retries - self.retries))
-                # TODO: disconnect here to prevent stale connections
+                # Disconnect here to prevent stale connections
                 self.disconnect()
                 if self.retries <= 1:
                     raise BTLEConnectError(
@@ -912,7 +912,7 @@ class Peripheral(Bluepy3Helper):
         self._writeCmd(f"secu {level}\n")
         return self._getResp(["stat"])
 
-    def pair(self) -> None:
+    def pair(self) -> tuple[str, Any]:
         self._writeCmd("pair\n")
         resp = self._getResp(["mgmt"])
         if resp["code"][0] != "success":

@@ -1,5 +1,5 @@
 # When making changes to this file update requirements.txt also !!
-# Usage: conda -v env update -n bluepy3 --file environment.yml
+# Usage: conda -v env update -n bluepy3 --file environment.yml; pre-commit run --all-files
 
 channels:
   - conda-forge
@@ -11,6 +11,7 @@ dependencies:
   - cpplint
   - tomli
   - pip
+  - pre-commit
   # Not on conda channels:
   - pip:
       - pylint

@@ -10,8 +10,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bluepy3"
-version = "2.10.1"  # latest/current distribution version
-# version = "2.9.5"  # latest test version
+# version = "2.10.1"  # latest/current distribution version
+version = "2.11.8"  # latest test version
 description = "A Python3 module for interfacing with Bluetooth LE devices on Linux."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -44,7 +44,6 @@ dependencies = [
     "tomli",
 ]
 
-
 [tool.hatch.build]
 include = [
     "bluepy3/*.py",
@@ -64,7 +63,10 @@ include = [
 blescan = 'bluepy3.blescan:main'
 helpermaker = 'bluepy3.helpermaker:main'
 
-
 [project.urls]
 "Homepage" = "https://github.com/Mausy5043/bluepy3"
 "Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
+
+[tool.black]
+line-length = 98
+target-version = ["py39", "py310", "py311", "py312"]
