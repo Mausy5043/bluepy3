@@ -1,4 +1,4 @@
-#define VERSION_STRING "undefined"
+#define VERSION_STRING "UNSUPPORTED"
 
 /*
 This file is a placeholder.
