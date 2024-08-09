@@ -112,7 +112,7 @@ def get_helper_version() -> str:
 
 def get_builds() -> list[str]:
     _dir: list[str] = sorted(os.listdir(CONFIG_DIR))
-    _config: list[str] = []
+    _config: list[str] = ["installed"]
     for _file in _dir:
         if _file[0:7] == "config." and _file[-2:] == ".h":
             _config.append(_file[7:-2])
