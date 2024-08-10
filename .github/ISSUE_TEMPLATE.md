@@ -41,13 +41,13 @@ Please use [stackoverflow](https://stackoverflow.com) for code/coding questions.
 
 * OS (Distribution/version/flavour)
 ```
-grep NAME /etc/os-release
+hostnamectl | tail -n 3
 <!--- put output here  -->
 
 journalctl --boot 0 | head
 <!--- put output here  -->
 
-uname -a
+cat /proc/version
 <!--- put output here  -->
 ```
 
