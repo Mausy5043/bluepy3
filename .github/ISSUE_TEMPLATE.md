@@ -74,10 +74,10 @@ grep "^version" $(find / -name pyproject.toml 2>/dev/null |grep bluepy3)
 <!--- put output here  -->
 ```
 
-* Hardware platform and stack (brand/make/model/version/URL)
+* Hardware platform and stack (brands/makes/models/versions/product URLs)
 <!--- If your problem occurs on different hardware platforms, there may be different causes.  -->
 <!--- Please consider creating separate issues for different hardware platforms.  -->
 <!--- Example: Raspberry Pi Model 3B+ (https://www.raspberrypi.org/)  -->
 <!---          - Add details about the Bluetooth hardware  -->
 <!---          - Does the Bluetooth modem support BLE ?  -->
-<!---          - Which device are you connecting to? (brand/make/model/version/URL)  -->
+<!---          - Which device are you connecting to? (brand/make/model/version/product URL)  -->
