@@ -46,7 +46,7 @@ sudo hcitool lescan
 ```
 This should list the (compatible) Bluetooth devices in range.
 
-Upon the first `import` of `bluepy3.btle` the required binary is compiled. This requires the download of the BlueZ source (20MB) to `/tmp` (don't worry this is done automatically). The default behaviour is to compile against the version of the BlueZ source that matches the version of the installed `bluetoothctl`. The user may override this by forcing compilation against any of the supported source trees by running `helpermaker --build <version>`. You are advised NOT to use `make` directly, but rather usee the python script `helpermaker`.
+Upon the first `import` of `bluepy3.btle` the required binary is compiled. This requires the download of the BlueZ source (20MB) to `/tmp` (don't worry this is done automatically). The default behaviour is to compile against the version of the BlueZ source that matches the version of the installed `bluetoothctl`. The user may override this by forcing compilation against any of the supported source trees by running `helpermaker --build <version>`. You are advised NOT to use `make` directly, but rather use the python script `helpermaker`.
 
 It may be considered to have command-line tools from BlueZ available for debugging.
 
