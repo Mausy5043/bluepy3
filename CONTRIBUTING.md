@@ -8,10 +8,7 @@ First, search through the existing [issues](https://github.com/Mausy5043/bluepy3
 In order for us to help with an issue, it's useful if you provide as much detail as possible.
 
 1. In the issue title answer this question: What is wrong with what?
-2. Use the issue body to:
-   1. Describe the problem in more detail.
-   2. Copy&Paste relevant commandline input and output.
-   3. Provide relevant entries from the system logs. (make sure to remove any personal details!)
+2. Fill in the issue body as per the template.
 3. Consider assisting us, if you can, by helping us fix the issue:
    1. Investigate the cause.
    2. Suggest changes to the code.
