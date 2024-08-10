@@ -188,6 +188,7 @@ def make_helper(build: str = "installed") -> None:
 
 
 def main() -> None:
+    global DEBUG
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
 
@@ -203,7 +204,7 @@ def main() -> None:
     print(f"Requested to build     : {OPTION.build}")
     if OPTION.list:
         print(f"\nSupported versions of BlueZ are: {SUPPORTED_BUILDS}\n")
-    if OPTION.build:
+    if OPTION.debug:
         DEBUG = "DEBUGGING=1"
     if OPTION.build:
         make_helper(build=OPTION.build)
