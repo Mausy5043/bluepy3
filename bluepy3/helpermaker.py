@@ -190,7 +190,7 @@ def main() -> None:
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
 
-    parser.add_argument("-b", "--build", type=str, help="supported version of BlueZ against which to compile the binary e.g. 5.47 (default: installed)")
+    parser.add_argument("-b", "--build", type=str, help="version of BlueZ against which to compile the binary")
     parser.add_argument("-l", "--list", action="store_true", help="show a list of supported BlueZ versions")
     OPTION = parser.parse_args()
     # fmt: on
