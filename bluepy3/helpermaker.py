@@ -112,7 +112,7 @@ def get_helper_version() -> str:
 
 def get_builds() -> list[str]:
     _dir: list[str] = sorted(os.listdir(CONFIG_DIR))
-    _config: list[str] = []
+    _config: list[str] = ["installed"]
     for _file in _dir:
         if _file[0:7] == "config." and _file[-2:] == ".h":
             _config.append(_file[7:-2])
@@ -190,7 +190,7 @@ def main() -> None:
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
 
-    parser.add_argument("-b", "--build", type=str, help="supported version of BlueZ against which to compile the binary e.g. 5.47 (default: installed)", default="installed")
+    parser.add_argument("-b", "--build", type=str, help="version of BlueZ against which to compile the binary")
     parser.add_argument("-l", "--list", action="store_true", help="show a list of supported BlueZ versions")
     OPTION = parser.parse_args()
     # fmt: on
@@ -201,7 +201,8 @@ def main() -> None:
     print(f"Requested to build     : {OPTION.build}")
     if OPTION.list:
         print(f"\nSupported versions of BlueZ are: {SUPPORTED_BUILDS}\n")
-    make_helper(OPTION.build)
+    if OPTION.build:
+        make_helper(build=OPTION.build)
 
 
 if __name__ == "__main__":

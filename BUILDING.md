@@ -1,4 +1,4 @@
-# BUILDING
+# BUILDING (the pypi package)
 
 ## Versionnumbers
 
@@ -61,5 +61,5 @@ By default versions 5.47, 5.50, 5.60, 5.66, 5.68, 5.70 of the BlueZ stack are su
         #define VERSION "5.68"
         ```
 3.  Complete the building instructions for testing as described above.
-4.  Install on the test system and use `helpermaker --build <version>` to confirm that it will compile.
+4.  Install on the test system and use `helpermaker --build <version>` to confirm that it will compile. NOTE: Do NOT use `make` directly.
 5.  Make adjustments as needed to get the new version to compile.
