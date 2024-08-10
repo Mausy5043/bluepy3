@@ -1,5 +1,5 @@
 Your issue may already be reported!
-Please search on the [issue tracker](../) before creating one.
+Please search on the [issue tracker](https://github.com/Mausy5043/bluepy3/issues?q=is%3Aissue+) before creating one.
 
 Please use [stackoverflow](https://stackoverflow.com) for code/coding questions.
 
