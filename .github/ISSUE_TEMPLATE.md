@@ -20,8 +20,9 @@ Please use [stackoverflow](https://stackoverflow.com) for code/coding questions.
 <!--- If suggesting a change/improvement, explain the difference from current behavior -->
 
 ## Possible Solution
-<!--- Not obligatory, but suggest a fix/reason for the bug, -->
-<!--- or ideas how to implement the addition or change -->
+<!--- Not obligatory, but we appreciate your help improving this project.  -->
+<!--- Please refer to CONTRIBUTING.md on how to suggest a fix for the bug, -->
+<!--- or ideas on how to implement the addition or change. -->
 
 ## Steps to Reproduce (for bugs)
 <!--- Provide a link to a live example, or an unambiguous set of steps to -->
@@ -51,6 +52,8 @@ uname -a
 ```
 
 * Software stack
+<!--- If your problem occurs on different software stacks, there may be different causes. -->
+<!--- Please consider creating separate issues for different software stacks. -->
 ```
 bluetoothctl --version
 <!--- put output here -->
@@ -69,6 +72,8 @@ find / -name bluepy3-helper 2>/dev/null -exec {} version \;
 ```
 
 * Hardware platform and stack (brand/make/model/version/URL)
+<!--- If your problem occurs on different hardware platforms, there may be different causes. -->
+<!--- Please consider creating separate issues for different hardware platforms. -->
 <!--- Example: Raspberry Pi Model 3B+ (https://www.raspberrypi.org/)-->
 <!---          - Add details about the Bluetooth hardware  -->
 <!---          - Does the Bluetooth modem support BLE ?  -->
