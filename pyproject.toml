@@ -1,4 +1,4 @@
-# pyproject.toml
+# Project: bluepy3
 
 # Hatchling  https://packaging.python.org/en/latest/key_projects/#hatch
 #            https://hatch.pypa.io/latest/config/metadata/
@@ -66,6 +66,10 @@ helpermaker = 'bluepy3.helpermaker:main'
 [project.urls]
 "Homepage" = "https://github.com/Mausy5043/bluepy3"
 "Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
+
+[tool.bandit]
+skips = ["B101", "B603"]
+# ,B601
 
 [tool.black]
 line-length = 98
