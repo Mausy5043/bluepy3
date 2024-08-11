@@ -74,3 +74,26 @@ skips = ["B101", "B603"]
 [tool.black]
 line-length = 98
 target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.flake8]
+max_line_length = 98
+ignore = ["E203", "E501", "C901", "W503"]
+
+[tool.pydocstyle]
+inherit = false
+convention = "google"
+match = ".*\\.py"
+add-ignore = "D"
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+check_untyped_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_untyped_calls = true
+no_implicit_reexport = true
+extra_checks = true
