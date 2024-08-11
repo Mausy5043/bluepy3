@@ -10,11 +10,9 @@ import struct
 import subprocess  # nosec: B404
 import sys
 import time
-
-from queue import Queue, Empty
+from queue import Empty, Queue
 from threading import Thread
 from typing import Any, Generator, Self, TextIO
-
 
 Debugging = False
 SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
