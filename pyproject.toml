@@ -67,6 +67,13 @@ helpermaker = 'bluepy3.helpermaker:main'
 "Homepage" = "https://github.com/Mausy5043/bluepy3"
 "Bug Tracker" = "https://github.com/Mausy5043/bluepy3/issues"
 
+[tool.autopep8]
+max_line_length = 98
+in-place = true
+recursive = true
+aggressive = 2
+ignore = "E203"
+
 [tool.bandit]
 skips = ["B101", "B603"]
 # ,B601
