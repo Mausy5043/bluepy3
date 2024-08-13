@@ -488,8 +488,9 @@ class Bluepy3Helper:
             args: list[str] = [HELPER_PATH]
             if iface is not None:
                 args.append(str(iface))
-            #
-            # pylint: disable-next=consider-using-with, disable-next=W1509  # FIXME: should not be using preexec_fn
+
+            # FIXME: should not be using preexec_fn
+            # pylint: disable-next=consider-using-with, disable-next=W1509
             self._helper = subprocess.Popen(
                 args,
                 stdin=subprocess.PIPE,
