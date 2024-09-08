@@ -309,7 +309,7 @@ class ScanEntry:
             for sdid in self.scanData.keys()  # pylint: disable=consider-iterating-dictionary
         ]
 
-    def getValue(self, sdid):
+    def getValue(self, sdid: int):
         val = self.scanData.get(sdid, None)
         if val is None:
             return None
@@ -330,7 +330,7 @@ class ScanEntry:
             return self._decodeUUIDlist(val, 16)
         return val
 
-    def getValueText(self, sdid):
+    def getValueText(self, sdid: int):
         val = self.getValue(sdid)
         if not val:
             return ""
