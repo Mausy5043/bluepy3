@@ -188,7 +188,7 @@ def make_helper(build: str = "installed") -> None:
 
 
 def main() -> None:
-    global DEBUG
+    global DEBUG  # pylint: disable=global-statement
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
 
