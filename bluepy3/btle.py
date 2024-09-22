@@ -10,11 +10,9 @@ import struct
 import subprocess  # nosec: B404
 import sys
 import time
-
-from queue import Queue, Empty
+from queue import Empty, Queue
 from threading import Thread
 from typing import Any, Generator, Self, TextIO
-
 
 Debugging = False
 SCRIPT_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)))
@@ -311,7 +309,7 @@ class ScanEntry:
             for sdid in self.scanData.keys()  # pylint: disable=consider-iterating-dictionary
         ]
 
-    def getValue(self, sdid):
+    def getValue(self, sdid: int):
         val = self.scanData.get(sdid, None)
         if val is None:
             return None
@@ -332,7 +330,7 @@ class ScanEntry:
             return self._decodeUUIDlist(val, 16)
         return val
 
-    def getValueText(self, sdid):
+    def getValueText(self, sdid: int):
         val = self.getValue(sdid)
         if not val:
             return ""
@@ -490,8 +488,9 @@ class Bluepy3Helper:
             args: list[str] = [HELPER_PATH]
             if iface is not None:
                 args.append(str(iface))
-            #
-            # pylint: disable-next=consider-using-with, disable-next=W1509  # FIXME: should not be using preexec_fn
+
+            # FIXME: should not be using preexec_fn
+            # pylint: disable-next=consider-using-with, disable-next=W1509
             self._helper = subprocess.Popen(
                 args,
                 stdin=subprocess.PIPE,

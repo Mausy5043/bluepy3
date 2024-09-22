@@ -12,9 +12,10 @@ dependencies:
   - python=3.11
   - clang-format
   - cpplint
-  - tomli
+  - tomli=2.0.1
   - pip
+  - pipdeptree
   - pre-commit
   # Not on conda channels:
   - pip:
-      - pylint
+      - pylint>=3.0.2

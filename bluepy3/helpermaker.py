@@ -40,6 +40,7 @@ _sep = "/"
 HERE: str = _sep.join(__file__.split(_sep)[:-1])
 CONFIG_DIR: str = f"{HERE}/config"
 APP_ROOT: str = HERE
+DEBUG: str = ""
 MAKEFILE: str = f"{APP_ROOT}/Makefile"
 VERSION_H: str = f"{APP_ROOT}/version.h"
 PYPROJECT_TOML: str = f"{APP_ROOT}/pyproject.toml"
@@ -145,7 +146,7 @@ def build_helper() -> None:
     if platform.system().lower() == "linux":
         # Windows and macOS are not supported
         _LOGGER.info("*** Building bluepy3-helper")
-        for cmd in [f"make -C {APP_ROOT} clean", f"make -C {APP_ROOT} -j1"]:
+        for cmd in [f"make -C {APP_ROOT} clean", f"make {DEBUG} -C {APP_ROOT} -j1"]:
             _LOGGER.info(f"Execute {cmd}")
             msgs: bytes = b""
             try:
@@ -187,10 +188,12 @@ def make_helper(build: str = "installed") -> None:
 
 
 def main() -> None:
+    global DEBUG  # pylint: disable=global-statement
     # fmt: off
     parser = argparse.ArgumentParser(description="Compile the bluepy3-helper binary.")
 
     parser.add_argument("-b", "--build", type=str, help="version of BlueZ against which to compile the binary")
+    parser.add_argument("-d", "--debug", action="store_true", help="enable debugging mode in the binary")
     parser.add_argument("-l", "--list", action="store_true", help="show a list of supported BlueZ versions")
     OPTION = parser.parse_args()
     # fmt: on
@@ -201,6 +204,8 @@ def main() -> None:
     print(f"Requested to build     : {OPTION.build}")
     if OPTION.list:
         print(f"\nSupported versions of BlueZ are: {SUPPORTED_BUILDS}\n")
+    if OPTION.debug:
+        DEBUG = "DEBUGGING=1"
     if OPTION.build:
         make_helper(build=OPTION.build)
 
