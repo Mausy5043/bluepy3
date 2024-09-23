@@ -19,4 +19,4 @@ dependencies:
   - cpplint
   - pipdeptree
   - pre-commit
-  - pylint>=3.0.2
+  - pylint
