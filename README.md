@@ -1,7 +1,9 @@
+
+[![License](https://img.shields.io/github/license/mausy5043/bluepy3)](LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/bluepy3.svg?logo=pypi&logoColor=FFE873)](https://pypi.org/project/bluepy3)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/bluepy3?logo=python&logoColor=FFE873)](https://pypi.org/project/bluepy3)
 [![PyPI downloads](https://img.shields.io/pypi/dm/bluepy3.svg)](https://pypistats.org/packages/bluepy3)
-[![Code style: Black](https://img.shields.io/badge/code%20style-Black-000000.svg)](https://github.com/psf/black)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Mausy5043/bluepy3/devel.svg)](https://results.pre-commit.ci/latest/github/Mausy5043/bluepy3/devel)
 
 # bluepy3
@@ -72,9 +74,8 @@ For documentation you are referred to [the documentation that comes with `bluepy
 Your assistance to improve this package is greatly appreciated.
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-## License
-
-See [LICENSE](LICENSE)
+## Disclaimer & License
+As of September 2024 `bluepy3` is distributed under [AGPL-3.0-or-later](LICENSE).
 
 ## Acknowledgements
 
