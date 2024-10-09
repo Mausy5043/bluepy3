@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# bluepy3
+# Copyright (C) 2024  Maurice (mausy5043) Hendrix
+# AGPL-3.0-or-later  - see LICENSE
+
 # type: ignore
 import argparse
 import binascii

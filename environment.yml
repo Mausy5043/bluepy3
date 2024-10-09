@@ -9,13 +9,14 @@ channels:
   - defaults
 
 dependencies:
-  - python=3.11
+  - python=3.12
+  - pip
+  # imported deps
+  - tomli=2.0.1
+
+  # dev deps
   - clang-format
   - cpplint
-  - tomli=2.0.1
-  - pip
   - pipdeptree
   - pre-commit
-  # Not on conda channels:
-  - pip:
-      - pylint>=3.0.2
+  - pylint
